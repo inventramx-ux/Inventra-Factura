@@ -1,81 +1,69 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight, Check, Brain } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
+
 const features = [
   {
-    title: 'Multi-Platform Intelligence',
-    description: 'Analyze trending products across Amazon, AliExpress, and Google in one unified dashboard.',
+    title: 'Facturas Profesionales',
+    description: 'Crea facturas hermosas y profesionales en segundos para impresionar a tus clientes.',
   },
   {
-    title: 'AI-Powered Insights',
-    description: 'Our AI identifies winning products before they go viral, giving you the competitive edge.',
+    title: 'Gestión de Clientes',
+    description: 'Mantén un registro completo de todos tus clientes y sus historiales de compra.',
   },
   {
-    title: 'Real-Time Trends',
-    description: 'Track search volume, sales data, and trend scores updated in real-time.',
+    title: 'Reportes en Tiempo Real',
+    description: 'Accede a reportes detallados de ventas y facturas actualizados constantemente.',
   },
   {
-    title: 'Advanced Analytics',
-    description: 'Deep dive into product performance with comprehensive charts and metrics.',
+    title: 'Seguimiento de Pagos',
+    description: 'Registra qué facturas han sido pagadas y cuáles aún están pendientes.',
   },
   {
-    title: 'Verified Data',
-    description: 'All product data is verified and sourced directly from official platform APIs.',
+    title: 'Datos Verificados',
+    description: 'Todos tus datos están protegidos y respaldados en la nube de forma segura.',
   },
   {
-    title: 'Smart Recommendations',
-    description: 'Get personalized product suggestions based on your niche and preferences.',
+    title: 'Plantillas Personalizables',
+    description: 'Personaliza tus facturas con tu logo, colores y términos de pago específicos.',
   },
 ];
 
 const plans = [
   {
-    name: 'Free',
+    name: 'Gratuito',
     price: '$0',
-    period: '/month',
-    description: 'Perfect for getting started',
+    period: '/mes',
+    description: 'Perfecto para empezar',
     features: [
-      'Access to product screener',
-      'Up to 50 product searches/day',
-      'Basic trend analytics',
-      'Amazon & AliExpress data',
-      'Email support',
+      'Hasta 10 facturas por mes',
+      'Gestión de hasta 5 clientes',
+      'Plantillas básicas',
+      'Soporte por email',
     ],
-    cta: 'Start building',
+    cta: 'Comenzar gratis',
     highlighted: true,
   },
   {
     name: 'Pro',
-    price: '$29',
-    period: '/month',
-    description: 'For growing sellers',
+    price: '$199',
+    period: '/mes',
+    description: 'Para negocios serios',
     features: [
-      'Unlimited product searches',
-      'Advanced AI insights',
-      'All platforms including Google',
-      'Export data to CSV',
-      'Priority support',
-      'Custom alerts',
+      'Facturas ilimitadas',
+      'Clientes ilimitados',
+      'Plantillas personalizables',
+      'Reportes avanzados',
+      'Soporte prioritario',
+      'Recordatorios de pago automáticos',
     ],
-    cta: 'Coming Soon',
-    highlighted: false,
-  },
-  {
-    name: 'Enterprise',
-    price: '$99',
-    period: '/month',
-    description: 'For teams and agencies',
-    features: [
-      'Everything in Pro',
-      'API access',
-      'Team collaboration',
-      'White-label reports',
-      'Dedicated account manager',
-      'Custom integrations',
-    ],
-    cta: 'Coming Soon',
+    cta: 'Comenzar ahora',
     highlighted: false,
   },
 ];
@@ -95,23 +83,23 @@ export default function Home() {
             </p>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 leading-tight tracking-tight">
-              Find your next bestselling
+              Crea facturas
               <br />
-              product with Inventra
+              profesionales fácilmente
             </h1>
 
             <p className="text-lg text-gray-400 max-w-2xl mb-10">
-              Meet the system for modern product research.
+              Sistema de facturación moderno para tu negocio.
               <br />
-              Streamline discovery, analysis, and sourcing decisions.
+              Gestiona clientes, facturas y pagos en un solo lugar.
             </p>
 
             <div className="flex items-center gap-6">
-              <Link href="/sign-up" className="btn-primary inline-flex items-center gap-2">
-                Start building
+              <Link href="/sign-up" className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
+                Comenzar ahora
               </Link>
-              <Link href="#features" className="btn-secondary inline-flex items-center gap-1">
-               Learn more <ArrowRight size={14} />
+              <Link href="#features" className="border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-1">
+               Más información <ArrowRight size={14} />
               </Link>
             </div>
           </div>
@@ -123,10 +111,10 @@ export default function Home() {
         <div className="max-w-4xl mx-auto">
           <div className="mb-16">
             <h2 className="text-3xl font-medium text-white mb-4">
-              Everything you need to win at e-commerce
+              Todo lo que necesitas para facturar
             </h2>
             <p className="text-gray-400">
-              Powerful tools and insights to help you make data-driven inventory decisions.
+              Herramientas potentes para gestionar tus facturas y clientes de forma eficiente.
             </p>
           </div>
 
@@ -146,14 +134,14 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="mb-16 text-center">
             <h2 className="text-3xl font-medium text-white mb-4">
-              Simple, transparent pricing
+              Planes simples y transparentes
             </h2>
             <p className="text-gray-400">
-              Start for free and upgrade as you grow.
+              Comienza gratis y actualiza cuando tu negocio crezca.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
             {plans.map((plan, index) => (
               <div
                 key={index}
@@ -196,15 +184,15 @@ export default function Home() {
       <section className="py-20 px-4 border-t border-white/10">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-medium text-white mb-4">
-            Ready to find your next best-seller?
+            ¿Listo para simplificar tu facturación?
           </h2>
           <p className="text-gray-400 mb-8">
-            Join thousands of sellers who use InventrAI to discover winning products.
+            Únete a miles de negocios que usan Inventra Factura para gestionar sus facturas.
           </p>
-          <Link href="/sign-up" className="btn-primary inline-flex items-center gap-2">
-            Get started free
+          <Link href="/sign-up" className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
+            Comenzar gratis
           </Link>
-          <p className="text-xs text-gray-600 mt-4">No credit card required</p>
+          <p className="text-xs text-gray-600 mt-4">No se requiere tarjeta de crédito</p>
         </div>
       </section>
 

@@ -1,0 +1,90 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  clerkId   String     @unique
+  email     String     @unique
+  name      String?
+  businessName String?
+  rfc       String?
+  taxId     String?
+  address   String?
+  phone     String?
+  website   String?
+  taxRate   Float      @default(16)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  invoices  Invoice[]
+  clients   Client[]
+}
+
+model Client {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name      String
+  email     String
+  phone     String?
+  address   String?
+  rfc       String?
+  
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  
+  invoices  Invoice[]
+
+  @@unique([userId, email])
+}
+
+model Invoice {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  clientId  String
+  client    Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  
+  invoiceNumber String
+  platform  String     // amazon, mercadolibre, ebay, custom
+  
+  subtotal  Float
+  taxAmount Float
+  total     Float
+  
+  status    String     @default("draft") // draft, sent, paid, overdue
+  dueDate   DateTime?
+  
+  notes     String?
+  
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  paidAt    DateTime?
+
+  lineItems LineItem[]
+
+  @@unique([userId, invoiceNumber])
+}
+
+model LineItem {
+  id        String     @id @default(cuid())
+  invoiceId String
+  invoice   Invoice    @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  
+  description String
+  quantity  Float
+  unitPrice Float
+  total     Float
+
+  createdAt DateTime   @default(now())
+}
