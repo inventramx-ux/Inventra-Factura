@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
@@ -13,22 +14,25 @@ export default function Navbar() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
-                    <Link href="/inventralogo.png" className="flex items-center gap-2">
-                        <img
+                    <Link href="/" className="flex items-center gap-2">
+                        <Image
                             src="/inventralogo.png"
                             alt="Inventra Factura"
+                            width={32}
+                            height={32}
                             className="h-8 w-auto"
+                            priority
                         />
-                        <span className="text-white font-semibold hidden sm:inline"> </span>
+                        <span className="text-white font-semibold hidden sm:inline">Inventra Factura</span>
                     </Link>
 
-                    {/* Center Navigation - Features & Pricing */}
+                    {/* Center Navigation - Características & Planes */}
                     <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
                         <Link href="/#features" className="text-slate-300 hover:text-white transition-colors">
-                            Features
+                            Características
                         </Link>
                         <Link href="/#pricing" className="text-slate-300 hover:text-white transition-colors">
-                            Pricing
+                            Planes
                         </Link>
                     </div>
 
@@ -36,10 +40,10 @@ export default function Navbar() {
                     <div className="hidden md:flex items-center gap-4">
                         <SignedOut>
                             <Link href="/sign-in" className="text-slate-300 hover:text-white transition-colors">
-                                Sign In
+                                Iniciar Sesión
                             </Link>
                             <Link href="/sign-up" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm">
-                                Get Started
+                                Registrarse
                             </Link>
                         </SignedOut>
                         <SignedIn>
@@ -71,17 +75,17 @@ export default function Navbar() {
                     <div className="md:hidden py-4 border-t border-slate-800">
                         <div className="flex flex-col gap-4">
                             <Link href="/#features" className="text-slate-300 hover:text-white transition-colors">
-                                Features
+                                Características
                             </Link>
                             <Link href="/#pricing" className="text-slate-300 hover:text-white transition-colors">
-                                Pricing
+                                Planes
                             </Link>
                             <SignedOut>
                                 <Link href="/sign-in" className="text-slate-300 hover:text-white transition-colors">
-                                    Sign In
+                                    Iniciar Sesión
                                 </Link>
                                 <Link href="/sign-up" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm text-center">
-                                    Get Started
+                                    Registrarse
                                 </Link>
                             </SignedOut>
                             <SignedIn>
@@ -90,7 +94,7 @@ export default function Navbar() {
                                 </Link>
                                 <div className="flex items-center gap-2">
                                     <UserButton afterSignOutUrl="/" />
-                                    <span className="text-slate-400 text-sm">Account</span>
+                                    <span className="text-slate-400 text-sm">Cuenta</span>
                                 </div>
                             </SignedIn>
                         </div>

@@ -1,8 +1,10 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { FileText, Home, Plus, Settings } from "lucide-react"
+import { cn } from "@/lib/utils"
 import {
   Sidebar as SidebarRoot,
   SidebarHeader,
@@ -10,7 +12,6 @@ import {
   SidebarFooter,
   SidebarMenu,
   SidebarMenuItem,
-  SidebarMenuButton,
 } from "@/app/components/ui/sidebar"
 
 export function Sidebar() {
@@ -42,10 +43,19 @@ export function Sidebar() {
   return (
     <SidebarRoot>
       <SidebarHeader>
-        <div>
-          <h1 className="text-xl font-bold text-white">Inventra</h1>
-          <p className="text-xs text-gray-400">Facturación E-commerce</p>
-        </div>
+        <Link href="/dashboard" className="flex items-center gap-3">
+          <Image
+            src="/inventralogo.png"
+            alt="Inventra Factura"
+            width={32}
+            height={32}
+            className="h-8 w-auto"
+          />
+          <div>
+            <h1 className="text-xl font-bold text-white">Inventra Factura</h1>
+            <p className="text-xs text-gray-400">Facturación E-commerce</p>
+          </div>
+        </Link>
       </SidebarHeader>
 
       <SidebarContent>
@@ -56,11 +66,17 @@ export function Sidebar() {
 
             return (
               <SidebarMenuItem key={item.href}>
-                <Link href={item.href} className="w-full">
-                  <SidebarMenuButton isActive={isActive}>
-                    <Icon className="w-4 h-4" />
-                    <span>{item.title}</span>
-                  </SidebarMenuButton>
+                <Link
+                  href={item.href}
+                  className={cn(
+                    "flex w-full items-center gap-3 rounded-lg px-4 py-2.5 text-sm font-medium transition-colors",
+                    isActive
+                      ? "bg-white text-black"
+                      : "text-gray-400 hover:bg-white/10 hover:text-white"
+                  )}
+                >
+                  <Icon className="w-4 h-4" />
+                  <span>{item.title}</span>
                 </Link>
               </SidebarMenuItem>
             )

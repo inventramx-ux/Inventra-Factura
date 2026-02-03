@@ -1,21 +1,24 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { Button } from "@/app/components/ui/button"
 import { Input } from "@/app/components/ui/input"
 import { Label } from "@/app/components/ui/label"
-import { Building2, Smartphone, Mail, Globe } from "lucide-react"
+import { Building2, Mail, Globe, Loader2 } from "lucide-react"
 
 export default function SettingsPage() {
+  const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null)
   const [businessData, setBusinessData] = useState({
-    businessName: "Tu Negocio E-commerce",
-    email: "contacto@tunegocio.com",
-    phone: "+1 234 567 8900",
-    website: "https://tunegocio.com",
-    rfc: "ABC123456XYZ",
-    taxId: "12345678",
-    address: "Calle Principal 123, Ciudad, País",
+    businessName: "",
+    email: "",
+    phone: "",
+    website: "",
+    rfc: "",
+    taxId: "",
+    address: "",
   })
 
   const [taxSettings, setTaxSettings] = useState({
@@ -30,6 +33,31 @@ export default function SettingsPage() {
     custom: { enabled: true, apiKey: "" },
   })
 
+  useEffect(() => {
+    fetch("/api/user")
+      .then((res) => {
+        if (!res.ok) throw new Error("No autorizado")
+        return res.json()
+      })
+      .then((data) => {
+        setBusinessData({
+          businessName: data.businessName ?? "",
+          email: data.email ?? "",
+          phone: data.phone ?? "",
+          website: data.website ?? "",
+          rfc: data.rfc ?? "",
+          taxId: data.taxId ?? "",
+          address: data.address ?? "",
+        })
+        setTaxSettings((prev) => ({
+          ...prev,
+          defaultTaxRate: typeof data.taxRate === "number" ? data.taxRate : 16,
+        }))
+      })
+      .catch(() => setMessage({ type: "error", text: "No se pudo cargar la configuración" }))
+      .finally(() => setLoading(false))
+  }, [])
+
   const handleBusinessChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setBusinessData((prev) => ({ ...prev, [name]: value }))
@@ -39,7 +67,12 @@ export default function SettingsPage() {
     const { name, value, type } = e.target
     setTaxSettings((prev) => ({
       ...prev,
-      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+      [name]:
+        type === "checkbox"
+          ? (e.target as HTMLInputElement).checked
+          : name === "defaultTaxRate"
+            ? (parseFloat(value) || 0)
+            : value,
     }))
   }
 
@@ -53,9 +86,38 @@ export default function SettingsPage() {
     }))
   }
 
-  const handleSave = () => {
-    console.log({ businessData, taxSettings, platforms })
-    alert("Configuración guardada exitosamente")
+  const handleSave = async () => {
+    setMessage(null)
+    setSaving(true)
+    try {
+      const res = await fetch("/api/user", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessName: businessData.businessName,
+          rfc: businessData.rfc,
+          taxId: businessData.taxId,
+          address: businessData.address,
+          phone: businessData.phone,
+          website: businessData.website,
+          taxRate: taxSettings.defaultTaxRate,
+        }),
+      })
+      if (!res.ok) throw new Error("Error al guardar")
+      setMessage({ type: "success", text: "Configuración guardada correctamente" })
+    } catch {
+      setMessage({ type: "error", text: "Error al guardar la configuración" })
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="p-8 bg-black min-h-screen flex items-center justify-center">
+        <Loader2 className="h-8 w-8 animate-spin text-white" />
+      </div>
+    )
   }
 
   return (
@@ -64,6 +126,16 @@ export default function SettingsPage() {
         <h1 className="text-4xl font-bold text-white mb-2">Configuración</h1>
         <p className="text-gray-400">Administra tu información empresarial y preferencias</p>
       </div>
+
+      {message && (
+        <div
+          className={`mb-6 p-4 rounded-lg ${
+            message.type === "success" ? "bg-green-500/20 text-green-400 border border-green-500/30" : "bg-red-500/20 text-red-400 border border-red-500/30"
+          }`}
+        >
+          {message.text}
+        </div>
+      )}
 
       <div className="space-y-6">
         {/* Información del Negocio */}
@@ -255,10 +327,21 @@ export default function SettingsPage() {
 
         {/* Botones de Acción */}
         <div className="flex gap-4">
-          <Button onClick={handleSave} className="w-full md:w-auto bg-white text-black hover:bg-gray-200">
-            Guardar Cambios
+          <Button
+            onClick={handleSave}
+            className="w-full md:w-auto bg-white text-black hover:bg-gray-200"
+            disabled={saving}
+          >
+            {saving ? (
+              <>
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                Guardando...
+              </>
+            ) : (
+              "Guardar Cambios"
+            )}
           </Button>
-          <Button variant="outline" className="w-full md:w-auto border-white/20 text-white hover:bg-white/10">
+          <Button variant="outline" className="w-full md:w-auto border-white/20 text-white hover:bg-white/10" disabled={saving}>
             Cancelar
           </Button>
         </div>

@@ -10,28 +10,28 @@ export default function Footer() {
                     <div className="col-span-1 md:col-span-2">
                         <Image
                             src="/inventralogo.png"
-                            alt=""
+                            alt="Inventra Factura"
                             width={120}
                             height={28}
                             className="h-6 w-auto mb-4"
                         />
                         <p className="text-gray-500 text-sm max-w-sm">
-                            AI-powered product research that helps you discover trending inventory before the competition.
+                            Sistema de facturación moderno para tu negocio. Crea facturas profesionales, gestiona clientes y pagos en un solo lugar.
                         </p>
                     </div>
 
                     {/* Quick Links */}
                     <div>
-                        <h4 className="text-white text-sm font-medium mb-4">Product</h4>
+                        <h4 className="text-white text-sm font-medium mb-4">Producto</h4>
                         <ul className="space-y-2">
                             <li>
                                 <Link href="/#features" className="text-gray-500 text-sm hover:text-white transition-colors">
-                                    Features
+                                    Características
                                 </Link>
                             </li>
                             <li>
                                 <Link href="/#pricing" className="text-gray-500 text-sm hover:text-white transition-colors">
-                                    Pricing
+                                    Planes
                                 </Link>
                             </li>
                             <li>
@@ -44,21 +44,21 @@ export default function Footer() {
 
                     {/* Support */}
                     <div>
-                        <h4 className="text-white text-sm font-medium mb-4">Company</h4>
+                        <h4 className="text-white text-sm font-medium mb-4">Empresa</h4>
                         <ul className="space-y-2">
                             <li>
                                 <Link href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
-                                    Documentation
+                                    Documentación
                                 </Link>
                             </li>
                             <li>
                                 <Link href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
-                                    Contact
+                                    Contacto
                                 </Link>
                             </li>
                             <li>
                                 <Link href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
-                                    Privacy
+                                    Privacidad
                                 </Link>
                             </li>
                         </ul>
@@ -66,7 +66,7 @@ export default function Footer() {
                 </div>
 
                 <div className="mt-12 pt-8 border-t border-white/10 text-gray-600 text-sm">
-                    <p>&copy; {new Date().getFullYear()} InventrAI. All rights reserved.</p>
+                    <p>&copy; {new Date().getFullYear()} Inventra Factura. Todos los derechos reservados.</p>
                 </div>
             </div>
         </footer>

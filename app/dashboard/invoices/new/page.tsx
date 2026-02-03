@@ -1,11 +1,13 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/components/ui/card"
 import { Button } from "@/app/components/ui/button"
 import { Input } from "@/app/components/ui/input"
 import { Label } from "@/app/components/ui/label"
-import { Plus, Trash2 } from "lucide-react"
+import Link from "next/link"
+import { Plus, Trash2, Loader2 } from "lucide-react"
 
 interface LineItem {
   id: string
@@ -16,6 +18,9 @@ interface LineItem {
 }
 
 export default function NewInvoicePage() {
+  const router = useRouter()
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     clientName: "",
     clientEmail: "",
@@ -77,16 +82,39 @@ export default function NewInvoicePage() {
   const tax = subtotal * 0.16
   const total = subtotal + tax
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    console.log({
-      ...formData,
-      items,
-      subtotal,
-      tax,
-      total,
-    })
-    alert("Factura creada exitosamente!")
+    setError(null)
+    setSaving(true)
+    try {
+      const res = await fetch("/api/invoices", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientName: formData.clientName,
+          clientEmail: formData.clientEmail,
+          clientPhone: formData.clientPhone || undefined,
+          platform: formData.platform,
+          invoiceNumber: formData.invoiceNumber,
+          invoiceDate: formData.invoiceDate || undefined,
+          items: items.map(({ description, quantity, unitPrice, total }) => ({
+            description,
+            quantity,
+            unitPrice,
+            total,
+          })),
+        }),
+      })
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}))
+        throw new Error(data.error || "Error al crear la factura")
+      }
+      router.push("/dashboard/invoices")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Error al crear la factura")
+    } finally {
+      setSaving(false)
+    }
   }
 
   return (
@@ -136,7 +164,6 @@ export default function NewInvoicePage() {
                   value={formData.clientPhone}
                   onChange={handleInputChange}
                   placeholder="+1 234 567 8900"
-                  required
                 />
               </div>
               <div>
@@ -293,14 +320,29 @@ export default function NewInvoicePage() {
           </CardContent>
         </Card>
 
-        {/* Botones */}
+        {error && (
+          <p className="text-red-400 text-sm">{error}</p>
+        )}
         <div className="flex gap-4">
-          <Button type="submit" className="w-full md:w-auto bg-white text-black hover:bg-gray-200">
-            Crear Factura
+          <Button
+            type="submit"
+            className="w-full md:w-auto bg-white text-black hover:bg-gray-200"
+            disabled={saving}
+          >
+            {saving ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              Guardando...
+            </>
+          ) : (
+            "Crear Factura"
+          )}
           </Button>
-          <Button type="button" variant="outline" className="w-full md:w-auto border-white/20 text-white hover:bg-white/10">
-            Cancelar
-          </Button>
+          <Link href="/dashboard/invoices">
+            <Button type="button" variant="outline" className="w-full md:w-auto border-white/20 text-white hover:bg-white/10">
+              Cancelar
+            </Button>
+          </Link>
         </div>
       </form>
     </div>
