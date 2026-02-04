@@ -30,17 +30,16 @@ export default function InvoicesPage() {
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
 
-  const fetchInvoices = () => {
-    setLoading(true)
-    fetch("/api/invoices")
-      .then((res) => (res.ok ? res.json() : []))
-      .then((data) => setInvoices(Array.isArray(data) ? data : []))
-      .catch(() => setInvoices([]))
-      .finally(() => setLoading(false))
-  }
-
   useEffect(() => {
-    fetchInvoices()
+    setLoading(true)
+    try {
+      const stored = localStorage.getItem("invoices")
+      setInvoices(stored ? JSON.parse(stored) : [])
+    } catch {
+      setInvoices([])
+    } finally {
+      setLoading(false)
+    }
   }, [])
 
   const getStatusColor = (status: string) => {
@@ -78,11 +77,11 @@ export default function InvoicesPage() {
 
   const handleDelete = (id: string) => {
     if (!window.confirm("¿Estás seguro de que deseas eliminar esta factura?")) return
-    fetch(`/api/invoices/${id}`, { method: "DELETE" })
-      .then((res) => {
-        if (res.ok) setInvoices((prev) => prev.filter((inv) => inv.id !== id))
-      })
-      .catch(() => {})
+    setInvoices((prev) => {
+      const updated = prev.filter((inv) => inv.id !== id)
+      localStorage.setItem("invoices", JSON.stringify(updated))
+      return updated
+    })
   }
 
   return (

@@ -45,14 +45,16 @@ export default function InvoiceDetailPage() {
 
   useEffect(() => {
     if (!id) return
-    fetch(`/api/invoices/${id}`)
-      .then((res) => {
-        if (!res.ok) throw new Error("No encontrada")
-        return res.json()
-      })
-      .then(setInvoice)
-      .catch(() => setInvoice(null))
-      .finally(() => setLoading(false))
+    try {
+      const stored = localStorage.getItem("invoices")
+      const invoices = stored ? JSON.parse(stored) : []
+      const found = invoices.find((inv: any) => inv.id === id)
+      setInvoice(found || null)
+    } catch {
+      setInvoice(null)
+    } finally {
+      setLoading(false)
+    }
   }, [id])
 
   if (loading) {

@@ -87,28 +87,47 @@ export default function NewInvoicePage() {
     setError(null)
     setSaving(true)
     try {
-      const res = await fetch("/api/invoices", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          clientName: formData.clientName,
-          clientEmail: formData.clientEmail,
-          clientPhone: formData.clientPhone || undefined,
-          platform: formData.platform,
-          invoiceNumber: formData.invoiceNumber,
-          invoiceDate: formData.invoiceDate || undefined,
-          items: items.map(({ description, quantity, unitPrice, total }) => ({
-            description,
-            quantity,
-            unitPrice,
-            total,
-          })),
-        }),
-      })
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}))
-        throw new Error(data.error || "Error al crear la factura")
+      if (!formData.clientName || !formData.clientEmail || !items.length) {
+        throw new Error("Faltan campos requeridos")
       }
+
+      const subtotal = items.reduce((sum, item) => sum + item.total, 0)
+      const taxAmount = subtotal * 0.16
+      const total = subtotal + taxAmount
+
+      const newInvoice = {
+        id: Date.now().toString(),
+        invoiceNumber: formData.invoiceNumber,
+        clientName: formData.clientName,
+        clientEmail: formData.clientEmail,
+        clientPhone: formData.clientPhone || null,
+        platform: formData.platform,
+        status: "draft" as const,
+        subtotal,
+        taxAmount,
+        total,
+        createdAt: new Date().toISOString().split("T")[0],
+        dueDate: formData.invoiceDate || null,
+        notes: null,
+        client: {
+          name: formData.clientName,
+          email: formData.clientEmail,
+          phone: formData.clientPhone || null,
+        },
+        lineItems: items.map(({ description, quantity, unitPrice, total }) => ({
+          id: Date.now().toString() + Math.random(),
+          description,
+          quantity,
+          unitPrice,
+          total,
+        })),
+      }
+
+      const existing = localStorage.getItem("invoices")
+      const invoices = existing ? JSON.parse(existing) : []
+      invoices.push(newInvoice)
+      localStorage.setItem("invoices", JSON.stringify(invoices))
+
       router.push("/dashboard/invoices")
     } catch (err) {
       setError(err instanceof Error ? err.message : "Error al crear la factura")
