@@ -7,7 +7,6 @@ import {
 } from "@clerk/nextjs";
 import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
-import Image from "next/image";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -39,13 +38,12 @@ export default function RootLayout({
           <header className="flex justify-between items-center p-4 gap-4 h-16 border-b border-white/20">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2">
-              <Image
+              <img
                 src="/inventralogo.png"
                 alt="Inventra Factura"
                 width={32}
                 height={32}
                 className="h-8 w-auto"
-                priority
               />
               <span className="text-white font-semibold hidden sm:inline">
                 Inventra Factura

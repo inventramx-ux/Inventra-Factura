@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import Image from "next/image"
+// removed next/image to use plain <img>
 import { usePathname } from "next/navigation"
 import { FileText, Home, Plus, Settings } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -44,7 +44,7 @@ export function Sidebar() {
     <SidebarRoot>
       <SidebarHeader>
         <Link href="/dashboard" className="flex items-center gap-3">
-          <Image
+          <img
             src="/inventralogo.png"
             alt="Inventra Factura"
             width={32}

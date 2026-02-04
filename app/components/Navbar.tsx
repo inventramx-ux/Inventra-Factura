@@ -1,7 +1,6 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { Menu, X } from 'lucide-react';
 import { useState } from 'react';
@@ -15,15 +14,14 @@ export default function Navbar() {
                 <div className="flex items-center justify-between h-16">
                     {/* Logo */}
                     <Link href="/" className="flex items-center gap-2">
-                        <Image
+                        <img
                             src="/inventralogo.png"
                             alt="Inventra Factura"
                             width={32}
                             height={32}
                             className="h-8 w-auto"
-                            priority
                         />
-                        <span className="text-white font-semibold hidden sm:inline">Inventra Factura</span>
+                        <span className="text-white font-semibold hidden sm:inline"></span>
                     </Link>
 
                     {/* Center Navigation - Características & Planes */}

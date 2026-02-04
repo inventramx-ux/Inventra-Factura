@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
+// removed next/image to use plain <img>
 
 export default function Footer() {
     return (
@@ -8,7 +8,7 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* Brand */}
                     <div className="col-span-1 md:col-span-2">
-                        <Image
+                        <img
                             src="/inventralogo.png"
                             alt="Inventra Factura"
                             width={120}

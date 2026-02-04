@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, Check, Brain } from 'lucide-react';
+import { ArrowRight, Check, Brain, HeartHandshakeIcon } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
@@ -73,13 +73,13 @@ export default function Home() {
     <div className="bg-black min-h-screen">
       <Navbar />
 
-      {/* Hero Section */}
+    
       <section className="pt-32 pb-20 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="animate-fade-in-up">
             <p className="bg-white/10 px-4 py-2 rounded-full w-fit flex items-center gap-2 border border-white/10 text-sm text-gray-300 mb-8">
-              <Brain size={14} />
-              Powered by AI
+              <HeartHandshakeIcon size={14} />
+              Usado por mas de 5,000 negocios en todo el mundo
             </p>
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 leading-tight tracking-tight">
