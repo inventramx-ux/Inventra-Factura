@@ -16,6 +16,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Inventra Factura",
   description: "Sistema de facturación moderno para tu negocio",
+  icons: {
+    icon: ['/favicon.ico'],
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -26,8 +31,14 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="es">
+        <head>
+          <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+          <link rel="shortcut icon" href="/favicon.ico" />
+          <link rel="apple-touch-icon" href="/favicon.ico" />
+        </head>
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black`}>
           {children}
+          <Analytics />
         </body>
       </html>
     </ClerkProvider>
