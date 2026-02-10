@@ -1,4 +1,6 @@
-import { SignIn } from "@clerk/nextjs";
+"use client";
+
+import { SignIn, RedirectToSignIn } from "@clerk/nextjs";
 import Link from "next/link";
 
 export default function SignInPage() {
@@ -22,8 +24,3 @@ export default function SignInPage() {
     </div>
   );
 }
-
-"use client";
-
-import { RedirectToSignIn } from "@clerk/nextjs";
-              "bg-white/10 border border-white/20 text-white hover:bg-white/20",
