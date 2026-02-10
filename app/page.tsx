@@ -233,7 +233,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 mr-32">
               <a
                 href="https://www.instagram.com/inventramx/"
                 target="_blank"
