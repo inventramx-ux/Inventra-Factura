@@ -10,7 +10,9 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.37.1",
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "@paypal/paypal-server-sdk": "^1.0.0",
+    "@paypal/react-paypal-js": "^8.9.2",
     "@vercel/analytics": "^1.6.1",
     "body-parser": "^2.2.2",
     "dotenv": "^17.2.3",
