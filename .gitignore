@@ -43,3 +43,6 @@ next-env.d.ts
 # prisma local db (do not commit)
 prisma/prisma/*.db
 prisma/prisma/*.db-journal
+
+# clerk configuration (can include secrets)
+/.clerk/

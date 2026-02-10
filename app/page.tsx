@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X } from 'lucide-react';
+import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram } from 'lucide-react';
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
 
 
@@ -69,7 +69,7 @@ const plans = [
 
 export default function Home() {
   return (
-    <div className="bg-black min-h-screen">
+    <div className="min-h-screen">
       {/* Inlined Navbar (previously in app/components/Navbar.tsx) */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#080808] backdrop-blur-lg border-b border-white/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -77,7 +77,7 @@ export default function Home() {
         </div>
       </nav>
 
-    
+
       <section className="pt-32 pb-20 px-4">
         <div className="max-w-4xl mx-auto">
           <div className="animate-fade-in-up">
@@ -104,8 +104,8 @@ export default function Home() {
                   Comenzar ahora
                 </a>
               </SignUpButton>
-                <Link href="#features" className="border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-1">
-               Más información <ArrowRight size={14} />
+              <Link href="#features" className="border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-1">
+                Más información <ArrowRight size={14} />
               </Link>
             </div>
           </div>
@@ -205,65 +205,31 @@ export default function Home() {
       {/* Inlined Footer (previously in app/components/Footer.tsx) */}
       <footer className="border-t border-white/10 py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
+            <div className="flex flex-col md:flex-row items-center gap-4 md:gap-8">
               <img
                 src="/inventralogo.png"
                 alt="Inventra Factura"
                 width={120}
                 height={28}
-                className="h-6 w-auto mb-4"
+                className="h-6 w-auto opacity-80"
               />
-              <p className="text-gray-500 text-sm max-w-sm">
-                Sistema de facturación moderno para tu negocio. Crea facturas profesionales, gestiona clientes y pagos en un solo lugar.
+              <p className="text-gray-500 text-sm">
+                &copy; {new Date().getFullYear()} Inventra Factura.
               </p>
             </div>
 
-            <div>
-              <h4 className="text-white text-sm font-medium mb-4">Producto</h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="/#features" className="text-gray-500 text-sm hover:text-white transition-colors">
-                    Características
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/#pricing" className="text-gray-500 text-sm hover:text-white transition-colors">
-                    Planes
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/dashboard" className="text-gray-500 text-sm hover:text-white transition-colors">
-                    Dashboard
-                  </Link>
-                </li>
-              </ul>
+            <div className="flex items-center gap-4">
+              <a
+                href="https://www.instagram.com/inventramx/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full"
+                aria-label="Instagram"
+              >
+                <Instagram size={20} />
+              </a>
             </div>
-
-            <div>
-              <h4 className="text-white text-sm font-medium mb-4">Empresa</h4>
-              <ul className="space-y-2">
-                <li>
-                  <Link href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
-                    Documentación
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
-                    Contacto
-                  </Link>
-                </li>
-                <li>
-                  <Link href="#" className="text-gray-500 text-sm hover:text-white transition-colors">
-                    Privacidad
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-white/10 text-gray-600 text-sm">
-            <p>&copy; {new Date().getFullYear()} Inventra Factura. Todos los derechos reservados.</p>
           </div>
         </div>
       </footer>

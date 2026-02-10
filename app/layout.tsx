@@ -36,7 +36,7 @@ export default function RootLayout({
           <link rel="shortcut icon" href="/favicon.ico" />
           <link rel="apple-touch-icon" href="/favicon.ico" />
         </head>
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black`}>
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
           {children}
           <Analytics />
         </body>
