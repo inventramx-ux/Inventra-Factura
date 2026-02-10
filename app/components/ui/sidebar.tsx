@@ -76,6 +76,26 @@ const SidebarMenu = React.forwardRef<
 ))
 SidebarMenu.displayName = "SidebarMenu"
 
+const SidebarGroup = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div ref={ref} className={cn("mb-4", className)} {...props} />
+))
+SidebarGroup.displayName = "SidebarGroup"
+
+const SidebarGroupLabel = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div 
+    ref={ref} 
+    className={cn("px-4 py-2 text-xs font-medium text-gray-500 uppercase tracking-wider", className)} 
+    {...props} 
+  />
+))
+SidebarGroupLabel.displayName = "SidebarGroupLabel"
+
 const SidebarMenuItem = React.forwardRef<
   HTMLLIElement,
   React.HTMLAttributes<HTMLLIElement>
@@ -108,5 +128,7 @@ export {
   SidebarFooter,
   SidebarMenu,
   SidebarMenuItem,
+  SidebarGroup,
+  SidebarGroupLabel,
   SidebarMenuButton,
 }

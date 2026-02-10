@@ -1,5 +1,20 @@
 import paypal from '@paypal/checkout-server-sdk';
-import 'dotenv/config';
+import fs from 'fs';
+import path from 'path';
+
+// Manual env parsing
+const envPath = path.resolve(process.cwd(), '.env.local');
+if (fs.existsSync(envPath)) {
+    const envConfig = fs.readFileSync(envPath, 'utf8');
+    envConfig.split('\n').forEach(line => {
+        const [key, value] = line.split('=');
+        if (key && value) {
+            process.env[key.trim()] = value.trim();
+        }
+    });
+} else {
+    console.warn(".env.local not found at", envPath);
+}
 
 // Initialize environment
 const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
@@ -7,6 +22,7 @@ const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
 if (!clientId || !clientSecret) {
     console.error("Missing PAYPAL_CLIENT_ID or PAYPAL_CLIENT_SECRET in .env.local");
+    console.log("Loaded keys:", Object.keys(process.env).filter(k => k.includes('PAYPAL')));
     process.exit(1);
 }
 

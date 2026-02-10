@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram } from 'lucide-react';
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
-
+import ChatBot from '@/components/ChatBot';
 
 const features = [
   {
@@ -17,7 +17,7 @@ const features = [
     description: 'Mantén un registro completo de todos tus clientes y sus historiales de compra.',
   },
   {
-    title: 'Reportes en Tiempo Real',
+    title: 'Reportes en Tiempo Real', 
     description: 'Accede a reportes detallados de ventas y facturas actualizados constantemente.',
   },
   {
@@ -30,7 +30,7 @@ const features = [
   },
   {
     title: 'Plantillas Personalizables',
-    description: 'Personaliza tus facturas con tu logo, colores y términos de pago específicos.',
+    description: 'Personaliza tus facturas con tu logo, colores y términos de pago específicos.',               
   },
 ];
 
@@ -99,11 +99,18 @@ export default function Home() {
             </p>
 
             <div className="flex items-center gap-6">
-              <SignUpButton>
-                <a className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
-                  Comenzar ahora
-                </a>
-              </SignUpButton>
+              <SignedIn>
+                <Link href="/dashboard" className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
+                  Ir al Dashboard
+                </Link>
+              </SignedIn>
+              <SignedOut>
+                <SignUpButton>
+                  <a className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
+                    Comenzar gratis
+                  </a>
+                </SignUpButton>
+              </SignedOut>
               <Link href="#features" className="border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-1">
                 Más información <ArrowRight size={14} />
               </Link>
@@ -172,7 +179,7 @@ export default function Home() {
                 </ul>
 
                 <Link
-                  href={plan.highlighted ? '/sign-up' : '#'}
+                  href={plan.highlighted ? '/sign-up' : '/checkout'}
                   className={`block text-center py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${plan.highlighted
                     ? 'bg-white text-black hover:bg-gray-200'
                     : 'bg-white/10 text-white hover:bg-white/20'
@@ -195,9 +202,16 @@ export default function Home() {
           <p className="text-gray-400 mb-8">
             Únete a miles de negocios que usan Inventra Factura para gestionar sus facturas.
           </p>
-          <Link href="/sign-up" className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
-            Comenzar gratis
-          </Link>
+          <SignedIn>
+            <Link href="/dashboard" className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
+              Ir al Dashboard
+            </Link>
+          </SignedIn>
+          <SignedOut>
+            <Link href="/sign-up" className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
+              Comenzar gratis
+            </Link>
+          </SignedOut>
           <p className="text-xs text-gray-600 mt-4">No se requiere tarjeta de crédito</p>
         </div>
       </section>
@@ -233,6 +247,9 @@ export default function Home() {
           </div>
         </div>
       </footer>
+
+      {/* ChatBot Component */}
+      <ChatBot />
     </div>
   );
 }
@@ -269,10 +286,10 @@ function InlineNavbar() {
         <div className="hidden md:flex items-center gap-4">
           <SignedOut>
             <SignInButton>
-              <a className="text-slate-300 hover:text-white transition-colors">Iniciar Sesión</a>
+              <a className="text-slate-300 hover:text-white">Iniciar Sesión</a>
             </SignInButton>
             <SignUpButton>
-              <a className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm">Registrarse</a>
+              <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm !transition-none !duration-0">Registrarse</a>
             </SignUpButton>
           </SignedOut>
           <SignedIn>
@@ -299,10 +316,10 @@ function InlineNavbar() {
             </Link>
             <SignedOut>
               <SignInButton>
-                <a className="text-slate-300 hover:text-white transition-colors">Iniciar Sesión</a>
+                <a className="text-slate-300 hover:text-white">Iniciar Sesión</a>
               </SignInButton>
               <SignUpButton>
-                <a className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm text-center">Registrarse</a>
+                <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm text-center !transition-none !duration-0">Registrarse</a>
               </SignUpButton>
             </SignedOut>
             <SignedIn>
