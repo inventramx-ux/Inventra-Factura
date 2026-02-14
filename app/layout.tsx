@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
 import { InvoiceProvider } from "./contexts/InvoiceContext"
+import { ClientProvider } from "./contexts/ClientContext"
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -31,19 +32,21 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <InvoiceProvider>
-        <html lang="es">
-          <head>
-            <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-            <link rel="shortcut icon" href="/favicon.ico" />
-            <link rel="apple-touch-icon" href="/favicon.ico" />
-          </head>
-          <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-            {children}
-            <Analytics />
-          </body>
-        </html>
-      </InvoiceProvider>
+      <ClientProvider>
+        <InvoiceProvider>
+          <html lang="es">
+            <head>
+              <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+              <link rel="shortcut icon" href="/favicon.ico" />
+              <link rel="apple-touch-icon" href="/favicon.ico" />
+            </head>
+            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+              {children}
+              <Analytics />
+            </body>
+          </html>
+        </InvoiceProvider>
+      </ClientProvider>
     </ClerkProvider>
   );
 }
