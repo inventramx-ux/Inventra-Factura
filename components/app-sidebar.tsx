@@ -92,19 +92,13 @@ export function AppSidebar() {
 
     return (
         <Sidebar collapsible="icon" variant="sidebar" className="border-r border-white/10 bg-zinc-950">
-            <SidebarHeader className="border-b border-white/5 pb-4 pt-2">
+            <SidebarHeader className="border-b border-white/5 pr-4 py-3">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="hover:bg-transparent">
-                            <Link href="/dashboard">
-                                <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-white">
-                                    <img src="/inventralogo.png" alt="Inventra" className="size-8 object-contain" />
-                                </div>
-                                <div className="grid flex-1 text-left text-sm leading-tight">
-                                    <span className="truncate font-semibold text-white">Inventra</span>
-                                    <span className="truncate text-xs text-gray-400">
-                                        {isPro ? "Pro" : "Gratuito"}
-                                    </span>
+                        <SidebarMenuButton size="lg" asChild className="hover:bg-transparent w-full justify-center">
+                            <Link href="/">
+                                <div className="flex items-center justify-center">
+                                    <img src="/inventralogo.png" alt="Inventra" className="h-8 w-auto object-contain" />
                                 </div>
                             </Link>
                         </SidebarMenuButton>

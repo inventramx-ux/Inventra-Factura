@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram } from 'lucide-react';
+import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X } from 'lucide-react';
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
 import ChatBot from '@/components/ChatBot';
 
@@ -232,18 +232,6 @@ export default function Home() {
                 &copy; {new Date().getFullYear()} Inventra Factura.
               </p>
             </div>
-
-            <div className="flex items-center gap-4">
-              <a
-                href="https://www.instagram.com/inventramx/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-white transition-colors p-2 hover:bg-white/5 rounded-full"
-                aria-label="Instagram"
-              >
-                <Instagram size={20} />
-              </a>
-            </div>
           </div>
         </div>
       </footer>
@@ -281,6 +269,14 @@ function InlineNavbar() {
           <Link href="/#pricing" className="text-slate-300 hover:text-white transition-colors">
             Planes
           </Link>
+          <a
+            href="https://www.instagram.com/inventramx/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-slate-300 hover:text-white transition-colors"
+          >
+            Instagram
+          </a>
         </div>
 
         <div className="hidden md:flex items-center gap-4">
