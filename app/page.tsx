@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X } from 'lucide-react';
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
-import ChatBot from '@/components/ChatBot';
 
 const features = [
   {
@@ -236,8 +235,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* ChatBot Component */}
-      <ChatBot />
+    
     </div>
   );
 }
