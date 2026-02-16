@@ -1,5 +1,6 @@
 "use client"
 
+import React from "react"
 import { useInvoice } from "@/app/contexts/InvoiceContext"
 import { useSubscription } from "@/app/contexts/SubscriptionContext"
 import { useUser } from "@clerk/nextjs"
@@ -13,7 +14,14 @@ import Link from "next/link"
 export default function DashboardPage() {
     const { user } = useUser()
     const { invoices, loading, totalInvoices, totalRevenue, uniqueClients } = useInvoice()
-    const { isPro, invoicesLimit, clientsLimit } = useSubscription()
+    const { isPro, invoicesLimit, clientsLimit, refreshSubscription } = useSubscription()
+
+    // Refresh subscription status when dashboard loads
+    React.useEffect(() => {
+        if (user) {
+            refreshSubscription()
+        }
+    }, [user, refreshSubscription])
 
     const statusColors: Record<string, string> = {
         paid: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",

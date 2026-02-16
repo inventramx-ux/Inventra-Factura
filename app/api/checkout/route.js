@@ -1,7 +1,15 @@
 import paypal from "@paypal/checkout-server-sdk";
+import dotenv from "dotenv";
 
-const clientID = process.env.PAYPAL_CLIENT_ID || "AbRMwcea-gsUfQJlbJlw0snA3Y_dxNDuZ6oQL3odx7bH6ozFPULZ9iSXXdxpMiemd-pmZuMAe6cWpOw0";
-const clientSecret = process.env.PAYPAL_CLIENT_SECRET || "EFPaGXnuEqFgKc-sFBLf1EAi4i2sJsDuzGyW0nkwHpVuxOUTho_IBktohrZghHwjr6Djyt860gpJgOU9";
+dotenv.config({ path: '.env.local' });
+
+const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+if (!clientID || !clientSecret) {
+  console.error("Missing PayPal credentials in environment variables");
+  throw new Error("PayPal credentials not configured");
+}
 
 const environment = new paypal.core.SandboxEnvironment(clientID, clientSecret);
 const client = new paypal.core.PayPalHttpClient(environment);
@@ -9,6 +17,10 @@ const client = new paypal.core.PayPalHttpClient(environment);
 export async function POST(request) {
   try {
     const { plan, price } = await request.json();
+    
+    console.log("Creating PayPal order with:", { plan, price });
+    console.log("PayPal Client ID:", clientID ? "Set" : "Missing");
+    console.log("PayPal Client Secret:", clientSecret ? "Set" : "Missing");
 
     const requestPaypal = new paypal.orders.OrdersCreateRequest();
     requestPaypal.requestBody({
@@ -24,7 +36,9 @@ export async function POST(request) {
       ],
     });
 
+    console.log("Sending PayPal request...");
     const response = await client.execute(requestPaypal);
+    console.log("PayPal response:", response.result);
     
     return Response.json({ 
       orderID: response.result.id,
@@ -32,8 +46,17 @@ export async function POST(request) {
     });
   } catch (error) {
     console.error("PayPal order creation error:", error);
+    console.error("Error details:", {
+      message: error.message,
+      stack: error.stack,
+      statusCode: error.statusCode,
+      details: error.details
+    });
     return Response.json(
-      { error: "Failed to create PayPal order" },
+      { 
+        error: "Failed to create PayPal order",
+        details: error.message 
+      },
       { status: 500 }
     );
   }

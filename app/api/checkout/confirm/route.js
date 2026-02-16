@@ -1,8 +1,16 @@
 import paypal from "@paypal/checkout-server-sdk";
 import { clerkClient } from "@clerk/nextjs/server";
+import dotenv from "dotenv";
 
-const clientID = process.env.PAYPAL_CLIENT_ID || "AbRMwcea-gsUfQJlbJlw0snA3Y_dxNDuZ6oQL3odx7bH6ozFPULZ9iSXXdxpMiemd-pmZuMAe6cWpOw0";
-const clientSecret = process.env.PAYPAL_CLIENT_SECRET || "EFPaGXnuEqFgKc-sFBLf1EAi4i2sJsDuzGyW0nkwHpVuxOUTho_IBktohrZghHwjr6Djyt860gpJgOU9";
+dotenv.config({ path: '.env.local' });
+
+const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+
+if (!clientID || !clientSecret) {
+  console.error("Missing PayPal credentials in environment variables");
+  throw new Error("PayPal credentials not configured");
+}
 
 const environment = new paypal.core.SandboxEnvironment(clientID, clientSecret);
 const client = new paypal.core.PayPalHttpClient(environment);

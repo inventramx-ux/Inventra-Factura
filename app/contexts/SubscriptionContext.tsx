@@ -7,6 +7,7 @@ interface SubscriptionContextType {
   isPro: boolean
   isLoading: boolean
   upgradeToPro: () => Promise<void>
+  refreshSubscription: () => Promise<void>
   invoicesLimit: number
   clientsLimit: number
   totalInvoices: number
@@ -52,6 +53,20 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     checkSubscription()
   }, [user, userLoaded])
 
+  // Function to refresh user data from Clerk
+  const refreshSubscription = async () => {
+    if (!user) return
+    
+    try {
+      // Force Clerk to reload user data
+      await user.reload()
+      const subscriptionStatus = user.publicMetadata?.subscriptionStatus
+      setIsPro(subscriptionStatus === "pro")
+    } catch (error) {
+      console.error("Error refreshing subscription:", error)
+    }
+  }
+
   const upgradeToPro = async () => {
     // This will be called after successful PayPal payment
     window.location.href = "/checkout"
@@ -61,6 +76,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     isPro,
     isLoading,
     upgradeToPro,
+    refreshSubscription,
     invoicesLimit: isPro ? Infinity : 10,
     clientsLimit: isPro ? Infinity : 5,
     totalInvoices: 0, // This would be calculated from your actual invoices data
