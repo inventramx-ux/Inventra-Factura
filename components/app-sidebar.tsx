@@ -59,22 +59,22 @@ const freeItems = [
 
 const proItems = [
     {
-        title: "E-commerce",
-        url: "/dashboard/ecommerce",
+        title: "Dashboard Pro",
+        url: "/dashboard/dashboardPRO",
         icon: ShoppingBag,
     },
     {
-        title: "Reportes Avanzados",
-        url: "/dashboard/revenue",
+        title: "Facturas Pro",
+        url: "/dashboard/facturasPRO",
         icon: BarChart3,
     },
     {
-        title: "Plantillas",
+        title: "Clientes Pro",
         url: "/dashboard/templates",
         icon: Palette,
     },
     {
-        title: "Recordatorios",
+        title: "Configuración Pro",
         url: "/dashboard/reminders",
         icon: Bell,
     },

@@ -58,6 +58,7 @@ export default function InvoicesPage() {
         description: "",
 
         quantity: 1,
+
         unitPrice: 0,
         paymentMethod: "transferencia",
         notes: "",
@@ -108,7 +109,6 @@ export default function InvoicesPage() {
                     total,
                     paymentMethod: formData.paymentMethod,
                     notes: formData.notes,
-                    companyLogo: formData.companyLogo,
                 })
             } else {
                 await createInvoice({
@@ -133,35 +133,19 @@ export default function InvoicesPage() {
                     dueDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
                     paymentMethod: formData.paymentMethod,
                     notes: formData.notes,
-                    companyLogo: formData.companyLogo,
                 })
             }
 
-
-
-            setShowForm(false)
-            setEditingInvoice(null)
-
             setFormData({
-
                 invoiceNumber: `INV-${Date.now().toString().slice(-6)}`,
-
                 clientName: "",
-
                 clientEmail: "",
-
                 clientPhone: "",
-
                 clientAddress: "",
-
                 platform: "custom",
-
                 description: "",
-
                 quantity: 1,
-
                 unitPrice: 0,
-
                 paymentMethod: "transferencia",
                 notes: "",
                 companyLogo: "",

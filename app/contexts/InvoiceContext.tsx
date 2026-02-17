@@ -27,6 +27,7 @@ interface Invoice {
   dueDate: string
   paymentMethod: string
   notes: string
+  companyLogo?: string
 }
 
 interface InvoiceContextType {
@@ -110,7 +111,7 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
       const updatedInvoices = [newInvoice, ...invoices]
       setInvoices(updatedInvoices)
       saveInvoicesToStorage(updatedInvoices)
-      
+
       return newInvoice
     } catch (error) {
       console.error("Error creating invoice:", error)
@@ -128,10 +129,10 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
       const updatedInvoice = { ...invoices[invoiceIndex], ...data }
       const updatedInvoices = [...invoices]
       updatedInvoices[invoiceIndex] = updatedInvoice
-      
+
       setInvoices(updatedInvoices)
       saveInvoicesToStorage(updatedInvoices)
-      
+
       return updatedInvoice
     } catch (error) {
       console.error("Error updating invoice:", error)
