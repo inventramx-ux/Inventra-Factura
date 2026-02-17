@@ -127,7 +127,10 @@ export default function EcommercePage() {
     }
 
     return (
-        <ProGate>
+        <ProGate
+            featureName="Integraciones E-commerce"
+            featureDescription="Automatiza tu facturación conectando tus tiendas de Mercado Libre, Amazon y eBay."
+        >
             <div className="space-y-6">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight text-white">Integraciones</h1>

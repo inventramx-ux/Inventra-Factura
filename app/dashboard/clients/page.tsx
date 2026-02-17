@@ -44,7 +44,7 @@ export default function ClientsPage() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                     <h1 className="text-2xl font-semibold text-white">Clientes</h1>
                     <p className="text-gray-400 mt-1">
@@ -55,7 +55,7 @@ export default function ClientsPage() {
                 </div>
                 <Button
                     onClick={() => setShowAddForm(true)}
-                    className="bg-white text-black hover:bg-gray-200 font-medium gap-2"
+                    className="bg-white text-black hover:bg-gray-200 font-medium gap-2 w-full sm:w-auto"
                 >
                     <Plus className="h-4 w-4" />
                     Agregar Cliente
@@ -170,76 +170,78 @@ export default function ClientsPage() {
                             </Button>
                         </div>
                     ) : (
-                        <Table>
-                            <TableHeader>
-                                <TableRow className="border-white/10 hover:bg-transparent">
-                                    <TableHead className="text-gray-400">Cliente</TableHead>
-                                    <TableHead className="text-gray-400">Contacto</TableHead>
-                                    <TableHead className="text-gray-400">Registrado</TableHead>
-                                    <TableHead className="text-gray-400">Acciones</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {clients.map((client) => (
-                                    <TableRow key={client.id} className="border-white/10 hover:bg-white/5">
-                                        <TableCell>
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold">
-                                                    {client.name.charAt(0).toUpperCase()}
+                        <div className="overflow-x-auto -mx-6 px-6">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="border-white/10 hover:bg-transparent">
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Cliente</TableHead>
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Contacto</TableHead>
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Registrado</TableHead>
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Acciones</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {clients.map((client) => (
+                                        <TableRow key={client.id} className="border-white/10 hover:bg-white/5">
+                                            <TableCell className="whitespace-nowrap">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-9 h-9 flex-shrink-0 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold">
+                                                        {client.name.charAt(0).toUpperCase()}
+                                                    </div>
+                                                    <div>
+                                                        <div className="text-white font-medium">{client.name}</div>
+                                                        {client.address && (
+                                                            <div className="text-gray-500 text-xs flex items-center gap-1">
+                                                                <MapPin className="h-3 w-3" />
+                                                                {client.address}
+                                                            </div>
+                                                        )}
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <div className="text-white font-medium">{client.name}</div>
-                                                    {client.address && (
-                                                        <div className="text-gray-500 text-xs flex items-center gap-1">
-                                                            <MapPin className="h-3 w-3" />
-                                                            {client.address}
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap">
+                                                <div className="space-y-1">
+                                                    {client.email && (
+                                                        <div className="text-gray-300 text-sm flex items-center gap-1">
+                                                            <Mail className="h-3 w-3 text-gray-500" />
+                                                            {client.email}
+                                                        </div>
+                                                    )}
+                                                    {client.phone && (
+                                                        <div className="text-gray-300 text-sm flex items-center gap-1">
+                                                            <Phone className="h-3 w-3 text-gray-500" />
+                                                            {client.phone}
                                                         </div>
                                                     )}
                                                 </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="space-y-1">
-                                                {client.email && (
-                                                    <div className="text-gray-300 text-sm flex items-center gap-1">
-                                                        <Mail className="h-3 w-3 text-gray-500" />
-                                                        {client.email}
-                                                    </div>
-                                                )}
-                                                {client.phone && (
-                                                    <div className="text-gray-300 text-sm flex items-center gap-1">
-                                                        <Phone className="h-3 w-3 text-gray-500" />
-                                                        {client.phone}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-gray-400">
-                                            {new Date(client.createdAt).toLocaleDateString("es-MX")}
-                                        </TableCell>
-                                        <TableCell>
-                                            <div className="flex gap-2">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    className="text-gray-400 hover:text-white hover:bg-white/10"
-                                                >
-                                                    <Edit className="h-4 w-4" />
-                                                </Button>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="sm"
-                                                    onClick={() => handleDeleteClient(client.id)}
-                                                    className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
-                                                >
-                                                    <Trash2 className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
+                                            </TableCell>
+                                            <TableCell className="text-gray-400 whitespace-nowrap">
+                                                {new Date(client.createdAt).toLocaleDateString("es-MX")}
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap">
+                                                <div className="flex gap-2">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        className="text-gray-400 hover:text-white hover:bg-white/10"
+                                                    >
+                                                        <Edit className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => handleDeleteClient(client.id)}
+                                                        className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
                     )}
                 </CardContent>
             </Card>

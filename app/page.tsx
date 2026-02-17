@@ -35,7 +35,7 @@ const features = [
 
   {
 
-    title: 'Reportes en Tiempo Real', 
+    title: 'Reportes en Tiempo Real',
 
     description: 'Accede a reportes detallados de ventas y facturas actualizados constantemente.',
 
@@ -61,7 +61,7 @@ const features = [
 
     title: 'Plantillas Personalizables',
 
-    description: 'Personaliza tus facturas con tu logo, colores y términos de pago específicos.',               
+    description: 'Personaliza tus facturas con tu logo, colores y términos de pago específicos.',
 
   },
 
@@ -116,7 +116,7 @@ const plans = [
 
       'Clientes ilimitados',
 
-   
+
 
       'Soporte prioritario',
 
@@ -155,7 +155,7 @@ export default function Home() {
 
 
 
-      <section className="pt-32 pb-20 px-4">
+      <section className="pt-24 md:pt-32 pb-12 md:pb-20 px-4">
 
         <div className="max-w-4xl mx-auto">
 
@@ -183,11 +183,11 @@ export default function Home() {
 
 
 
-            <p className="text-lg text-gray-400 max-w-2xl mb-10">
+            <p className="text-base md:text-lg text-gray-400 max-w-2xl mb-8 md:mb-10">
 
               Sistema de facturación moderno para tu negocio.
 
-              <br />
+              <br className="hidden sm:block" />
 
               Gestiona clientes, facturas y pagos en un solo lugar.
 
@@ -195,11 +195,11 @@ export default function Home() {
 
 
 
-            <div className="flex items-center gap-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6">
 
               <SignedIn>
 
-                <Link href="/dashboard" className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
+                <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
 
                   Ir al Dashboard
 
@@ -211,7 +211,7 @@ export default function Home() {
 
                 <SignUpButton>
 
-                  <a className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
+                  <a className="w-full sm:w-auto justify-center bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
 
                     Comenzar gratis
 
@@ -221,7 +221,7 @@ export default function Home() {
 
               </SignedOut>
 
-              <Link href="#features" className="border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-1">
+              <Link href="#features" className="w-full sm:w-auto justify-center border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-1">
 
                 Más información <ArrowRight size={14} />
 
@@ -261,15 +261,15 @@ export default function Home() {
 
 
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
 
             {features.map((feature, index) => (
 
-              <div key={index} className="group">
+              <div key={index} className="group p-4 rounded-lg hover:bg-white/5 transition-colors border border-transparent hover:border-white/10">
 
                 <h3 className="text-white font-medium mb-2">{feature.title}</h3>
 
-                <p className="text-gray-500 text-sm">{feature.description}</p>
+                <p className="text-gray-500 text-sm leading-relaxed">{feature.description}</p>
 
               </div>
 
@@ -307,7 +307,7 @@ export default function Home() {
 
 
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-4xl mx-auto">
 
             {plans.map((plan, index) => (
 
@@ -315,37 +315,37 @@ export default function Home() {
 
                 key={index}
 
-                className={`p-6 rounded-xl border ${plan.highlighted ? 'border-white/30 bg-white/5' : 'border-white/10'}`}
+                className={`flex flex-col p-6 md:p-8 rounded-2xl border transition-all ${plan.highlighted ? 'border-white/30 bg-white/5 ring-1 ring-white/10 scale-100 md:scale-105' : 'border-white/10 bg-black/40'}`}
 
               >
 
                 <div className="mb-6">
 
-                  <h3 className="text-white font-medium mb-1">{plan.name}</h3>
+                  <h3 className="text-white font-semibold text-xl mb-1">{plan.name}</h3>
 
                   <div className="flex items-baseline gap-1">
 
-                    <span className="text-3xl font-medium text-white">{plan.price}</span>
+                    <span className="text-4xl font-bold text-white">{plan.price}</span>
 
                     <span className="text-gray-500 text-sm">{plan.period}</span>
 
                   </div>
 
-                  <p className="text-gray-500 text-sm mt-2">{plan.description}</p>
+                  <p className="text-gray-400 text-sm mt-3">{plan.description}</p>
 
                 </div>
 
 
 
-                <ul className="space-y-3 mb-6">
+                <ul className="space-y-4 mb-8 flex-1">
 
                   {plan.features.map((feature, i) => (
 
-                    <li key={i} className="flex items-center gap-2 text-gray-400 text-sm">
+                    <li key={i} className="flex items-start gap-3 text-gray-300 text-sm">
 
-                      <Check size={14} className="text-white flex-shrink-0" />
+                      <Check size={16} className="text-white mt-0.5 flex-shrink-0" />
 
-                      {feature}
+                      <span>{feature}</span>
 
                     </li>
 
@@ -359,9 +359,9 @@ export default function Home() {
 
                   href={plan.highlighted ? '/sign-up' : '/checkout'}
 
-                  className={`block text-center py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${plan.highlighted
+                  className={`block text-center py-3 px-6 rounded-xl font-semibold transition-all shadow-lg ${plan.highlighted
 
-                    ? 'bg-white text-black hover:bg-gray-200'
+                    ? 'bg-white text-black hover:bg-gray-100'
 
                     : 'bg-white/10 text-white hover:bg-white/20'
 
@@ -471,7 +471,7 @@ export default function Home() {
 
 
 
-    
+
 
     </div>
 

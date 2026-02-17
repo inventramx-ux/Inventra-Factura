@@ -157,9 +157,8 @@ const CheckoutPage = () => {
                 } catch (error) {
 
                   console.error("Create order error:", error);
-
-                  alert(`Error al crear la orden: ${error.message}`);
-
+                  const errorMessage = error instanceof Error ? error.message : "Desconocido";
+                  alert(`Error al crear la orden: ${errorMessage}`);
                   return null;
 
                 }

@@ -378,52 +378,29 @@ export default function InvoicesPage() {
 
         <div className="space-y-6">
 
-            <div className="flex items-center justify-between">
-
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-
                     <h1 className="text-2xl font-semibold text-white">Facturas</h1>
-
                     <p className="text-gray-400 mt-1">
-
                         {isPro
-
                             ? `${totalInvoices} facturas creadas`
-
                             : `${totalInvoices}/${invoicesLimit} facturas este mes`}
-
                     </p>
-
                 </div>
-
                 {canCreateInvoice ? (
-
                     <Button
-
                         onClick={() => setShowForm(true)}
-
-                        className="bg-white text-black hover:bg-gray-200 font-medium gap-2"
-
+                        className="bg-white text-black hover:bg-gray-200 font-medium gap-2 w-full sm:w-auto"
                     >
-
                         <Plus className="h-4 w-4" />
-
                         Nueva Factura
-
                     </Button>
-
                 ) : (
-
                     <div className="flex items-center gap-2 text-amber-400 text-sm">
-
                         <AlertCircle className="h-4 w-4" />
-
                         Límite alcanzado — Actualiza a Pro
-
                     </div>
-
                 )}
-
             </div>
 
 
@@ -788,153 +765,97 @@ export default function InvoicesPage() {
 
                     ) : (
 
-                        <Table>
-
-                            <TableHeader>
-
-                                <TableRow className="border-white/10 hover:bg-transparent">
-
-                                    <TableHead className="text-gray-400">Número</TableHead>
-
-                                    <TableHead className="text-gray-400">Cliente</TableHead>
-
-                                    <TableHead className="text-gray-400">Plataforma</TableHead>
-
-                                    <TableHead className="text-gray-400">Monto</TableHead>
-
-                                    <TableHead className="text-gray-400">Estado</TableHead>
-
-                                    <TableHead className="text-gray-400">Fecha</TableHead>
-
-                                    <TableHead className="text-gray-400">Acciones</TableHead>
-
-                                </TableRow>
-
-                            </TableHeader>
-
-                            <TableBody>
-
-                                {invoices.map((invoice) => (
-
-                                    <TableRow key={invoice.id} className="border-white/10 hover:bg-white/5">
-
-                                        <TableCell className="text-white font-medium">
-
-                                            {invoice.invoiceNumber}
-
-                                        </TableCell>
-
-                                        <TableCell>
-
-                                            <div>
-
-                                                <div className="text-gray-300">{invoice.clientName}</div>
-
-                                                <div className="text-gray-500 text-xs">{invoice.clientEmail}</div>
-
-                                            </div>
-
-                                        </TableCell>
-
-                                        <TableCell className="text-gray-300 capitalize">
-
-                                            {invoice.platform}
-
-                                        </TableCell>
-
-                                        <TableCell className="text-white font-medium">
-
-                                            ${invoice.total.toLocaleString()}
-
-                                        </TableCell>
-
-                                        <TableCell>
-
-                                            <Badge
-
-                                                variant="outline"
-
-                                                className={statusColors[invoice.status] || statusColors.draft}
-
-                                            >
-
-                                                {statusLabels[invoice.status] || invoice.status}
-
-                                            </Badge>
-
-                                        </TableCell>
-
-                                        <TableCell className="text-gray-400">
-
-                                            {new Date(invoice.createdAt).toLocaleDateString("es-MX")}
-
-                                        </TableCell>
-
-                                        <TableCell>
-
-                                            <div className="flex gap-1">
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
-                                                    onClick={() => handleDownload(invoice)}
-                                                    title="Descargar PDF"
-                                                >
-                                                    <Download className="h-4 w-4" />
-                                                </Button>
-
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
-                                                    onClick={() => handleShare(invoice)}
-                                                    title="Copiar link"
-                                                >
-                                                    {copiedId === invoice.id ? (
-                                                        <Check className="h-4 w-4 text-emerald-400" />
-                                                    ) : (
-                                                        <Share2 className="h-4 w-4" />
-                                                    )}
-                                                </Button>
-
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 h-8 w-8"
-                                                    onClick={() => handleEdit(invoice)}
-                                                    title="Editar"
-                                                >
-                                                    <Pencil className="h-4 w-4" />
-                                                </Button>
-
-                                                <Button
-
-                                                    variant="ghost"
-
-                                                    size="icon"
-
-                                                    className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 h-8 w-8"
-
-                                                    onClick={() => deleteInvoice(invoice.id)}
-                                                    title="Eliminar"
-
-                                                >
-
-                                                    <Trash2 className="h-4 w-4" />
-
-                                                </Button>
-
-                                            </div>
-
-                                        </TableCell>
-
+                        <div className="overflow-x-auto -mx-6 px-6">
+                            <Table>
+                                <TableHeader>
+                                    <TableRow className="border-white/10 hover:bg-transparent">
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Número</TableHead>
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Cliente</TableHead>
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Plataforma</TableHead>
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Monto</TableHead>
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Estado</TableHead>
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Fecha</TableHead>
+                                        <TableHead className="text-gray-400 whitespace-nowrap">Acciones</TableHead>
                                     </TableRow>
-
-                                ))}
-
-                            </TableBody>
-
-                        </Table>
+                                </TableHeader>
+                                <TableBody>
+                                    {invoices.map((invoice) => (
+                                        <TableRow key={invoice.id} className="border-white/10 hover:bg-white/5">
+                                            <TableCell className="text-white font-medium whitespace-nowrap">
+                                                {invoice.invoiceNumber}
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap">
+                                                <div>
+                                                    <div className="text-gray-300">{invoice.clientName}</div>
+                                                    <div className="text-gray-500 text-xs">{invoice.clientEmail}</div>
+                                                </div>
+                                            </TableCell>
+                                            <TableCell className="text-gray-300 capitalize whitespace-nowrap">
+                                                {invoice.platform}
+                                            </TableCell>
+                                            <TableCell className="text-white font-medium whitespace-nowrap">
+                                                ${invoice.total.toLocaleString()}
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap">
+                                                <Badge
+                                                    variant="outline"
+                                                    className={statusColors[invoice.status] || statusColors.draft}
+                                                >
+                                                    {statusLabels[invoice.status] || invoice.status}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="text-gray-400 whitespace-nowrap">
+                                                {new Date(invoice.createdAt).toLocaleDateString("es-MX")}
+                                            </TableCell>
+                                            <TableCell className="whitespace-nowrap">
+                                                <div className="flex gap-1">
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
+                                                        onClick={() => handleDownload(invoice)}
+                                                        title="Descargar PDF"
+                                                    >
+                                                        <Download className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
+                                                        onClick={() => handleShare(invoice)}
+                                                        title="Copiar link"
+                                                    >
+                                                        {copiedId === invoice.id ? (
+                                                            <Check className="h-4 w-4 text-emerald-400" />
+                                                        ) : (
+                                                            <Share2 className="h-4 w-4" />
+                                                        )}
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 h-8 w-8"
+                                                        onClick={() => handleEdit(invoice)}
+                                                        title="Editar"
+                                                    >
+                                                        <Pencil className="h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 h-8 w-8"
+                                                        onClick={() => deleteInvoice(invoice.id)}
+                                                        title="Eliminar"
+                                                    >
+                                                        <Trash2 className="h-4 w-4" />
+                                                    </Button>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </div>
 
                     )}
 
