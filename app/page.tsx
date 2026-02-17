@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 import Link from 'next/link';
 
-import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X } from 'lucide-react';
+import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Crown } from 'lucide-react';
 
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
 
@@ -142,20 +142,14 @@ export default function Home() {
       {/* Inlined Navbar (previously in app/components/Navbar.tsx) */}
 
       <nav className="fixed top-0 left-0 right-0 z-50 bg-[#080808] backdrop-blur-lg border-b border-white/20">
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          <InlineNavbar />
-
-        </div>
-
+        <InlineNavbar />
       </nav>
 
 
 
 
 
-      <section className="pt-24 md:pt-32 pb-12 md:pb-20 px-4">
+      <section className="pt-32 md:pt-40 pb-12 md:pb-20 px-4">
 
         <div className="max-w-4xl mx-auto">
 
@@ -492,171 +486,101 @@ function InlineNavbar() {
   return (
 
     <div>
+      <Link
+        href="/checkout"
+        className='flex items-center justify-center bg-black  text-white border-b border-white/10 w-full h-14  group'
+      >
+        <p className="text-sm font-medium flex items-center gap-2 ">
+          <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
+          <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
+          <ArrowRight className="w-4 h-4 "/>
+        </p>
+      </Link>
 
-      <div className="flex items-center justify-between h-16">
-
-        <div className="flex items-center gap-2">
-
-          <Link href="/" className="flex items-center gap-2">
-
-            <img
-
-              src="/inventralogo.png"
-
-              alt="Inventra Factura"
-
-              width={32}
-
-              height={32}
-
-              className="h-8 w-auto"
-
-            />
-
-            <span className="text-white font-semibold hidden sm:inline"></span>
-
-          </Link>
-
-        </div>
-
-
-
-        <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-
-          <Link href="/#features" className="text-slate-300 hover:text-white transition-colors">
-
-            Características
-
-          </Link>
-
-          <Link href="/#pricing" className="text-slate-300 hover:text-white transition-colors">
-
-            Planes
-
-          </Link>
-
-          <a
-
-            href="https://www.instagram.com/inventramx/"
-
-            target="_blank"
-
-            rel="noopener noreferrer"
-
-            className="text-slate-300 hover:text-white transition-colors"
-
-          >
-
-            Instagram
-
-          </a>
-
-        </div>
-
-
-
-        <div className="hidden md:flex items-center gap-4">
-
-          <SignedOut>
-
-            <SignInButton>
-
-              <a className="text-slate-300 hover:text-white">Iniciar Sesión</a>
-
-            </SignInButton>
-
-            <SignUpButton>
-
-              <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm !transition-none !duration-0">Registrarse</a>
-
-            </SignUpButton>
-
-          </SignedOut>
-
-          <SignedIn>
-
-            <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm">
-
-              Dashboard
-
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
+          <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
+              <img
+                src="/inventralogo.png"
+                alt="Inventra Factura"
+                width={32}
+                height={32}
+                className="h-8 w-auto"
+              />
+              <span className="text-white font-semibold hidden sm:inline"></span>
             </Link>
-
-            <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
-
-          </SignedIn>
-
-        </div>
-
-
-
-        <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-
-        </button>
-
-      </div>
-
-
-
-      {isMenuOpen && (
-
-        <div className="md:hidden py-4 border-t border-slate-800">
-
-          <div className="flex flex-col gap-4">
-
-            <Link href="/#features" className="text-slate-300 hover:text-white transition-colors">
-
-              Características
-
-            </Link>
-
-            <Link href="/#pricing" className="text-slate-300 hover:text-white transition-colors">
-
-              Planes
-
-            </Link>
-
-            <SignedOut>
-
-              <SignInButton>
-
-                <a className="text-slate-300 hover:text-white">Iniciar Sesión</a>
-
-              </SignInButton>
-
-              <SignUpButton>
-
-                <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm text-center !transition-none !duration-0">Registrarse</a>
-
-              </SignUpButton>
-
-            </SignedOut>
-
-            <SignedIn>
-
-              <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm text-center">
-
-                Dashboard
-
-              </Link>
-
-              <div className="flex items-center gap-2">
-
-                <UserButton afterSignOutUrl="/" />
-
-                <span className="text-slate-400 text-sm">Cuenta</span>
-
-              </div>
-
-            </SignedIn>
-
           </div>
 
+          <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
+            <Link href="/#features" className="text-slate-300 hover:text-white transition-colors">
+              Características
+            </Link>
+            <Link href="/#pricing" className="text-slate-300 hover:text-white transition-colors">
+              Planes
+            </Link>
+            <a
+              href="https://www.instagram.com/inventramx/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-slate-300 hover:text-white transition-colors"
+            >
+              Instagram
+            </a>
+          </div>
+
+          <div className="hidden md:flex items-center gap-4">
+            <SignedOut>
+              <SignInButton>
+                <a className="text-slate-300 hover:text-white">Iniciar Sesión</a>
+              </SignInButton>
+              <SignUpButton>
+                <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm !transition-none !duration-0">Registrarse</a>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                Dashboard
+              </Link>
+              <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
+            </SignedIn>
+          </div>
+
+          <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
 
-      )}
-
+        {isMenuOpen && (
+          <div className="md:hidden py-4 border-t border-slate-800">
+            <div className="flex flex-col gap-4">
+              <Link href="/#features" className="text-slate-300 hover:text-white transition-colors">
+                Características
+              </Link>
+              <Link href="/#pricing" className="text-slate-300 hover:text-white transition-colors">
+                Planes
+              </Link>
+              <SignedOut>
+                <SignInButton>
+                  <a className="text-slate-300 hover:text-white">Iniciar Sesión</a>
+                </SignInButton>
+                <SignUpButton>
+                  <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm text-center !transition-none !duration-0">Registrarse</a>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm text-center">
+                  Dashboard
+                </Link>
+                <div className="flex items-center gap-2">
+                  <UserButton afterSignOutUrl="/" />
+                  <span className="text-slate-400 text-sm">Cuenta</span>
+                </div>
+              </SignedIn>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
 
   );
