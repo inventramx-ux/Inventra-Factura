@@ -5,7 +5,7 @@ import { useSubscription } from "@/app/contexts/SubscriptionContext"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Crown, Check, ArrowRight } from "lucide-react"
+import { Crown, Check, ArrowRight, ExternalLink, XCircle } from "lucide-react"
 import Link from "next/link"
 
 export default function SettingsPage() {
@@ -46,10 +46,10 @@ export default function SettingsPage() {
                                 {[
                                     "Facturas ilimitadas",
                                     "Clientes ilimitados",
-                                    "Plantillas personalizables",
-                                    "Reportes avanzados",
+                                    
+                                   'Plantillas avanzadas',
                                     "Soporte prioritario",
-                                    "Recordatorios automáticos",
+                                   
                                 ].map((feature) => (
                                     <li key={feature} className="flex items-center gap-2 text-sm text-gray-400">
                                         <Check className="h-4 w-4 text-amber-400 flex-shrink-0" />
@@ -57,6 +57,34 @@ export default function SettingsPage() {
                                     </li>
                                 ))}
                             </ul>
+
+                            <div className="pt-6 border-t border-white/10 mt-6">
+                                <h4 className="text-white font-medium mb-3">Gestionar Suscripción</h4>
+                                <div className="flex flex-col sm:flex-row gap-3">
+                                    <Button
+                                        asChild
+                                        className="bg-white/10 text-white hover:bg-white/20 border-white/10 gap-2"
+                                    >
+                                        <a href="https://www.paypal.com/myaccount/autopay/" target="_blank" rel="noopener noreferrer">
+                                            Gestionar en PayPal
+                                            <ExternalLink className="h-4 w-4" />
+                                        </a>
+                                    </Button>
+                                    <Button
+                                        variant="ghost"
+                                        asChild
+                                        className="text-gray-400 hover:text-red-400 hover:bg-red-400/10 gap-2"
+                                    >
+                                        <a href="https://www.paypal.com/myaccount/autopay/" target="_blank" rel="noopener noreferrer">
+                                            Cancelar suscripción
+                                            <XCircle className="h-4 w-4" />
+                                        </a>
+                                    </Button>
+                                </div>
+                                <p className="text-xs text-gray-500 mt-4 italic">
+                                    Nota: Serás redirigido a PayPal para gestionar tus pagos automáticos. Busca "Inventra Factura" en tu lista de pagos activos.
+                                </p>
+                            </div>
                         </div>
                     ) : (
                         <div className="space-y-4">

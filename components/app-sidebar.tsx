@@ -1,4 +1,5 @@
 "use client"
+import { useState } from "react"
 
 import {
     LayoutDashboard,
@@ -12,6 +13,9 @@ import {
     Sparkles,
     ShoppingBag,
     Crown,
+    Mail,
+    Copy,
+    Check,
 } from "lucide-react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
@@ -32,7 +36,13 @@ import {
     SidebarFooter,
     SidebarRail,
     SidebarSeparator,
+    SidebarMenuAction,
 } from "@/components/ui/sidebar"
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 const freeItems = [
     {
@@ -57,33 +67,17 @@ const freeItems = [
     },
 ]
 
-const proItems = [
-    {
-        title: "Dashboard Pro",
-        url: "/dashboard/dashboardPRO",
-        icon: ShoppingBag,
-    },
-    {
-        title: "Facturas Pro",
-        url: "/dashboard/facturasPRO",
-        icon: BarChart3,
-    },
-    {
-        title: "Clientes Pro",
-        url: "/dashboard/templates",
-        icon: Palette,
-    },
-    {
-        title: "Configuración Pro",
-        url: "/dashboard/reminders",
-        icon: Bell,
-    },
-]
-
 export function AppSidebar() {
     const pathname = usePathname()
     const { user } = useUser()
     const { isPro } = useSubscription()
+    const [copied, setCopied] = useState(false)
+
+    const copyEmail = () => {
+        navigator.clipboard.writeText("inventramx@gmail.com")
+        setCopied(true)
+        setTimeout(() => setCopied(false), 2000)
+    }
 
     const isActive = (url: string) => {
         if (url === "/dashboard") return pathname === "/dashboard"
@@ -109,7 +103,12 @@ export function AppSidebar() {
             <SidebarContent>
                 {/* Free Section */}
                 <SidebarGroup>
-                    <SidebarGroupLabel className="text-gray-400">General</SidebarGroupLabel>
+                    <SidebarGroupLabel className="text-gray-400">
+                        <div className="flex items-center gap-2">
+                            {isPro && <Crown className="size-3 text-amber-400" />}
+                            <span>{isPro ? "Pro" : "General"}</span>
+                        </div>
+                    </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             {freeItems.map((item) => (
@@ -133,42 +132,53 @@ export function AppSidebar() {
 
                 <SidebarSeparator className="bg-white/10" />
 
-                {/* Pro Section */}
+                {/* Support Section */}
                 <SidebarGroup>
-                    <SidebarGroupLabel>
-                        <div className="flex items-center gap-2">
-                            <Crown className="size-3 text-amber-400" />
-                            <span className="text-gray-300">Pro</span>
-                            {!isPro && (
-                                <span className="ml-auto text-[10px] font-medium bg-amber-500/20 text-amber-400 px-1.5 py-0.5 rounded-full">
-                                    UPGRADE
-                                </span>
-                            )}
-                        </div>
-                    </SidebarGroupLabel>
+                    <SidebarGroupLabel className="text-gray-400">Soporte</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {proItems.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton
-                                        asChild
-                                        tooltip={isPro ? item.title : `${item.title} (Pro)`}
-                                        isActive={isActive(item.url)}
-                                        className="text-gray-300 hover:text-white hover:bg-white/10"
-                                    >
-                                        <Link href={isPro ? item.url : "/dashboard/upgrade"} className="relative">
-                                            <item.icon className={!isPro ? "opacity-50" : ""} />
-                                            <span className={!isPro ? "opacity-50" : ""}>{item.title}</span>
-                                            {!isPro && (
-                                                <Lock className="size-3 text-amber-400/70 ml-auto" />
+                            <SidebarMenuItem>
+                                <SidebarMenuButton
+                                    asChild
+                                    tooltip="Soporte"
+                                    className="text-gray-300 hover:text-white hover:bg-white/10 h-auto py-2"
+                                >
+                                    <a href="mailto:inventramx@gmail.com" className="flex items-start gap-3">
+                                        <div className="mt-1">
+                                            <Mail className="size-4" />
+                                        </div>
+                                        <div className="flex flex-col gap-0.5 min-w-0">
+                                            <span className="text-sm font-medium truncate">Contacto</span>
+                                            <span className="text-[10px] text-blue-400 truncate font-mono">
+                                                inventramx@gmail.com
+                                            </span>
+                                            <span className="text-[9px] text-gray-500 leading-tight">
+                                                Respuesta en menos de 12 horas
+                                            </span>
+                                        </div>
+                                    </a>
+                                </SidebarMenuButton>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <SidebarMenuAction
+                                            onClick={copyEmail}
+                                            className="hover:bg-white/10 text-gray-400 hover:text-white"
+                                        >
+                                            {copied ? (
+                                                <Check className="size-3.5 text-green-500" />
+                                            ) : (
+                                                <Copy className="size-3.5" />
                                             )}
-                                        </Link>
-                                    </SidebarMenuButton>
-                                </SidebarMenuItem>
-                            ))}
+                                        </SidebarMenuAction>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">Copiar correo</TooltipContent>
+                                </Tooltip>
+                            </SidebarMenuItem>
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
+
+                <SidebarSeparator className="bg-white/10" />
             </SidebarContent>
 
             <SidebarFooter className="border-t border-white/10 p-2">

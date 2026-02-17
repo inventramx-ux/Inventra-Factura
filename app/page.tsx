@@ -112,16 +112,14 @@ const plans = [
     features: [
 
       'Facturas ilimitadas',
+      'Plantillas avanzadas',
 
       'Clientes ilimitados',
 
-      'Plantillas personalizables',
-
-      'Reportes avanzados',
+   
 
       'Soporte prioritario',
 
-      'Recordatorios de pago automáticos',
 
     ],
 

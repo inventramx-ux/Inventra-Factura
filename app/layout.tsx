@@ -31,22 +31,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <ClientProvider>
-        <InvoiceProvider>
-          <html lang="es">
-            <head>
-              <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-              <link rel="shortcut icon" href="/favicon.ico" />
-              <link rel="apple-touch-icon" href="/favicon.ico" />
-            </head>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+    <html lang="es">
+      <head>
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="apple-touch-icon" href="/favicon.ico" />
+      </head>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <ClerkProvider>
+          <ClientProvider>
+            <InvoiceProvider>
               {children}
               <Analytics />
-            </body>
-          </html>
-        </InvoiceProvider>
-      </ClientProvider>
-    </ClerkProvider>
+            </InvoiceProvider>
+          </ClientProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }
