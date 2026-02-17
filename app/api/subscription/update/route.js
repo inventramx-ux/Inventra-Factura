@@ -12,7 +12,8 @@ export async function POST(request) {
     }
 
     // Update user's subscription status in Clerk
-    await clerkClient.users.updateUser(userId, {
+    const clerk = await clerkClient();
+    await clerk.users.updateUser(userId, {
       publicMetadata: {
         subscriptionStatus: plan === "Pro" ? "pro" : "free",
         subscriptionUpdated: new Date().toISOString(),
@@ -20,7 +21,7 @@ export async function POST(request) {
       }
     })
 
-    return Response.json({ 
+    return Response.json({
       success: true,
       message: "Subscription updated successfully"
     })
