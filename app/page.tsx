@@ -12,7 +12,6 @@ import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X } from 'lucide-re
 
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
 
-import ChatBot from '@/components/ChatBot';
 
 
 

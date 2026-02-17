@@ -3,24 +3,36 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: '.env.local' });
 
-const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+const getPayPalClient = () => {
+  const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+  const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-if (!clientID || !clientSecret) {
-  console.error("Missing PayPal credentials in environment variables");
-  throw new Error("PayPal credentials not configured");
-}
+  if (!clientID || !clientSecret) {
+    return null;
+  }
 
-const environment = new paypal.core.SandboxEnvironment(clientID, clientSecret);
-const client = new paypal.core.PayPalHttpClient(environment);
+  const environment = new paypal.core.SandboxEnvironment(clientID, clientSecret);
+  return new paypal.core.PayPalHttpClient(environment);
+};
 
 export async function POST(request) {
   try {
+    const client = getPayPalClient();
+
+    if (!client) {
+      console.error("PayPal credentials not configured in environment variables");
+      return Response.json(
+        {
+          error: "Configuración de PayPal incompleta",
+          details: "Las credenciales de PayPal no están configuradas en el servidor (.env.local)."
+        },
+        { status: 503 }
+      );
+    }
+
     const { plan, price } = await request.json();
-    
+
     console.log("Creating PayPal order with:", { plan, price });
-    console.log("PayPal Client ID:", clientID ? "Set" : "Missing");
-    console.log("PayPal Client Secret:", clientSecret ? "Set" : "Missing");
 
     const requestPaypal = new paypal.orders.OrdersCreateRequest();
     requestPaypal.requestBody({
@@ -39,10 +51,10 @@ export async function POST(request) {
     console.log("Sending PayPal request...");
     const response = await client.execute(requestPaypal);
     console.log("PayPal response:", response.result);
-    
-    return Response.json({ 
+
+    return Response.json({
       orderID: response.result.id,
-      status: response.result.status 
+      status: response.result.status
     });
   } catch (error) {
     console.error("PayPal order creation error:", error);
@@ -53,9 +65,9 @@ export async function POST(request) {
       details: error.details
     });
     return Response.json(
-      { 
+      {
         error: "Failed to create PayPal order",
-        details: error.message 
+        details: error.message
       },
       { status: 500 }
     );

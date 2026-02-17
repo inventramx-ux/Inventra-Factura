@@ -4,19 +4,33 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: '.env.local' });
 
-const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+const getPayPalClient = () => {
+  const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+  const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 
-if (!clientID || !clientSecret) {
-  console.error("Missing PayPal credentials in environment variables");
-  throw new Error("PayPal credentials not configured");
-}
+  if (!clientID || !clientSecret) {
+    return null;
+  }
 
-const environment = new paypal.core.SandboxEnvironment(clientID, clientSecret);
-const client = new paypal.core.PayPalHttpClient(environment);
+  const environment = new paypal.core.SandboxEnvironment(clientID, clientSecret);
+  return new paypal.core.PayPalHttpClient(environment);
+};
 
 export async function POST(request) {
   try {
+    const client = getPayPalClient();
+
+    if (!client) {
+      console.error("PayPal credentials not configured in environment variables");
+      return Response.json(
+        {
+          error: "Configuración de PayPal incompleta",
+          details: "No se puede confirmar el pago porque las credenciales de PayPal faltan en el servidor."
+        },
+        { status: 503 }
+      );
+    }
+
     const { orderID, userId } = await request.json();
 
     const requestPaypal = new paypal.orders.OrdersCaptureRequest(orderID);
