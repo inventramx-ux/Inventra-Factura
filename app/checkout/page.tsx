@@ -67,15 +67,10 @@ const CheckoutPage = () => {
 
 
           <PayPalScriptProvider
-
             options={{
-
-              clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "AbRMwcea-gsUfQJlbJlw0snA3Y_dxNDuZ6oQL3odx7bH6ozFPULZ9iSXXdxpMiemd-pmZuMAe6cWpOw0",
-
+              clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
               currency: "MXN",
-
             }}
-
           >
 
             <PayPalButtons

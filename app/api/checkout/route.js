@@ -6,12 +6,18 @@ dotenv.config({ path: '.env.local' });
 const getPayPalClient = () => {
   const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+  const mode = process.env.PAYPAL_MODE || "sandbox";
 
   if (!clientID || !clientSecret) {
     return null;
   }
 
-  const environment = new paypal.core.SandboxEnvironment(clientID, clientSecret);
+  console.log(`Initializing PayPal in ${mode} mode`);
+
+  const environment = mode === "live"
+    ? new paypal.core.LiveEnvironment(clientID, clientSecret)
+    : new paypal.core.SandboxEnvironment(clientID, clientSecret);
+
   return new paypal.core.PayPalHttpClient(environment);
 };
 
