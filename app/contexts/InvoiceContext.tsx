@@ -102,39 +102,53 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
   const createInvoice = async (invoiceData: Omit<Invoice, "id" | "createdAt" | "status" | "userId">): Promise<Invoice> => {
     if (!user) throw new Error("Debes iniciar sesión para crear una factura")
 
+    console.log("DEBUG: createInvoice called by user:", user.id)
+    console.log("DEBUG: Invoice data payload:", JSON.stringify(invoiceData, null, 2))
+
     try {
+      const insertData = {
+        client_name: invoiceData.clientName,
+        client_email: invoiceData.clientEmail,
+        client_phone: invoiceData.clientPhone,
+        client_address: invoiceData.clientAddress,
+        platform: invoiceData.platform,
+        items: invoiceData.items,
+        subtotal: invoiceData.subtotal,
+        tax: invoiceData.tax,
+        total: invoiceData.total,
+        notes: invoiceData.notes,
+        company_logo: invoiceData.companyLogo,
+        user_id: user.id,
+        status: "draft",
+        invoice_number: invoiceData.invoiceNumber || `INV-${Date.now().toString().slice(-6)}`,
+        payment_method: invoiceData.paymentMethod || "transferencia",
+        due_date: invoiceData.dueDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      }
+
+      console.log("DEBUG: Attempting Supabase insert with:", JSON.stringify(insertData, null, 2))
+
       const { data, error } = await supabase
         .from('invoices')
-        .insert([
-          {
-            client_name: invoiceData.clientName,
-            client_email: invoiceData.clientEmail,
-            client_phone: invoiceData.clientPhone,
-            client_address: invoiceData.clientAddress,
-            platform: invoiceData.platform,
-            items: invoiceData.items,
-            subtotal: invoiceData.subtotal,
-            tax: invoiceData.tax,
-            total: invoiceData.total,
-            notes: invoiceData.notes,
-            company_logo: invoiceData.companyLogo,
-            user_id: user.id,
-            status: "draft",
-            invoice_number: invoiceData.invoiceNumber || `INV-${Date.now().toString().slice(-6)}`,
-            payment_method: invoiceData.paymentMethod || "transferencia",
-            due_date: invoiceData.dueDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-          }
-        ])
+        .insert([insertData])
         .select()
         .single()
 
-      if (error) throw error
+      if (error) {
+        console.error("DEBUG: Supabase error detected!")
+        console.error("DEBUG: Error message:", error.message)
+        console.error("DEBUG: Error details:", error.details)
+        console.error("DEBUG: Error hint:", error.hint)
+        console.error("DEBUG: Error code:", error.code)
+        throw error
+      }
 
       const mapped = mapInvoice(data)
       setInvoices(prev => [mapped, ...prev])
       return mapped
-    } catch (error) {
-      console.error("Error creating invoice:", error)
+    } catch (error: any) {
+      console.error("Error creating invoice (EXCEPTIONAL):", error)
+      console.error("Error message string:", String(error))
+      console.error("Error keys:", Object.keys(error))
       throw error
     }
   }
@@ -174,8 +188,14 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
       const mapped = mapInvoice(updatedData)
       setInvoices(prev => prev.map(inv => inv.id === id ? mapped : inv))
       return mapped
-    } catch (error) {
-      console.error("Error updating invoice:", error)
+    } catch (error: any) {
+      console.error("Error updating invoice (full details):", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code,
+        error: error
+      })
       throw error
     }
   }

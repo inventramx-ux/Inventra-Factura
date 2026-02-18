@@ -167,10 +167,14 @@ export default function InvoicesPage() {
                 companyLogo: "",
             })
 
-        } catch (error) {
-
-            console.error("Error creating invoice:", error)
-
+        } catch (error: any) {
+            console.error("Error creating invoice (Dashboard):", {
+                message: error.message,
+                details: error.details,
+                hint: error.hint,
+                code: error.code,
+                error: error
+            })
         } finally {
 
             setSaving(false)
