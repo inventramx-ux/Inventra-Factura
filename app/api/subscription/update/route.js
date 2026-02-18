@@ -21,6 +21,21 @@ export async function POST(request) {
       }
     })
 
+    // Sync with Supabase
+    const { supabase } = await import("@/lib/supabase");
+    const { error: supabaseError } = await supabase
+      .from('subscriptions')
+      .upsert({
+        user_id: userId,
+        status: plan === "Pro" ? "pro" : "free",
+        paypal_order_id: orderID || null,
+        updated_at: new Date().toISOString()
+      });
+
+    if (supabaseError) {
+      console.error("Supabase subscription sync error:", supabaseError);
+    }
+
     return Response.json({
       success: true,
       message: "Subscription updated successfully"

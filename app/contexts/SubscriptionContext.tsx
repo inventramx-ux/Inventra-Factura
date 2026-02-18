@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react"
 import { useUser } from "@clerk/nextjs"
+import { supabase } from "@/lib/supabase"
 
 interface SubscriptionContextType {
   isPro: boolean
@@ -39,9 +40,20 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
       }
 
       try {
-        // Check if user has Pro subscription in metadata
-        const subscriptionStatus = user.publicMetadata?.subscriptionStatus
-        setIsPro(subscriptionStatus === "pro")
+        // 1. First check Supabase (Source of Truth)
+        const { data: subData, error: subError } = await supabase
+          .from('subscriptions')
+          .select('status')
+          .eq('user_id', user.id)
+          .single()
+
+        if (!subError && subData) {
+          setIsPro(subData.status === "pro")
+        } else {
+          // 2. Fallback to Clerk metadata if Supabase fails or record doesn't exist
+          const subscriptionStatus = user.publicMetadata?.subscriptionStatus
+          setIsPro(subscriptionStatus === "pro")
+        }
       } catch (error) {
         console.error("Error checking subscription:", error)
         setIsPro(false)
@@ -56,12 +68,24 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   // Function to refresh user data from Clerk
   const refreshSubscription = async () => {
     if (!user) return
-    
+
     try {
       // Force Clerk to reload user data
       await user.reload()
-      const subscriptionStatus = user.publicMetadata?.subscriptionStatus
-      setIsPro(subscriptionStatus === "pro")
+
+      // Re-check Supabase
+      const { data: subData } = await supabase
+        .from('subscriptions')
+        .select('status')
+        .eq('user_id', user.id)
+        .single()
+
+      if (subData) {
+        setIsPro(subData.status === "pro")
+      } else {
+        const subscriptionStatus = user.publicMetadata?.subscriptionStatus
+        setIsPro(subscriptionStatus === "pro")
+      }
     } catch (error) {
       console.error("Error refreshing subscription:", error)
     }

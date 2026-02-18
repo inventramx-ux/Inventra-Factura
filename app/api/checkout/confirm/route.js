@@ -55,9 +55,24 @@ export async function POST(request) {
               paypalOrderID: orderID,
             }
           });
-        } catch (clerkError) {
-          console.error("Clerk update error:", clerkError);
-          // Continue even if Clerk update fails
+
+          // Sync with Supabase
+          const { supabase } = await import("@/lib/supabase");
+          const { error: supabaseError } = await supabase
+            .from('subscriptions')
+            .upsert({
+              user_id: userId,
+              status: 'pro',
+              paypal_order_id: orderID,
+              updated_at: new Date().toISOString()
+            });
+
+          if (supabaseError) {
+            console.error("Supabase subscription sync error:", supabaseError);
+          }
+        } catch (updateError) {
+          console.error("Subscription update error:", updateError);
+          // Continue even if updates fail
         }
       }
 
