@@ -159,7 +159,7 @@ export default function Home() {
 
               <HeartHandshakeIcon size={14} />
 
-              Usado por mas de 5,000 negocios en todo el mundo
+              Usado por mas de 500 negocios en todo el mundo
 
             </p>
 
