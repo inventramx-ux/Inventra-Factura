@@ -2,6 +2,7 @@
 
 import React from "react"
 import { useInvoice } from "@/app/contexts/InvoiceContext"
+import { useClient } from "@/app/contexts/ClientContext"
 import { useSubscription } from "@/app/contexts/SubscriptionContext"
 import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -13,7 +14,9 @@ import Link from "next/link"
 
 export default function DashboardPage() {
     const { user } = useUser()
-    const { invoices, loading, totalInvoices, totalRevenue, uniqueClients } = useInvoice()
+    const { invoices, loading: invoicesLoading, totalInvoices, totalRevenue } = useInvoice()
+    const { clients, loading: clientsLoading } = useClient()
+    const loading = invoicesLoading || clientsLoading
     const { isPro, invoicesLimit, clientsLimit, refreshSubscription } = useSubscription()
 
     // Refresh subscription status when dashboard loads
@@ -105,15 +108,15 @@ export default function DashboardPage() {
                         <Users className="h-4 w-4 text-indigo-400" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-white">{uniqueClients}</div>
+                        <div className="text-2xl font-bold text-white">{clients.length}</div>
                         <p className="text-xs text-gray-500 mt-1">
-                            {isPro ? "Ilimitados" : `${uniqueClients}/${clientsLimit} disponibles`}
+                            {isPro ? "Ilimitados" : `${clients.length}/${clientsLimit} disponibles`}
                         </p>
                         {!isPro && (
                             <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
                                 <div
                                     className="bg-indigo-500 h-1.5 rounded-full transition-all"
-                                    style={{ width: `${Math.min((uniqueClients / clientsLimit) * 100, 100)}%` }}
+                                    style={{ width: `${Math.min((clients.length / clientsLimit) * 100, 100)}%` }}
                                 />
                             </div>
                         )}

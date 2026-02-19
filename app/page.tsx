@@ -493,7 +493,7 @@ function InlineNavbar() {
         <p className="text-sm font-medium flex items-center gap-2 ">
           <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
           <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
-          <ArrowRight className="w-4 h-4 "/>
+          <ArrowRight className="w-4 h-4 " />
         </p>
       </Link>
 

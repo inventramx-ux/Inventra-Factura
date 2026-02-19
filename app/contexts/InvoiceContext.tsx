@@ -244,6 +244,38 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (user) {
       refreshInvoices()
+
+      // Set up Realtime subscription
+      const channel = supabase
+        .channel('public:invoices')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'invoices',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            if (payload.eventType === 'INSERT') {
+              const newInvoice = mapInvoice(payload.new)
+              setInvoices(prev => {
+                if (prev.some(i => i.id === newInvoice.id)) return prev
+                return [newInvoice, ...prev]
+              })
+            } else if (payload.eventType === 'UPDATE') {
+              const updatedInvoice = mapInvoice(payload.new)
+              setInvoices(prev => prev.map(i => i.id === updatedInvoice.id ? updatedInvoice : i))
+            } else if (payload.eventType === 'DELETE') {
+              setInvoices(prev => prev.filter(i => i.id !== payload.old.id))
+            }
+          }
+        )
+        .subscribe()
+
+      return () => {
+        supabase.removeChannel(channel)
+      }
     } else {
       setInvoices([])
       setLoading(false)

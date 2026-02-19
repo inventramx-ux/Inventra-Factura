@@ -5,7 +5,7 @@
 import { useState } from "react"
 
 import { useInvoice } from "@/app/contexts/InvoiceContext"
-
+import { useClient } from "@/app/contexts/ClientContext"
 import { useSubscription } from "@/app/contexts/SubscriptionContext"
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -26,7 +26,9 @@ import { Plus, FileText, Trash2, X, Download, AlertCircle, Pencil, Share2, Check
 
 export default function InvoicesPage() {
 
-    const { invoices, loading, totalInvoices, createInvoice, deleteInvoice } = useInvoice()
+    const { invoices, loading: invoicesLoading, totalInvoices, createInvoice, deleteInvoice } = useInvoice()
+    const { clients, loading: clientsLoading } = useClient()
+    const loading = invoicesLoading || clientsLoading
 
     const { isPro, invoicesLimit } = useSubscription()
 
@@ -500,20 +502,40 @@ export default function InvoicesPage() {
                                 <div className="space-y-2">
 
                                     <Label className="text-gray-300">Nombre del cliente *</Label>
-
-                                    <Input
-
-                                        value={formData.clientName}
-
-                                        onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-
-                                        placeholder="Juan Pérez"
-
-                                        className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
-
-                                        required
-
-                                    />
+                                    <div className="flex gap-2">
+                                        <div className="flex-1">
+                                            <Input
+                                                value={formData.clientName}
+                                                onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
+                                                placeholder="Juan Pérez"
+                                                className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                                                required
+                                            />
+                                        </div>
+                                        {clients.length > 0 && (
+                                            <select
+                                                className="bg-zinc-900 border border-white/10 text-white rounded-md px-2 text-sm focus:outline-none focus:ring-1 focus:ring-white/20"
+                                                onChange={(e) => {
+                                                    const client = clients.find(c => c.id === e.target.value)
+                                                    if (client) {
+                                                        setFormData({
+                                                            ...formData,
+                                                            clientName: client.name,
+                                                            clientEmail: client.email || "",
+                                                            clientPhone: client.phone || "",
+                                                            clientAddress: client.address || "",
+                                                        })
+                                                    }
+                                                }}
+                                                defaultValue=""
+                                            >
+                                                <option value="" disabled>Seleccionar cliente...</option>
+                                                {clients.map(c => (
+                                                    <option key={c.id} value={c.id}>{c.name}</option>
+                                                ))}
+                                            </select>
+                                        )}
+                                    </div>
 
                                 </div>
 

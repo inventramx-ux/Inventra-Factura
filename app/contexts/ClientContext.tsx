@@ -158,6 +158,39 @@ export function ClientProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (user) {
       refreshClients()
+
+      // Set up Realtime subscription
+      const channel = supabase
+        .channel('public:clients')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'clients',
+            filter: `user_id=eq.${user.id}`
+          },
+          (payload) => {
+            if (payload.eventType === 'INSERT') {
+              const newClient = mapClient(payload.new)
+              setClients(prev => {
+                // Avoid duplicates if the state was already updated manually
+                if (prev.some(c => c.id === newClient.id)) return prev
+                return [newClient, ...prev]
+              })
+            } else if (payload.eventType === 'UPDATE') {
+              const updatedClient = mapClient(payload.new)
+              setClients(prev => prev.map(c => c.id === updatedClient.id ? updatedClient : c))
+            } else if (payload.eventType === 'DELETE') {
+              setClients(prev => prev.filter(c => c.id !== payload.old.id))
+            }
+          }
+        )
+        .subscribe()
+
+      return () => {
+        supabase.removeChannel(channel)
+      }
     } else {
       setClients([])
       setLoading(false)
