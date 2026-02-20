@@ -47,9 +47,9 @@ export default function SettingsPage() {
                                     "Facturas ilimitadas",
                                     "Clientes ilimitados",
                                     
-                                   'Plantillas avanzadas',
+                                   'Personalización avanzada',
                                     "Soporte prioritario",
-                                   
+                                    "Sin marca de agua",
                                 ].map((feature) => (
                                     <li key={feature} className="flex items-center gap-2 text-sm text-gray-400">
                                         <Check className="h-4 w-4 text-amber-400 flex-shrink-0" />

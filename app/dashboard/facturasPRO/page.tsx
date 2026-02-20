@@ -273,9 +273,11 @@ export default function InvoicesPage() {
                     </div>
                 ` : ''}
 
+                ${!isPro ? `
                 <div style="margin-top: 50px; text-align: center; color: #999; font-size: 0.8em; border-top: 1px solid #eee; padding-top: 20px;">
                     Generado automáticamente por <strong>Inventra Factura</strong>
                 </div>
+                ` : ''}
             </div>
         `;
 
