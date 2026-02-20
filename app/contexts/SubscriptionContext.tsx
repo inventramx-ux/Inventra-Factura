@@ -101,8 +101,8 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
     isLoading,
     upgradeToPro,
     refreshSubscription,
-    invoicesLimit: isPro ? Infinity : 10,
-    clientsLimit: isPro ? Infinity : 5,
+    invoicesLimit: isPro ? Infinity : 3,
+    clientsLimit: isPro ? Infinity : 2,
     totalInvoices: 0, // This would be calculated from your actual invoices data
     hasAdvancedReports: isPro,
     hasCustomTemplates: isPro,

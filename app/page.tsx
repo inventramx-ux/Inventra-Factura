@@ -83,11 +83,11 @@ const plans = [
 
     features: [
 
-      'Hasta 10 facturas por mes',
+      'Hasta 3 facturas por mes',
 
-      'Gestión de hasta 5 clientes',
+      'Gestión de hasta 2 clientes',
 
-      'Plantillas básicas',
+      'Personalización básica',
 
       'Soporte por email',
 
@@ -112,7 +112,7 @@ const plans = [
     features: [
 
       'Facturas ilimitadas',
-      'Plantillas avanzadas',
+      'Personalización avanzada',
 
       'Clientes ilimitados',
 
@@ -120,7 +120,7 @@ const plans = [
 
       'Soporte prioritario',
 
-
+      'Sin marca de agua',
     ],
 
     cta: 'Comenzar ahora',
