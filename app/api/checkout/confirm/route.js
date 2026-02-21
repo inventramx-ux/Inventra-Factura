@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 import paypal from "@paypal/checkout-server-sdk";
+=======
+import { Client, Environment } from "@paypal/paypal-server-sdk";
+>>>>>>> Stashed changes
 import { clerkClient } from "@clerk/nextjs/server";
 import dotenv from "dotenv";
 
@@ -15,9 +19,17 @@ const getPayPalClient = () => {
 
   console.log(`Initializing PayPal in ${mode} mode`);
 
+<<<<<<< Updated upstream
   const environment = mode === "live"
     ? new paypal.core.LiveEnvironment(clientID, clientSecret)
     : new paypal.core.SandboxEnvironment(clientID, clientSecret);
+=======
+  const client = new Client({
+    clientID,
+    clientSecret,
+    environment: mode === "live" ? Environment.Production : Environment.Sandbox
+  });
+>>>>>>> Stashed changes
 
   return new paypal.core.PayPalHttpClient(environment);
 };
