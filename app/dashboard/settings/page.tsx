@@ -46,10 +46,12 @@ export default function SettingsPage() {
                                 {[
                                     "Facturas ilimitadas",
                                     "Clientes ilimitados",
-                                    
-                                   'Personalización avanzada',
+
+                                    'Personalización avanzada',
                                     "Soporte prioritario",
                                     "Sin marca de agua",
+                                    "Analíticas de facturación",
+
                                 ].map((feature) => (
                                     <li key={feature} className="flex items-center gap-2 text-sm text-gray-400">
                                         <Check className="h-4 w-4 text-amber-400 flex-shrink-0" />
@@ -82,7 +84,7 @@ export default function SettingsPage() {
                                     </Button>
                                 </div>
                                 <p className="text-xs text-gray-500 mt-4 italic">
-                                    Nota: Serás redirigido a PayPal para gestionar tus pagos automáticos. Busca "Inventra Factura" en tu lista de pagos activos.
+                                    Nota: Serás redirigido a PayPal para gestionar tus pagos automáticos. Busca &quot;Inventra Factura&quot; en tu lista de pagos activos.
                                 </p>
                             </div>
                         </div>

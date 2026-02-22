@@ -70,6 +70,8 @@ const CheckoutPage = () => {
             options={{
               clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
               currency: "MXN",
+              vault: true,
+              intent: "subscription",
             }}
           >
 
@@ -83,86 +85,25 @@ const CheckoutPage = () => {
 
                 shape: "rect",
 
-                label: "pay",
+                label: "subscribe",
 
               }}
 
-              createOrder={async () => {
+              createSubscription={async (data, actions) => {
 
-                try {
+                return actions.subscription.create({
 
-                  console.log("Creating PayPal order...");
+                  plan_id: process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID || "P-5EL73493HV576381LNGM7OVA",
 
-                  const res = await fetch("/api/checkout", {
-
-                    method: "POST",
-
-                    headers: {
-
-                      "Content-Type": "application/json",
-
-                    },
-
-                    body: JSON.stringify({
-
-                      plan,
-
-                      price,
-
-                    }),
-
-                  });
-
-                  console.log("API Response status:", res.status);
-
-                  console.log("API Response headers:", Object.fromEntries(res.headers.entries()));
-
-                  // Get response text first to debug
-
-                  const responseText = await res.text();
-
-                  console.log("API Response text:", responseText);
-
-                  // Try to parse as JSON
-
-                  let data;
-
-                  try {
-
-                    data = JSON.parse(responseText);
-
-                  } catch (parseError) {
-
-                    console.error("JSON parse error:", parseError);
-
-                    throw new Error(`Invalid JSON response: ${responseText}`);
-
-                  }
-
-                  console.log("Parsed API data:", data);
-
-                  if (!res.ok) {
-
-                    throw new Error(data.error || "Failed to create order");
-
-                  }
-
-                  return data.orderID;
-
-                } catch (error) {
-
-                  console.error("Create order error:", error);
-                  const errorMessage = error instanceof Error ? error.message : "Desconocido";
-                  alert(`Error al crear la orden: ${errorMessage}`);
-                  return null;
-
-                }
+                });
 
               }}
 
               onApprove={async (data) => {
 
                 try {
+
+                  console.log("Subscription approved, ID:", data.subscriptionID);
 
                   const res = await fetch("/api/checkout/confirm", {
 
@@ -176,7 +117,7 @@ const CheckoutPage = () => {
 
                     body: JSON.stringify({
 
-                      orderID: data.orderID,
+                      subscriptionID: data.subscriptionID,
 
                       userId: user?.id,
 
@@ -192,9 +133,7 @@ const CheckoutPage = () => {
 
                   if (res.ok && result.success) {
 
-                    alert("¡Pago exitoso! 🚀 Redirigiendo al dashboard...");
-
-                    // Force a page reload to update subscription status
+                    alert("¡Suscripción exitosa! 🚀 Redirigiendo al dashboard...");
 
                     setTimeout(() => {
 
@@ -204,15 +143,15 @@ const CheckoutPage = () => {
 
                   } else {
 
-                    throw new Error(result.error || "Payment confirmation failed");
+                    throw new Error(result.error || "Subscription confirmation failed");
 
                   }
 
                 } catch (error) {
 
-                  console.error("Payment confirmation error:", error);
+                  console.error("Subscription confirmation error:", error);
 
-                  alert("Error al confirmar el pago. Por favor contacta soporte.");
+                  alert("Error al confirmar la suscripción. Por favor contacta soporte.");
 
                 }
 

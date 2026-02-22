@@ -1,4 +1,3 @@
-import paypal from '@paypal/checkout-server-sdk';
 import fs from 'fs';
 import path from 'path';
 
@@ -12,99 +11,103 @@ if (fs.existsSync(envPath)) {
             process.env[key.trim()] = value.trim();
         }
     });
-} else {
-    console.warn(".env.local not found at", envPath);
 }
 
-// Initialize environment
 const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+const mode = process.env.PAYPAL_MODE || "sandbox";
+const baseUrl = mode === "live"
+    ? "https://api-m.paypal.com"
+    : "https://api-m.sandbox.paypal.com";
+
+console.log(`Using PayPal in ${mode} mode`);
 
 if (!clientId || !clientSecret) {
-    console.error("Missing PAYPAL_CLIENT_ID or PAYPAL_CLIENT_SECRET in .env.local");
-    console.log("Loaded keys:", Object.keys(process.env).filter(k => k.includes('PAYPAL')));
+    console.error("Missing credentials in .env.local");
     process.exit(1);
 }
 
-const environment = new paypal.core.SandboxEnvironment(clientId, clientSecret);
-const client = new paypal.core.PayPalHttpClient(environment);
-
-async function createProduct() {
-    const request = new paypal.core.PayPalHttpRequest('/v1/catalogs/products', 'POST');
-    request.setHeader("Content-Type", "application/json");
-    request.requestBody({
-        "name": "Suscripción Mensual",
-        "description": "Acceso premium mensual a la plataforma",
-        "type": "SERVICE",
-        "category": "SOFTWARE",
-        "image_url": "https://example.com/logo.png",
-        "home_url": "https://example.com"
+async function getAccessToken() {
+    const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+    const response = await fetch(`${baseUrl}/v1/oauth2/token`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Basic ${auth}`,
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: 'grant_type=client_credentials',
     });
-
-    try {
-        const response = await client.execute(request);
-        console.log(`Product Created: ${response.result.id}`);
-        return response.result.id;
-    } catch (err) {
-        console.error("Error creating product:", err);
-        throw err;
-    }
+    const data = await response.json();
+    if (!response.ok) throw new Error(JSON.stringify(data));
+    return data.access_token;
 }
 
-async function createPlan(productId) {
-    const request = new paypal.core.PayPalHttpRequest('/v1/billing/plans', 'POST');
-    request.setHeader("Content-Type", "application/json");
-    request.requestBody({
-        "product_id": productId,
-        "name": "Plan Mensual $9.99",
-        "description": "Suscripción mensual de $9.99 USD",
-        "billing_cycles": [
-            {
-                "frequency": {
-                    "interval_unit": "MONTH",
-                    "interval_count": 1
-                },
-                "tenure_type": "REGULAR",
-                "sequence": 1,
-                "total_cycles": 0, // 0 means infinite
-                "pricing_scheme": {
-                    "fixed_price": {
-                        "value": "9.99",
-                        "currency_code": "USD"
-                    }
-                }
-            }
-        ],
-        "payment_preferences": {
-            "auto_bill_outstanding": true,
-            "setup_fee": {
-                "value": "0",
-                "currency_code": "USD"
-            },
-            "setup_fee_failure_action": "CONTINUE",
-            "payment_failure_threshold": 3
-        }
+async function createProduct(token) {
+    const response = await fetch(`${baseUrl}/v1/catalogs/products`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            name: "Inventra Pro",
+            description: "Suscripción Premium de Inventra Factura",
+            type: "SERVICE",
+            category: "SOFTWARE",
+        }),
     });
+    const data = await response.json();
+    if (!response.ok) throw new Error(JSON.stringify(data));
+    return data.id;
+}
 
-    try {
-        const response = await client.execute(request);
-        console.log(`Plan Created: ${response.result.id}`);
-        return response.result.id;
-    } catch (err) {
-        console.error("Error creating plan:", err);
-        throw err;
-    }
+async function createPlan(token, productId) {
+    const response = await fetch(`${baseUrl}/v1/billing/plans`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            product_id: productId,
+            name: "Plan Mensual Pro - MXN",
+            status: "ACTIVE",
+            description: "Acceso total - $199.00 MXN mensuales",
+            billing_cycles: [{
+                frequency: { interval_unit: "MONTH", interval_count: 1 },
+                tenure_type: "REGULAR",
+                sequence: 1,
+                total_cycles: 0,
+                pricing_scheme: {
+                    fixed_price: { value: "199.00", currency_code: "MXN" }
+                }
+            }],
+            payment_preferences: {
+                auto_bill_outstanding: true,
+                setup_fee: { value: "0", currency_code: "MXN" },
+                setup_fee_failure_action: "CONTINUE",
+                payment_failure_threshold: 3
+            }
+        }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(JSON.stringify(data));
+    return data.id;
 }
 
 (async () => {
     try {
+        console.log("Getting Access Token...");
+        const token = await getAccessToken();
         console.log("Creating Product...");
-        const productId = await createProduct();
+        const productId = await createProduct(token);
         console.log("Creating Plan...");
-        const planId = await createPlan(productId);
-        console.log("\nSUCCESS! Use this Plan ID in your frontend:");
+        const planId = await createPlan(token, productId);
+        console.log("\nSUCCESS!");
         console.log(`PLAN_ID: ${planId}`);
+        console.log("\nUpdate your .env.local with this ID:");
+        console.log(`NEXT_PUBLIC_PAYPAL_PLAN_ID=${planId}`);
     } catch (e) {
-        console.error("Script failed:", e);
+        console.error("Script failed:", e.message);
     }
 })();

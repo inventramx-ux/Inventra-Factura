@@ -61,6 +61,11 @@ const freeItems = [
         icon: Users,
     },
     {
+        title: "Analíticas",
+        url: "/dashboard/analytics",
+        icon: BarChart3,
+    },
+    {
         title: "Configuración",
         url: "/dashboard/settings",
         icon: Settings,

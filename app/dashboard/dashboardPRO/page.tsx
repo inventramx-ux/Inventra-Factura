@@ -61,10 +61,12 @@ export default function EcommercePage() {
         if (savedStatus) {
             try {
                 const parsed = JSON.parse(savedStatus)
-                setIntegrations(prev => prev.map(p => ({
-                    ...p,
-                    status: parsed[p.id] || "disconnected"
-                })))
+                requestAnimationFrame(() => {
+                    setIntegrations(prev => prev.map(p => ({
+                        ...p,
+                        status: parsed[p.id] || "disconnected"
+                    })))
+                })
             } catch (e) {
                 console.error("Failed to load integration status", e)
             }

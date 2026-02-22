@@ -14,14 +14,24 @@ interface Client {
   userId: string
 }
 
-const mapClient = (data: any): Client => ({
+interface ClientRow {
+  id: string
+  name: string
+  email: string | null
+  phone: string | null
+  address: string | null
+  created_at: string
+  user_id: string
+}
+
+const mapClient = (data: ClientRow): Client => ({
   id: data.id,
   name: data.name,
   email: data.email || "",
   phone: data.phone || "",
   address: data.address || "",
-  createdAt: data.created_at || data.createdAt,
-  userId: data.user_id || data.userId
+  createdAt: data.created_at,
+  userId: data.user_id
 })
 
 interface ClientContextType {
@@ -55,7 +65,8 @@ export function ClientProvider({ children }: { children: ReactNode }) {
       if (error) throw error
       setClients((data || []).map(mapClient))
     } catch (error) {
-      console.error("Error refreshing clients:", error)
+      const message = error instanceof Error ? error.message : String(error)
+      console.error("Error refreshing clients (full):", message)
       setClients([])
     } finally {
       setLoading(false)
@@ -172,14 +183,14 @@ export function ClientProvider({ children }: { children: ReactNode }) {
           },
           (payload) => {
             if (payload.eventType === 'INSERT') {
-              const newClient = mapClient(payload.new)
+              const newClient = mapClient(payload.new as ClientRow)
               setClients(prev => {
                 // Avoid duplicates if the state was already updated manually
                 if (prev.some(c => c.id === newClient.id)) return prev
                 return [newClient, ...prev]
               })
             } else if (payload.eventType === 'UPDATE') {
-              const updatedClient = mapClient(payload.new)
+              const updatedClient = mapClient(payload.new as ClientRow)
               setClients(prev => prev.map(c => c.id === updatedClient.id ? updatedClient : c))
             } else if (payload.eventType === 'DELETE') {
               setClients(prev => prev.filter(c => c.id !== payload.old.id))

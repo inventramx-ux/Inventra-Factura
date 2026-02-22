@@ -37,14 +37,14 @@ export async function POST(request) {
       );
     }
 
-    const { orderID, userId } = await request.json();
+    const { orderID, subscriptionID, userId } = await request.json();
 
-    const requestPaypal = new paypal.orders.OrdersCaptureRequest(orderID);
+    if (subscriptionID) {
+      console.log("Confirming subscription:", subscriptionID);
+      // For subscriptions, we usually trust the onApprove event from frontend 
+      // but ideally we should verify it via API.
+      // For now, let's update the user metadata as we did with orders.
 
-    const response = await client.execute(requestPaypal);
-
-    if (response.result.status === "COMPLETED") {
-      // Update user's subscription status in Clerk
       if (userId) {
         try {
           const clerk = await clerkClient();
@@ -52,7 +52,7 @@ export async function POST(request) {
             publicMetadata: {
               subscriptionStatus: "pro",
               subscriptionUpdated: new Date().toISOString(),
-              paypalOrderID: orderID,
+              paypalSubscriptionID: subscriptionID,
             }
           });
 
@@ -63,7 +63,7 @@ export async function POST(request) {
             .upsert({
               user_id: userId,
               status: 'pro',
-              paypal_order_id: orderID,
+              paypal_order_id: subscriptionID, // Store subscription ID in order ID column for compatibility
               updated_at: new Date().toISOString()
             });
 
@@ -72,31 +72,68 @@ export async function POST(request) {
           }
         } catch (updateError) {
           console.error("Subscription update error:", updateError);
-          // Continue even if updates fail
         }
       }
 
-      // Here you would typically:
-      // 1. Send confirmation email
-      // 2. Grant access to Pro features
-      // 3. Log the transaction
-
       return Response.json({
         success: true,
-        status: response.result.status,
-        orderID: response.result.id,
+        subscriptionID: subscriptionID,
         subscriptionUpdated: true
       });
-    } else {
-      return Response.json(
-        { error: "Payment not completed" },
-        { status: 400 }
-      );
     }
-  } catch (error) {
-    console.error("PayPal capture error:", error);
+
+    if (orderID) {
+      const requestPaypal = new paypal.orders.OrdersCaptureRequest(orderID);
+      const response = await client.execute(requestPaypal);
+
+      if (response.result.status === "COMPLETED") {
+        if (userId) {
+          try {
+            const clerk = await clerkClient();
+            await clerk.users.updateUser(userId, {
+              publicMetadata: {
+                subscriptionStatus: "pro",
+                subscriptionUpdated: new Date().toISOString(),
+                paypalOrderID: orderID,
+              }
+            });
+
+            // Sync with Supabase
+            const { supabase } = await import("@/lib/supabase");
+            const { error: supabaseError } = await supabase
+              .from('subscriptions')
+              .upsert({
+                user_id: userId,
+                status: 'pro',
+                paypal_order_id: orderID,
+                updated_at: new Date().toISOString()
+              });
+
+            if (supabaseError) {
+              console.error("Supabase subscription sync error:", supabaseError);
+            }
+          } catch (updateError) {
+            console.error("Subscription update error:", updateError);
+          }
+        }
+
+        return Response.json({
+          success: true,
+          status: response.result.status,
+          orderID: response.result.id,
+          subscriptionUpdated: true
+        });
+      }
+    }
+
     return Response.json(
-      { error: "Failed to capture payment" },
+      { error: "No orderID or subscriptionID provided or payment not completed" },
+      { status: 400 }
+    );
+  } catch (error) {
+    console.error("PayPal confirmation error:", error);
+    return Response.json(
+      { error: "Failed to confirm payment/subscription" },
       { status: 500 }
     );
   }

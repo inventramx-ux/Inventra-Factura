@@ -4,7 +4,7 @@
 
 import { useState } from "react"
 
-import { useInvoice } from "@/app/contexts/InvoiceContext"
+import { useInvoice, Invoice } from "@/app/contexts/InvoiceContext"
 
 import { useSubscription } from "@/app/contexts/SubscriptionContext"
 
@@ -26,13 +26,13 @@ import { Plus, FileText, Trash2, X, Download, AlertCircle, Pencil, Share2, Check
 
 export default function InvoicesPage() {
 
-    const { invoices, loading, totalInvoices, createInvoice, deleteInvoice } = useInvoice()
+    const { invoices, loading, totalInvoices, createInvoice, updateInvoice, deleteInvoice } = useInvoice()
 
     const { isPro, invoicesLimit } = useSubscription()
 
     const [showForm, setShowForm] = useState(false)
     const [saving, setSaving] = useState(false)
-    const [editingInvoice, setEditingInvoice] = useState<any>(null)
+    const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null)
     const [copiedId, setCopiedId] = useState<string | null>(null)
 
 
@@ -87,7 +87,7 @@ export default function InvoicesPage() {
 
 
             if (editingInvoice) {
-                await useInvoice().updateInvoice(editingInvoice.id, {
+                await updateInvoice(editingInvoice.id, {
                     invoiceNumber: formData.invoiceNumber,
                     clientName: formData.clientName,
                     clientEmail: formData.clientEmail,
@@ -167,13 +167,14 @@ export default function InvoicesPage() {
                 companyLogo: "",
             })
 
-        } catch (error: any) {
+        } catch (error) {
+            const e = error as { message?: string, details?: string, hint?: string, code?: string }
             console.error("Error creating invoice (Dashboard):", {
-                message: error.message,
-                details: error.details,
-                hint: error.hint,
-                code: error.code,
-                error: error
+                message: e.message,
+                details: e.details,
+                hint: e.hint,
+                code: e.code,
+                error: e
             })
         } finally {
 
@@ -185,7 +186,7 @@ export default function InvoicesPage() {
 
 
 
-    const handleEdit = (invoice: any) => {
+    const handleEdit = (invoice: Invoice) => {
         setEditingInvoice(invoice)
         setFormData({
             invoiceNumber: invoice.invoiceNumber,
@@ -215,7 +216,7 @@ export default function InvoicesPage() {
         }
     }
 
-    const handleDownload = async (invoice: any, shouldShare = false) => {
+    const handleDownload = async (invoice: Invoice, shouldShare = false) => {
         const html2pdf = (await import("html2pdf.js")).default;
 
         const element = document.createElement("div");
@@ -252,7 +253,7 @@ export default function InvoicesPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        ${invoice.items.map((item: any) => `
+                        ${invoice.items.map((item) => `
                             <tr>
                                 <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.description}</td>
                                 <td style="padding: 12px; text-align: center; border-bottom: 1px solid #eee;">${item.quantity}</td>
@@ -326,7 +327,7 @@ export default function InvoicesPage() {
         html2pdf().from(element).set(opt).save();
     }
 
-    const handleShare = (invoice: any) => {
+    const handleShare = (invoice: Invoice) => {
         handleDownload(invoice, true);
         setCopiedId(invoice.id);
         setTimeout(() => setCopiedId(null), 2000);

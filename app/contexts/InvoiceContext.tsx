@@ -4,7 +4,7 @@ import { createContext, useContext, useState, useEffect, ReactNode, useCallback 
 import { useUser } from "@clerk/nextjs"
 import { supabase } from "@/lib/supabase"
 
-interface InvoiceItem {
+export interface InvoiceItem {
   id: string
   description: string
   quantity: number
@@ -12,7 +12,7 @@ interface InvoiceItem {
   total: number
 }
 
-interface Invoice {
+export interface Invoice {
   id: string
   invoiceNumber: string
   clientName: string
@@ -33,25 +33,46 @@ interface Invoice {
   userId: string
 }
 
-const mapInvoice = (data: any): Invoice => ({
+interface InvoiceRow {
+  id: string
+  invoice_number: string
+  client_name: string
+  client_email: string | null
+  client_phone: string | null
+  client_address: string | null
+  platform: string
+  items: InvoiceItem[]
+  subtotal: number
+  tax: number
+  total: number
+  status: "draft" | "sent" | "paid" | "overdue"
+  created_at: string
+  due_date: string
+  payment_method: string
+  notes: string
+  company_logo?: string
+  user_id: string
+}
+
+const mapInvoice = (data: InvoiceRow): Invoice => ({
   id: data.id,
-  invoiceNumber: data.invoice_number || data.invoiceNumber,
-  clientName: data.client_name || data.clientName,
-  clientEmail: data.client_email || data.clientEmail || "",
-  clientPhone: data.client_phone || data.clientPhone || "",
-  clientAddress: data.client_address || data.clientAddress || "",
+  invoiceNumber: data.invoice_number,
+  clientName: data.client_name,
+  clientEmail: data.client_email || "",
+  clientPhone: data.client_phone || "",
+  clientAddress: data.client_address || "",
   platform: data.platform || "custom",
   items: data.items || [],
   subtotal: Number(data.subtotal || 0),
   tax: Number(data.tax || 0),
   total: Number(data.total || 0),
   status: data.status || "draft",
-  createdAt: data.created_at || data.createdAt,
-  dueDate: data.due_date || data.dueDate,
-  paymentMethod: data.payment_method || data.paymentMethod || "transferencia",
+  createdAt: data.created_at,
+  dueDate: data.due_date,
+  paymentMethod: data.payment_method || "transferencia",
   notes: data.notes || "",
-  companyLogo: data.company_logo || data.companyLogo,
-  userId: data.user_id || data.userId
+  companyLogo: data.company_logo,
+  userId: data.user_id
 })
 
 interface InvoiceContextType {
@@ -92,7 +113,8 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
       if (error) throw error
       setInvoices((data || []).map(mapInvoice))
     } catch (error) {
-      console.error("Error refreshing invoices:", error)
+      const message = error instanceof Error ? error.message : String(error)
+      console.error("Error refreshing invoices (full):", message)
       setInvoices([])
     } finally {
       setLoading(false)
@@ -145,10 +167,12 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
       const mapped = mapInvoice(data)
       setInvoices(prev => [mapped, ...prev])
       return mapped
-    } catch (error: any) {
+    } catch (error) {
+      const e = error as { message?: string, details?: string, hint?: string, code?: string }
+      const message = error instanceof Error ? error.message : String(error)
       console.error("Error creating invoice (EXCEPTIONAL):", error)
-      console.error("Error message string:", String(error))
-      console.error("Error keys:", Object.keys(error))
+      console.error("Error message string:", message)
+      console.error("Error keys:", Object.keys(e))
       throw error
     }
   }
@@ -156,7 +180,7 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
   const updateInvoice = async (id: string, data: Partial<Invoice>): Promise<Invoice> => {
     if (!user) throw new Error("Debes iniciar sesión para actualizar una factura")
 
-    const mappedData: any = {}
+    const mappedData: Partial<InvoiceRow> = {}
     if (data.invoiceNumber) mappedData.invoice_number = data.invoiceNumber
     if (data.paymentMethod) mappedData.payment_method = data.paymentMethod
     if (data.dueDate) mappedData.due_date = data.dueDate
@@ -167,10 +191,11 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
     if (data.companyLogo) mappedData.company_logo = data.companyLogo
 
     // Copy other fields that don't need mapping
-    const directFields = ['subtotal', 'tax', 'total', 'status', 'notes', 'platform', 'items']
+    const directFields = ['subtotal', 'tax', 'total', 'status', 'notes', 'platform', 'items'] as const
     directFields.forEach(field => {
-      if ((data as any)[field] !== undefined) {
-        mappedData[field] = (data as any)[field]
+      if (data[field] !== undefined) {
+        // @ts-expect-error - mapping Partial<Invoice> to Partial<InvoiceRow> keys safely for direct fields
+        mappedData[field] = data[field]
       }
     })
 
@@ -188,13 +213,14 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
       const mapped = mapInvoice(updatedData)
       setInvoices(prev => prev.map(inv => inv.id === id ? mapped : inv))
       return mapped
-    } catch (error: any) {
+    } catch (error) {
+      const e = error as { message?: string, details?: string, hint?: string, code?: string }
       console.error("Error updating invoice (full details):", {
-        message: error.message,
-        details: error.details,
-        hint: error.hint,
-        code: error.code,
-        error: error
+        message: e.message,
+        details: e.details,
+        hint: e.hint,
+        code: e.code,
+        error: e
       })
       throw error
     }
@@ -258,13 +284,13 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
           },
           (payload) => {
             if (payload.eventType === 'INSERT') {
-              const newInvoice = mapInvoice(payload.new)
+              const newInvoice = mapInvoice(payload.new as InvoiceRow)
               setInvoices(prev => {
                 if (prev.some(i => i.id === newInvoice.id)) return prev
                 return [newInvoice, ...prev]
               })
             } else if (payload.eventType === 'UPDATE') {
-              const updatedInvoice = mapInvoice(payload.new)
+              const updatedInvoice = mapInvoice(payload.new as InvoiceRow)
               setInvoices(prev => prev.map(i => i.id === updatedInvoice.id ? updatedInvoice : i))
             } else if (payload.eventType === 'DELETE') {
               setInvoices(prev => prev.filter(i => i.id !== payload.old.id))
