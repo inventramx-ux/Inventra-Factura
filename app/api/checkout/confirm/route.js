@@ -4,6 +4,33 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: '.env.local' });
 
+async function getAccessToken() {
+  const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
+  const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
+  const mode = process.env.PAYPAL_MODE || "sandbox";
+  const baseUrl = mode === "live"
+    ? "https://api-m.paypal.com"
+    : "https://api-m.sandbox.paypal.com";
+
+  if (!clientID || !clientSecret) {
+    throw new Error("PayPal credentials not found");
+  }
+
+  const auth = Buffer.from(`${clientID}:${clientSecret}`).toString("base64");
+  const response = await fetch(`${baseUrl}/v1/oauth2/token`, {
+    method: "POST",
+    headers: {
+      "Authorization": `Basic ${auth}`,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: "grant_type=client_credentials",
+  });
+
+  const data = await response.json();
+  if (!response.ok) throw new Error("Failed to get PayPal access token");
+  return data.access_token;
+}
+
 const getPayPalClient = () => {
   const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
   const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
@@ -41,9 +68,34 @@ export async function POST(request) {
 
     if (subscriptionID) {
       console.log("Confirming subscription:", subscriptionID);
-      // For subscriptions, we usually trust the onApprove event from frontend 
-      // but ideally we should verify it via API.
-      // For now, let's update the user metadata as we did with orders.
+
+      // Verify subscription status via PayPal API
+      const accessToken = await getAccessToken();
+      const baseUrl = process.env.PAYPAL_MODE === "live"
+        ? "https://api-m.paypal.com"
+        : "https://api-m.sandbox.paypal.com";
+
+      const subResponse = await fetch(`${baseUrl}/v1/billing/subscriptions/${subscriptionID}`, {
+        headers: {
+          "Authorization": `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        }
+      });
+
+      if (!subResponse.ok) {
+        throw new Error("Failed to verify subscription with PayPal");
+      }
+
+      const subscriptionDetails = await subResponse.json();
+      console.log("Subscription status:", subscriptionDetails.status);
+
+      // Only proceed if active
+      if (subscriptionDetails.status !== "ACTIVE" && subscriptionDetails.status !== "APPROVED") {
+        return Response.json(
+          { error: "La suscripción no está activa", details: `Estado actual: ${subscriptionDetails.status}` },
+          { status: 400 }
+        );
+      }
 
       if (userId) {
         try {

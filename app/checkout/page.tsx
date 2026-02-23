@@ -93,7 +93,7 @@ const CheckoutPage = () => {
 
                 return actions.subscription.create({
 
-                  plan_id: process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID || "P-5EL73493HV576381LNGM7OVA",
+                  plan_id: process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID || "",
 
                 });
 
