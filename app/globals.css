@@ -1,5 +1,9 @@
 @import "tailwindcss";
 
+html {
+  scroll-padding-top: 100px;
+}
+
 @layer base {
   * {
     -webkit-user-select: none;

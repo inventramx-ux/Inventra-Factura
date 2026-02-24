@@ -8,9 +8,10 @@ import { useRouter } from 'next/navigation';
 
 import Link from 'next/link';
 
-import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Crown, FileText, Users, DollarSign, Plus, LayoutDashboard, Settings, Mail, Bell, MessageSquare } from 'lucide-react';
+import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Crown, FileText, Users, DollarSign, Plus, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown } from 'lucide-react';
 
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
+import { animate } from 'framer-motion';
 
 
 
@@ -121,7 +122,7 @@ const plans = [
       'Soporte prioritario',
 
       'Sin marca de agua',
-            'Analíticas de facturación',
+      'Analíticas de facturación',
 
     ],
 
@@ -134,6 +135,23 @@ const plans = [
 ];
 
 
+
+const scrollToSection = (id: string) => {
+  const element = document.getElementById(id);
+  if (element) {
+    const offset = 80;
+    const bodyRect = document.body.getBoundingClientRect().top;
+    const elementRect = element.getBoundingClientRect().top;
+    const targetPosition = elementRect - bodyRect - offset;
+
+    animate(window.scrollY, targetPosition, {
+      type: "tween",
+      duration: 0.5,
+      ease: [0.65, 0, 0.35, 1], // easeInOutQuart
+      onUpdate: (latest) => window.scrollTo(0, latest),
+    });
+  }
+};
 
 export default function Home() {
 
@@ -161,31 +179,24 @@ export default function Home() {
 
               <HeartHandshakeIcon size={14} />
 
-              Usado por mas de 500 negocios en todo el mundo
-
+              Facturación automática para e-commerce
             </p>
 
 
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 leading-tight tracking-tight">
 
-              Crea facturas
-
-              <br />
-
-              profesionales fácilmente
-
+              Factura tus pedidos automáticamente.
             </h1>
 
 
 
             <p className="text-base md:text-lg text-gray-400 max-w-2xl mb-8 md:mb-10">
-
-              Sistema de facturación moderno para tu negocio.
+              Conecta tus tiendas y genera facturas en segundos cada vez que recibes un pedido.
+              Sin capturar datos, sin errores y sin trabajo manual.
 
               <br className="hidden sm:block" />
 
-              Gestiona clientes, facturas y pagos en un solo lugar.
 
             </p>
 
@@ -217,7 +228,14 @@ export default function Home() {
 
               </SignedOut>
 
-              <Link href="#features" className="w-full sm:w-auto justify-center border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-1">
+              <Link
+                href="#features"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection('features');
+                }}
+                className="w-full sm:w-auto justify-center border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-1"
+              >
 
                 Más información <ArrowRight size={14} />
 
@@ -395,48 +413,48 @@ export default function Home() {
 
 
 
-      {/* CTA Section */}
-
-      <section className="py-20 px-4 border-t border-white/10">
-
-        <div className="max-w-2xl mx-auto text-center">
-
-          <h2 className="text-3xl font-medium text-white mb-4">
-
-            ¿Listo para simplificar tu facturación?
-
+      {/* FAQ Section */}
+      <section className="py-24 px-4 border-t border-white/10" id="faq">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-3xl font-semibold text-white mb-12">
+            Preguntas Frecuentes
           </h2>
 
-          <p className="text-gray-400 mb-8">
-
-            Únete a miles de negocios que usan Inventra Factura para gestionar sus facturas.
-
-          </p>
-
-          <SignedIn>
-
-            <Link href="/dashboard" className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
-
-              Ir al Dashboard
-
-            </Link>
-
-          </SignedIn>
-
-          <SignedOut>
-
-            <Link href="/sign-up" className="bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
-
-              Comenzar gratis
-
-            </Link>
-
-          </SignedOut>
-
-          <p className="text-xs text-gray-600 mt-4">No se requiere tarjeta de crédito</p>
-
+          <div className="border-t border-white/10">
+            {[
+              {
+                q: "¿Qué es Inventra?",
+                a: "Inventra es un sistema de facturación diseñado para vendedores de eCommerce. Conecta tus tiendas y genera facturas automáticamente cada vez que recibes un pedido, sin procesos manuales."
+              },
+              {
+                q: "¿Para quién es Inventra?",
+                a: "Está pensado para: Vendedores en marketplaces (Amazon, Mercado Libre, etc.) Tiendas en línea propias (Shopify, WooCommerce, etc.) Negocios pequeños que necesitan facturar rápido sin complicaciones"
+              },
+              {
+                q: "¿Cómo funciona?",
+                a: "Conectas tu tienda o registras tus ventas. Inventra detecta los pedidos. Se generan las facturas automáticamente con los datos del cliente. Sin capturar información manualmente."
+              },
+              {
+                q: "¿Necesito hacer algo cada vez que vendo?",
+                a: "No. Inventra automatiza la facturación para que no tengas que generar facturas una por una."
+              },
+              {
+                q: "¿Puedo usarlo aunque no tenga eCommerce?",
+                a: "Sí. También funciona como un sistema de facturación tradicional para emitir facturas manualmente cuando lo necesites."
+              },
+              {
+                q: "¿Qué nos diferencia de otros sistemas de facturación?",
+                a: "Estamos disenados para vendedores de e-commerce, lo que significa que tenemos todas las herramientas que necesitas para facturar tus ventas de manera rápida y eficiente."
+              },
+              {
+                q: "¿Qué tipos de planes tiene Inventra Factura?",
+                a: "Ofrece un plan gratuito para quienes empiezan y un plan Pro por solo $199 MXN para quienes necesitan facturación ilimitada y herramientas avanzadas."
+              }
+            ].map((faq, index) => (
+              <FAQItem key={index} question={faq.q} answer={faq.a} />
+            ))}
+          </div>
         </div>
-
       </section>
 
 
@@ -487,6 +505,31 @@ export default function Home() {
 
   );
 
+}
+
+function FAQItem({ question, answer }: { question: string, answer: string }) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="border-b border-white/10 overflow-hidden">
+      <button
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-full py-6 flex items-center justify-between text-left hover:bg-white/[0.02] transition-colors"
+      >
+        <span className="text-white font-medium pr-8">{question}</span>
+        <ChevronDown
+          className={`size-5 text-gray-500 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}
+        />
+      </button>
+      <div
+        className={`transition-all duration-300 ease-in-out ${isOpen ? 'max-h-40 pb-6 opacity-100' : 'max-h-0 opacity-0'}`}
+      >
+        <p className="text-gray-400 text-sm leading-relaxed">
+          {answer}
+        </p>
+      </div>
+    </div>
+  );
 }
 
 
@@ -673,10 +716,24 @@ function InlineNavbar() {
           </div>
 
           <div className="hidden md:flex items-center gap-8 absolute left-1/2 -translate-x-1/2">
-            <Link href="/#features" className="text-slate-300 hover:text-white transition-colors">
+            <Link
+              href="#features"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('features');
+              }}
+              className="text-slate-300 hover:text-white transition-colors"
+            >
               Características
             </Link>
-            <Link href="/#pricing" className="text-slate-300 hover:text-white transition-colors">
+            <Link
+              href="#pricing"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('pricing');
+              }}
+              className="text-slate-300 hover:text-white transition-colors"
+            >
               Planes
             </Link>
             <a
@@ -714,10 +771,26 @@ function InlineNavbar() {
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t border-slate-800">
             <div className="flex flex-col gap-4">
-              <Link href="/#features" className="text-slate-300 hover:text-white transition-colors">
+              <Link
+                href="#features"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsMenuOpen(false);
+                  scrollToSection('features');
+                }}
+                className="text-slate-300 hover:text-white transition-colors"
+              >
                 Características
               </Link>
-              <Link href="/#pricing" className="text-slate-300 hover:text-white transition-colors">
+              <Link
+                href="#pricing"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setIsMenuOpen(false);
+                  scrollToSection('pricing');
+                }}
+                className="text-slate-300 hover:text-white transition-colors"
+              >
                 Planes
               </Link>
               <SignedOut>
