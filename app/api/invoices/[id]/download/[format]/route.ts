@@ -3,7 +3,7 @@ import { facturapi } from "@/lib/facturapi";
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: string, format: string } }
+    { params }: { params: Promise<{ id: string; format: string }> }
 ) {
     const { id, format } = await params;
 
