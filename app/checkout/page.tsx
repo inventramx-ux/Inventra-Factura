@@ -27,6 +27,7 @@ const CheckoutPage = () => {
   const router = useRouter();
 
   const { user } = useUser();
+  const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' | 'info' } | null>(null);
 
 
 
@@ -63,6 +64,15 @@ const CheckoutPage = () => {
             </div>
 
           </div>
+
+          {message && (
+            <div className={`p-4 rounded-lg mb-6 text-sm ${message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
+                message.type === 'error' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                  'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+              }`}>
+              {message.text}
+            </div>
+          )}
 
 
 
@@ -132,43 +142,24 @@ const CheckoutPage = () => {
 
 
                   if (res.ok && result.success) {
-
-                    alert("¡Suscripción exitosa! 🚀 Redirigiendo al dashboard...");
-
+                    setMessage({ text: "¡Suscripción exitosa! Redirigiendo al dashboard...", type: 'success' });
                     setTimeout(() => {
-
                       window.location.href = "/dashboard";
-
                     }, 2000);
-
                   } else {
-
                     throw new Error(result.error || "Subscription confirmation failed");
-
                   }
-
                 } catch (error) {
-
                   console.error("Subscription confirmation error:", error);
-
-                  alert("Error al confirmar la suscripción. Por favor contacta soporte.");
-
+                  setMessage({ text: "Error al confirmar la suscripción. Por favor contacta soporte.", type: 'error' });
                 }
-
               }}
-
               onCancel={() => {
-
-                alert("Pago cancelado. Puedes intentarlo de nuevo cuando quieras.");
-
+                setMessage({ text: "Pago cancelado. Puedes intentarlo de nuevo cuando quieras.", type: 'info' });
               }}
-
               onError={(err) => {
-
                 console.error("PayPal error:", err);
-
-                alert("Ocurrió un error con PayPal. Por favor intenta de nuevo.");
-
+                setMessage({ text: "Ocurrió un error con PayPal. Por favor intenta de nuevo.", type: 'error' });
               }}
 
             />

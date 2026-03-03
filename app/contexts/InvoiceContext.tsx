@@ -31,6 +31,13 @@ export interface Invoice {
   notes: string
   companyLogo?: string
   userId: string
+  // CFDI 4.0 Fields
+  rfc?: string
+  zipCode?: string
+  taxSystem?: string
+  usage?: string
+  facturapiId?: string
+  satProductCode?: string
 }
 
 interface InvoiceRow {
@@ -52,6 +59,13 @@ interface InvoiceRow {
   notes: string
   company_logo?: string
   user_id: string
+  // CFDI 4.0 Fields
+  rfc: string | null
+  zip_code: string | null
+  tax_system: string | null
+  usage: string | null
+  facturapi_id: string | null
+  sat_product_code: string | null
 }
 
 const mapInvoice = (data: InvoiceRow): Invoice => ({
@@ -72,7 +86,13 @@ const mapInvoice = (data: InvoiceRow): Invoice => ({
   paymentMethod: data.payment_method || "transferencia",
   notes: data.notes || "",
   companyLogo: data.company_logo,
-  userId: data.user_id
+  userId: data.user_id,
+  rfc: data.rfc || "",
+  zipCode: data.zip_code || "",
+  taxSystem: data.tax_system || "",
+  usage: data.usage || "",
+  facturapiId: data.facturapi_id || "",
+  satProductCode: data.sat_product_code || "01010101"
 })
 
 interface InvoiceContextType {
@@ -85,6 +105,7 @@ interface InvoiceContextType {
   updateInvoice: (id: string, data: Partial<Invoice>) => Promise<Invoice>
   deleteInvoice: (id: string) => Promise<void>
   getInvoice: (id: string) => Promise<Invoice | null>
+  stampInvoice: (id: string) => Promise<void>
   refreshInvoices: () => Promise<void>
 }
 
@@ -145,6 +166,11 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
         invoice_number: invoiceData.invoiceNumber || `INV-${Date.now().toString().slice(-6)}`,
         payment_method: invoiceData.paymentMethod || "transferencia",
         due_date: invoiceData.dueDate || new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+        rfc: invoiceData.rfc || "",
+        zip_code: invoiceData.zipCode || "",
+        tax_system: invoiceData.taxSystem || "",
+        usage: invoiceData.usage || "",
+        sat_product_code: invoiceData.satProductCode || "01010101",
       }
 
       console.log("DEBUG: Attempting Supabase insert with:", JSON.stringify(insertData, null, 2))
@@ -189,6 +215,12 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
     if (data.clientPhone) mappedData.client_phone = data.clientPhone
     if (data.clientAddress) mappedData.client_address = data.clientAddress
     if (data.companyLogo) mappedData.company_logo = data.companyLogo
+    if (data.rfc) mappedData.rfc = data.rfc
+    if (data.zipCode) mappedData.zip_code = data.zipCode
+    if (data.taxSystem) mappedData.tax_system = data.taxSystem
+    if (data.usage) mappedData.usage = data.usage
+    if (data.satProductCode) mappedData.sat_product_code = data.satProductCode
+    if (data.facturapiId) mappedData.facturapi_id = data.facturapiId
 
     // Copy other fields that don't need mapping
     const directFields = ['subtotal', 'tax', 'total', 'status', 'notes', 'platform', 'items'] as const
@@ -241,6 +273,26 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
       setInvoices(prev => prev.filter(inv => inv.id !== id))
     } catch (error) {
       console.error("Error deleting invoice:", error)
+      throw error
+    }
+  }
+
+  const stampInvoice = async (id: string): Promise<void> => {
+    if (!user) throw new Error("Debes iniciar sesión para timbrar una factura")
+
+    try {
+      const response = await fetch(`/api/invoices/${id}/stamp`, {
+        method: "POST",
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Error al timbrar la factura")
+      }
+
+      await refreshInvoices()
+    } catch (error) {
+      console.error("Error stamping invoice:", error)
       throw error
     }
   }
@@ -320,6 +372,7 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
         updateInvoice,
         deleteInvoice,
         getInvoice,
+        stampInvoice,
         refreshInvoices,
       }}
     >

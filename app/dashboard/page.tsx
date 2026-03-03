@@ -59,7 +59,7 @@ export default function DashboardPage() {
             {/* Welcome Section */}
             <div>
                 <h1 className="text-2xl font-semibold text-white">
-                    Bienvenido, {user?.firstName || "Usuario"} 👋
+                    Bienvenido, {user?.firstName || "Usuario"}
                 </h1>
                 <p className="text-gray-400 mt-1">
                     Aquí tienes un resumen de tu actividad.
@@ -126,14 +126,14 @@ export default function DashboardPage() {
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-gray-400">Plan</CardTitle>
-                        <Crown className={`h-4 w-4 ${isPro ? "text-amber-400" : "text-gray-500"}`} />
+                        <Crown className={`h-4 w-4 ${isPro ? "text-blue-400" : "text-gray-500"}`} />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">
                             {isPro ? "Pro" : "Gratuito"}
                         </div>
                         {!isPro && (
-                            <Link href="/dashboard/upgrade" className="text-xs text-amber-400 hover:text-amber-300 mt-1 inline-flex items-center gap-1">
+                            <Link href="/dashboard/upgrade" className="text-xs text-blue-400 hover:text-blue-300 mt-1 inline-flex items-center gap-1">
                                 Actualizar <ArrowRight className="h-3 w-3" />
                             </Link>
                         )}

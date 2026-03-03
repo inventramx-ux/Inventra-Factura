@@ -25,7 +25,14 @@ export function initializeDatabase() {
       due_date DATE,
       payment_method TEXT,
       notes TEXT,
-      user_id TEXT NOT NULL
+      company_logo TEXT,
+      user_id TEXT NOT NULL,
+      rfc TEXT,
+      zip_code TEXT,
+      tax_system TEXT,
+      usage TEXT,
+      facturapi_id TEXT,
+      sat_product_code TEXT DEFAULT '01010101'
     )
   `)
 

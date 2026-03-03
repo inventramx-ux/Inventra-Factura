@@ -113,7 +113,7 @@ export default function SettingsPage() {
                                 </div>
                             </div>
                             <Link href="/checkout">
-                                <Button className="bg-gradient-to-r from-amber-500 to-orange-500 text-black font-semibold hover:from-amber-400 hover:to-orange-400 gap-2 mt-2">
+                                <Button className="bg-blue-400 from-amber-500 to-orange-500 text-black font-semibold hover:from-amber-400 hover:to-orange-400 gap-2 mt-2">
                                     Actualizar a Pro — $199/mes
                                     <ArrowRight className="h-4 w-4" />
                                 </Button>

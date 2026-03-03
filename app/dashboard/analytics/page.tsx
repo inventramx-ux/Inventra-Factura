@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo } from "react"
+import React, { useMemo, useState } from "react"
 import { useInvoice } from "@/app/contexts/InvoiceContext"
 import { useClient } from "@/app/contexts/ClientContext"
 import { useSubscription } from "@/app/contexts/SubscriptionContext"
@@ -36,6 +36,7 @@ export default function AnalyticsPage() {
     const { invoices, loading: invoicesLoading } = useInvoice()
     const { clients, loading: clientsLoading } = useClient()
     const { isPro, isLoading: subLoading } = useSubscription()
+    const [timeRange, setTimeRange] = useState<'day' | 'week' | 'month' | 'year'>('month')
 
     const loading = invoicesLoading || clientsLoading || subLoading
 
@@ -43,25 +44,86 @@ export default function AnalyticsPage() {
     const stats = useMemo(() => {
         if (!invoices.length) return null
 
-        // 1. Revenue by Month (Last 6 months)
-        const last6Months = Array.from({ length: 6 }, (_, i) => {
-            const date = new Date()
-            date.setMonth(date.getMonth() - i)
-            return {
-                month: date.toLocaleString('es-MX', { month: 'short' }),
-                monthNum: date.getMonth(),
-                year: date.getFullYear(),
-                revenue: 0
-            }
-        }).reverse()
+        // Revenue Over Time based on timeRange
+        let revenueOverTime: any[] = []
+        const now = new Date()
 
-        invoices.forEach(inv => {
-            const date = new Date(inv.createdAt)
-            const monthIdx = last6Months.findIndex(m => m.monthNum === date.getMonth() && m.year === date.getFullYear())
-            if (monthIdx !== -1) {
-                last6Months[monthIdx].revenue += inv.total
-            }
-        })
+        if (timeRange === 'day') {
+            // Last 24 hours (hourly)
+            revenueOverTime = Array.from({ length: 24 }, (_, i) => {
+                const date = new Date(now)
+                date.setHours(date.getHours() - i)
+                return {
+                    label: date.getHours() + ':00',
+                    timestamp: date.getTime(),
+                    revenue: 0
+                }
+            }).reverse()
+
+            invoices.forEach(inv => {
+                const date = new Date(inv.createdAt)
+                const hourIdx = revenueOverTime.findIndex(h => {
+                    const hDate = new Date(h.timestamp)
+                    return hDate.getHours() === date.getHours() && hDate.getDate() === date.getDate()
+                })
+                if (hourIdx !== -1) revenueOverTime[hourIdx].revenue += inv.total
+            })
+        } else if (timeRange === 'week') {
+            // Last 7 days
+            revenueOverTime = Array.from({ length: 7 }, (_, i) => {
+                const date = new Date(now)
+                date.setDate(date.getDate() - i)
+                return {
+                    label: date.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric' }),
+                    timestamp: date.getTime(),
+                    revenue: 0
+                }
+            }).reverse()
+
+            invoices.forEach(inv => {
+                const date = new Date(inv.createdAt)
+                const dayIdx = revenueOverTime.findIndex(d => {
+                    const dDate = new Date(d.timestamp)
+                    return dDate.getDate() === date.getDate() && dDate.getMonth() === date.getMonth()
+                })
+                if (dayIdx !== -1) revenueOverTime[dayIdx].revenue += inv.total
+            })
+        } else if (timeRange === 'month') {
+            // Last 6 months
+            revenueOverTime = Array.from({ length: 6 }, (_, i) => {
+                const date = new Date(now)
+                date.setMonth(date.getMonth() - i)
+                return {
+                    label: date.toLocaleString('es-MX', { month: 'short' }),
+                    month: date.getMonth(),
+                    year: date.getFullYear(),
+                    revenue: 0
+                }
+            }).reverse()
+
+            invoices.forEach(inv => {
+                const date = new Date(inv.createdAt)
+                const monthIdx = revenueOverTime.findIndex(m => m.month === date.getMonth() && m.year === date.getFullYear())
+                if (monthIdx !== -1) revenueOverTime[monthIdx].revenue += inv.total
+            })
+        } else {
+            // Last 3 years
+            revenueOverTime = Array.from({ length: 3 }, (_, i) => {
+                const date = new Date(now)
+                date.setFullYear(date.getFullYear() - i)
+                return {
+                    label: date.getFullYear().toString(),
+                    year: date.getFullYear(),
+                    revenue: 0
+                }
+            }).reverse()
+
+            invoices.forEach(inv => {
+                const date = new Date(inv.createdAt)
+                const yearIdx = revenueOverTime.findIndex(y => y.year === date.getFullYear())
+                if (yearIdx !== -1) revenueOverTime[yearIdx].revenue += inv.total
+            })
+        }
 
         // 2. Invoice Status Distribution
         const statusData = [
@@ -87,7 +149,7 @@ export default function AnalyticsPage() {
         const avgInvoiceValue = totalRevenue / Math.max(invoices.length, 1)
 
         return {
-            revenueOverTime: last6Months,
+            revenueOverTime,
             statusDistribution: statusData,
             topClients,
             metrics: {
@@ -98,7 +160,7 @@ export default function AnalyticsPage() {
                 totalClients: clients.length
             }
         }
-    }, [invoices, clients])
+    }, [invoices, clients, timeRange])
 
     if (loading) {
         return (
@@ -116,54 +178,7 @@ export default function AnalyticsPage() {
         )
     }
 
-    if (!isPro) {
-        return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-                <div className="w-20 h-20 bg-amber-500/10 rounded-full flex items-center justify-center mb-6">
-                    <Lock className="h-10 w-10 text-amber-500" />
-                </div>
-                <h2 className="text-3xl font-bold text-white mb-4">Analíticas Pro</h2>
-                <p className="text-gray-400 max-w-md mb-8">
-                    Obtén información detallada sobre el crecimiento de tu negocio, el rendimiento de tus clientes y tendencias de ingresos con el plan Pro.
-                </p>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 w-full max-w-4xl text-left">
-                    <Card className="bg-white/5 border-white/10 opacity-60">
-                        <CardHeader className="pb-2">
-                            <TrendingUp className="h-5 w-5 text-emerald-400 mb-2" />
-                            <CardTitle className="text-sm">Crecimiento Mensual</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-xs text-gray-500">Visualiza tus ingresos mes a mes.</p>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-white/5 border-white/10 opacity-60">
-                        <CardHeader className="pb-2">
-                            <Users className="h-5 w-5 text-blue-400 mb-2" />
-                            <CardTitle className="text-sm">Top Clientes</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-xs text-gray-500">Identifica a tus clientes más valiosos.</p>
-                        </CardContent>
-                    </Card>
-                    <Card className="bg-white/5 border-white/10 opacity-60">
-                        <CardHeader className="pb-2">
-                            <FileText className="h-5 w-5 text-indigo-400 mb-2" />
-                            <CardTitle className="text-sm">Estatus de Cobro</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-xs text-gray-500">Analiza la distribución de tus cobros.</p>
-                        </CardContent>
-                    </Card>
-                </div>
-                <Link href="/dashboard/upgrade">
-                    <Button className="bg-amber-500 hover:bg-amber-600 text-black font-semibold h-12 px-8 text-lg gap-2">
-                        <Crown className="h-5 w-5" />
-                        Obtener Acceso Pro
-                    </Button>
-                </Link>
-            </div>
-        )
-    }
+    // No early return for !isPro anymore
 
     if (!stats) {
         return (
@@ -184,14 +199,35 @@ export default function AnalyticsPage() {
 
     return (
         <div className="space-y-8 pb-10">
-            <div>
-                <div className="flex items-center gap-2">
-                    <h1 className="text-2xl font-semibold text-white">Analíticas</h1>
-                    <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20 hover:bg-amber-500/10">Pro</Badge>
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                <div>
+                    <div className="flex items-center gap-2">
+                        <h1 className="text-2xl font-semibold text-white">Analíticas</h1>
+                        {isPro ? (
+                            <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20">Pro</Badge>
+                        ) : (
+                            <Badge variant="outline" className="text-gray-400 border-white/10">Gratis</Badge>
+                        )}
+                    </div>
+                    <p className="text-gray-400 mt-1">
+                        Visualiza el rendimiento de tu negocio y tus clientes.
+                    </p>
                 </div>
-                <p className="text-gray-400 mt-1">
-                    Visualiza el rendimiento de tu negocio y tus clientes.
-                </p>
+
+                <div className="flex bg-white/5 p-1 rounded-lg border border-white/10">
+                    {(['day', 'week', 'month', 'year'] as const).map((range) => (
+                        <button
+                            key={range}
+                            onClick={() => setTimeRange(range)}
+                            className={`px-3 py-1.5 text-xs font-medium rounded-md transition-all ${timeRange === range
+                                ? "bg-white/10 text-white shadow-sm"
+                                : "text-gray-400 hover:text-white"
+                                }`}
+                        >
+                            {range === 'day' ? 'Día' : range === 'week' ? 'Semana' : range === 'month' ? 'Mes' : 'Año'}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {/* Metrics Grid */}
@@ -259,7 +295,7 @@ export default function AnalyticsPage() {
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                                 <XAxis
-                                    dataKey="month"
+                                    dataKey="label"
                                     stroke="#94a3b8"
                                     fontSize={12}
                                     tickLine={false}
@@ -275,6 +311,7 @@ export default function AnalyticsPage() {
                                 <Tooltip
                                     contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #ffffff10', borderRadius: '8px' }}
                                     itemStyle={{ color: '#fff' }}
+                                    labelStyle={{ color: '#fff' }}
                                 />
                                 <Area
                                     type="monotone"
@@ -290,69 +327,99 @@ export default function AnalyticsPage() {
                 </Card>
 
                 {/* Top Clients Chart */}
-                <Card className="bg-white/5 border-white/10">
+                <Card className="bg-white/5 border-white/10 relative overflow-hidden">
                     <CardHeader>
                         <CardTitle className="text-white">Mejores Clientes</CardTitle>
                         <CardDescription className="text-gray-400">Top 5 clientes por volumen facturado</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[300px] w-full mt-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={stats.topClients} layout="vertical">
-                                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" horizontal={false} />
-                                <XAxis type="number" hide />
-                                <YAxis
-                                    dataKey="name"
-                                    type="category"
-                                    stroke="#94a3b8"
-                                    fontSize={12}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    width={100}
-                                />
-                                <Tooltip
-                                    cursor={{ fill: '#ffffff05' }}
-                                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #ffffff10', borderRadius: '8px' }}
-                                    itemStyle={{ color: '#fff' }}
-                                />
-                                <Bar dataKey="revenue" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={20} />
-                            </BarChart>
-                        </ResponsiveContainer>
+                        {!isPro && (
+                            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm p-6 text-center">
+                                <Lock className="h-8 w-8 text-blue-400 mb-3" />
+                                <h3 className="text-blue-400 font-semibold mb-2">Sección Pro</h3>
+                                <p className="text-blue-400 text-sm mb-4">Identifica a tus clientes más valiosos con el plan Pro.</p>
+                                <Link href="/dashboard/upgrade">
+                                    <Button size="sm" className="bg-blue-400 hover:bg-amber-600 text-black text-xs font-bold">
+                                        Mejorar ahora
+                                    </Button>
+                                </Link>
+                            </div>
+                        )}
+                        <div className={!isPro ? "blur-[2px]" : ""}>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={stats.topClients} layout="vertical">
+                                    <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" horizontal={false} />
+                                    <XAxis type="number" hide />
+                                    <YAxis
+                                        dataKey="name"
+                                        type="category"
+                                        stroke="#94a3b8"
+                                        fontSize={12}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        width={100}
+                                    />
+                                    <Tooltip
+                                        cursor={{ fill: '#ffffff05' }}
+                                        contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #ffffff10', borderRadius: '8px' }}
+                                        itemStyle={{ color: '#fff' }}
+                                        labelStyle={{ color: '#fff' }}
+                                    />
+                                    <Bar dataKey="revenue" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={20} />
+                                </BarChart>
+                            </ResponsiveContainer>
+                        </div>
                     </CardContent>
                 </Card>
 
                 {/* Status Distribution */}
-                <Card className="bg-white/5 border-white/10">
+                <Card className="bg-white/5 border-white/10 relative overflow-hidden">
                     <CardHeader>
                         <CardTitle className="text-white">Distribución de Facturas</CardTitle>
                         <CardDescription className="text-gray-400">Estatus actual de tus cobranzas</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[300px] w-full flex items-center justify-center">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={stats.statusDistribution}
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                >
-                                    {stats.statusDistribution.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={entry.color} />
-                                    ))}
-                                </Pie>
-                                <Tooltip
-                                    contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #ffffff10', borderRadius: '8px' }}
-                                    itemStyle={{ color: '#fff' }}
-                                />
-                                <Legend
-                                    verticalAlign="bottom"
-                                    height={36}
-                                    formatter={(value) => <span className="text-xs text-gray-400">{value}</span>}
-                                />
-                            </PieChart>
-                        </ResponsiveContainer>
+                        {!isPro && (
+                            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm p-6 text-center">
+                                <Lock className="h-8 w-8 text-blue-400 mb-3" />
+                                <h3 className="text-blue-400 font-semibold mb-2">Sección Pro</h3>
+                                <p className="text-blue-400 text-sm mb-4">Analiza el estado de tus cobros a detalle con el plan Pro.</p>
+                                <Link href="/dashboard/upgrade">
+                                    <Button size="sm" className="bg-blue-400 hover:bg-amber-600 text-black text-xs font-bold">
+                                        Mejorar ahora
+                                    </Button>
+                                </Link>
+                            </div>
+                        )}
+                        <div className={!isPro ? "blur-[2px] w-full h-full" : "w-full h-full"}>
+                            <ResponsiveContainer width="100%" height="100%">
+                                <PieChart>
+                                    <Pie
+                                        data={stats.statusDistribution}
+                                        cx="50%"
+                                        cy="50%"
+                                        innerRadius={60}
+                                        outerRadius={80}
+                                        paddingAngle={5}
+                                        dataKey="value"
+                                    >
+                                        {stats.statusDistribution.map((entry, index) => (
+                                            <Cell key={`cell-${index}`} fill={entry.color} />
+                                        ))}
+                                    </Pie>
+                                    <Tooltip
+                                        contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #ffffff10', borderRadius: '8px' }}
+                                        itemStyle={{ color: '#fff' }}
+                                        labelStyle={{ color: '#fff' }}
+                                    />
+                                    <Legend
+                                        verticalAlign="bottom"
+                                        height={36}
+                                        formatter={(value) => <span className="text-xs text-gray-400">{value}</span>}
+                                    />
+                                </PieChart>
+                            </ResponsiveContainer>
+                        </div>
                     </CardContent>
                 </Card>
             </div>

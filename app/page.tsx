@@ -20,9 +20,19 @@ const features = [
 
   {
 
-    title: 'Facturas Profesionales',
+    title: 'Facturas CFDI 4.0',
 
-    description: 'Crea facturas hermosas y profesionales en segundos para impresionar a tus clientes.',
+    description: 'Facturas validadas por el SAT CFDI 4.0, timbradas a través de Facturapi.',
+
+  },
+
+
+
+  {
+
+    title: 'Facturación Manual',
+
+    description: 'Ingresa los datos manualmente y genera facturas profesionales en cuestión de segundos.',
 
   },
 
@@ -30,41 +40,19 @@ const features = [
 
     title: 'Gestión de Clientes',
 
-    description: 'Mantén un registro completo de todos tus clientes y sus historiales de compra.',
+    description: 'Mantén un registro completo de tus clientes y consulta sus historiales de compra detallados.',
 
   },
 
   {
 
-    title: 'Reportes en Tiempo Real',
+    title: 'Analíticas',
 
-    description: 'Accede a reportes detallados de ventas y facturas actualizados constantemente.',
-
-  },
-
-  {
-
-    title: 'Seguimiento de Pagos',
-
-    description: 'Registra qué facturas han sido pagadas y cuáles aún están pendientes.',
+    description: 'Visualiza reportes detallados y estadísticas de tus facturas y el comportamiento de tus clientes.',
 
   },
 
-  {
 
-    title: 'Datos Verificados',
-
-    description: 'Todos tus datos están protegidos y respaldados en la nube de forma segura.',
-
-  },
-
-  {
-
-    title: 'Plantillas Personalizables',
-
-    description: 'Personaliza tus facturas con tu logo, colores y términos de pago específicos.',
-
-  },
 
 ];
 
@@ -179,23 +167,19 @@ export default function Home() {
 
               <HeartHandshakeIcon size={14} />
 
-              Facturación automática para e-commerce
+              SISTEMA DE FACTURACIÓN PARA E-COMMERCE CDFI 4.0
             </p>
 
 
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 leading-tight tracking-tight">
-
-              Factura tus pedidos automáticamente.
+Facturación Simple para negocios E-commerce
             </h1>
 
 
 
             <p className="text-base md:text-lg text-gray-400 max-w-2xl mb-8 md:mb-10">
-              Conecta tus tiendas y genera facturas en segundos cada vez que recibes un pedido.
-              Sin capturar datos, sin errores y sin trabajo manual.
-
-              <br className="hidden sm:block" />
+Lleva tu negocio al siguiente nivel con herramientas de gestión de clientes y analíticas de venta integradas. Emite facturas en formato CFDI 4.0 de manera profesional con un sistema pensado exclusivamente para vendedores digitales.              <br className="hidden sm:block" />
 
 
             </p>
@@ -422,34 +406,30 @@ export default function Home() {
 
           <div className="border-t border-white/10">
             {[
-              {
-                q: "¿Qué es Inventra?",
-                a: "Inventra es un sistema de facturación diseñado para vendedores de eCommerce. Conecta tus tiendas y genera facturas automáticamente cada vez que recibes un pedido, sin procesos manuales."
-              },
-              {
-                q: "¿Para quién es Inventra?",
-                a: "Está pensado para: Vendedores en marketplaces (Amazon, Mercado Libre, etc.) Tiendas en línea propias (Shopify, WooCommerce, etc.) Negocios pequeños que necesitan facturar rápido sin complicaciones"
-              },
-              {
-                q: "¿Cómo funciona?",
-                a: "Conectas tu tienda o registras tus ventas. Inventra detecta los pedidos. Se generan las facturas automáticamente con los datos del cliente. Sin capturar información manualmente."
-              },
-              {
-                q: "¿Necesito hacer algo cada vez que vendo?",
-                a: "No. Inventra automatiza la facturación para que no tengas que generar facturas una por una."
-              },
-              {
-                q: "¿Puedo usarlo aunque no tenga eCommerce?",
-                a: "Sí. También funciona como un sistema de facturación tradicional para emitir facturas manualmente cuando lo necesites."
-              },
-              {
-                q: "¿Qué nos diferencia de otros sistemas de facturación?",
-                a: "Estamos disenados para vendedores de e-commerce, lo que significa que tenemos todas las herramientas que necesitas para facturar tus ventas de manera rápida y eficiente."
-              },
-              {
-                q: "¿Qué tipos de planes tiene Inventra Factura?",
-                a: "Ofrece un plan gratuito para quienes empiezan y un plan Pro por solo $199 MXN para quienes necesitan facturación ilimitada y herramientas avanzadas."
-              }
+        {
+  "q": "¿Qué es Inventra?",
+  "a": "Inventra es un sistema de facturación diseñado para el mundo del e-commerce, con herramientas sencillas para que puedas facturar tus ventas de forma ordenada y profesional."
+},
+{
+  "q": "¿Para quién es Inventra?",
+  "a": "Está creado para vendedores de e-commerce y dueños de negocios online que necesitan una plataforma clara y rápida para gestionar sus facturas manualmente."
+},
+{
+  "q": "¿Cómo funciona?",
+  "a": "Es muy simple: creas tu cuenta, accedes a tu panel de control y comienzas a generar tus facturas en cuestión de minutos con nuestra interfaz intuitiva."
+},
+{
+  "q": "¿Puedo usarlo aunque no tenga e-commerce?",
+  "a": "¡Claro! Funciona perfectamente como un sistema de facturación tradicional para emitir facturas manualmente siempre que lo necesites, sin importar tu modelo de negocio."
+},
+{
+  "q": "¿Qué nos diferencia de otros sistemas de facturación?",
+  "a": "Nos enfocamos en la simplicidad. Ofrecemos una herramienta diseñada para el ritmo del vendedor digital: rápida, sin complicaciones técnicas y con un precio muy competitivo."
+},
+{
+  "q": "¿Qué tipos de planes tiene Inventra?",
+  "a": "Ofrecemos un Plan Gratuito para quienes están comenzando y un Plan Pro por solo $199 MXN para quienes buscan facturación ilimitada y herramientas adicionales."
+}
             ].map((faq, index) => (
               <FAQItem key={index} question={faq.q} answer={faq.a} />
             ))}
@@ -600,7 +580,7 @@ function DashboardPreview() {
         {/* Page Content */}
         <div className="p-6 space-y-8 overflow-y-auto no-scrollbar">
           <div>
-            <h2 className="text-xl font-semibold text-white">Bienvenido, Usuario 👋</h2>
+            <h2 className="text-xl font-semibold text-white">Bienvenido, Usuario </h2>
             <p className="text-xs text-gray-500 mt-1">Aquí tienes un resumen de tu actividad.</p>
           </div>
 

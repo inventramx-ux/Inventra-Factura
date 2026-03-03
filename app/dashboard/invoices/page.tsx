@@ -20,13 +20,58 @@ import { Label } from "@/components/ui/label"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-import { Plus, FileText, Trash2, X, Download, AlertCircle, Pencil, Share2, Check, Image as ImageIcon } from "lucide-react"
+import { Plus, FileText, Trash2, X, Download, AlertCircle, Pencil, Share2, Check, Image as ImageIcon, ShieldCheck } from "lucide-react"
+
+const TAX_SYSTEMS = [
+    { code: "601", name: "General de Ley Personas Morales" },
+    { code: "603", name: "Personas Morales con Fines no Lucrativos" },
+    { code: "605", name: "Sueldos y Salarios e Ingresos Asimilados a Salarios" },
+    { code: "606", name: "Arrendamiento" },
+    { code: "607", name: "Régimen de Enajenación o Adquisición de Bienes" },
+    { code: "608", name: "Demás ingresos" },
+    { code: "610", name: "Residentes en el Extranjero sin Establecimiento Permanente en México" },
+    { code: "611", name: "Ingresos por Dividendos (socios y accionistas)" },
+    { code: "612", name: "Personas Físicas con Actividades Empresariales y Profesionales" },
+    { code: "614", name: "Ingresos por intereses" },
+    { code: "615", name: "Régimen de los ingresos por obtención de premios" },
+    { code: "616", name: "Sin obligaciones fiscales" },
+    { code: "621", name: "Incorporación Fiscal" },
+    { code: "625", name: "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas" },
+    { code: "626", name: "Régimen Simplificado de Confianza (RESICO)" },
+]
+
+const CFDI_USAGES = [
+    { code: "G01", name: "Adquisición de mercancías" },
+    { code: "G02", name: "Devoluciones, descuentos o bonificaciones" },
+    { code: "G03", name: "Gastos en general" },
+    { code: "I01", name: "Construcciones" },
+    { code: "I02", name: "Mobiliario y equipo de oficina por inversiones" },
+    { code: "I03", name: "Equipo de transporte" },
+    { code: "I04", name: "Equipo de cómputo y accesorios" },
+    { code: "I05", name: "Dados, troqueles, moldes, matrices y herramental" },
+    { code: "I06", name: "Comunicaciones telefónicas" },
+    { code: "I07", name: "Comunicaciones satelitales" },
+    { code: "I08", name: "Otra maquinaria y equipo" },
+    { code: "D01", name: "Honorarios médicos, dentales y gastos hospitalarios" },
+    { code: "D02", name: "Gastos médicos por incapacidad o discapacidad" },
+    { code: "D03", name: "Gastos funerales" },
+    { code: "D04", name: "Donativos" },
+    { code: "D05", name: "Intereses reales efectivamente pagados por créditos hipotecarios (casa habitación)" },
+    { code: "D06", name: "Aportaciones voluntarias al SAR" },
+    { code: "D07", name: "Primas por seguros de gastos médicos" },
+    { code: "D08", name: "Gastos de transportación escolar obligatoria" },
+    { code: "D09", name: "Depósitos en cuentas especiales para el ahorro, primas que tengan como base planes de pensiones" },
+    { code: "D10", name: "Pagos por servicios educativos (colegiaturas)" },
+    { code: "S01", name: "Sin efectos fiscales" },
+    { code: "CP01", name: "Pagos" },
+    { code: "CN01", name: "Nómina" },
+]
 
 
 
 export default function InvoicesPage() {
 
-    const { invoices, loading, totalInvoices, createInvoice, updateInvoice, deleteInvoice } = useInvoice()
+    const { invoices, loading, totalInvoices, createInvoice, updateInvoice, deleteInvoice, stampInvoice } = useInvoice()
 
     const { isPro, invoicesLimit } = useSubscription()
 
@@ -34,6 +79,8 @@ export default function InvoicesPage() {
     const [saving, setSaving] = useState(false)
     const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null)
     const [copiedId, setCopiedId] = useState<string | null>(null)
+    const [stampingId, setStampingId] = useState<string | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
 
 
@@ -62,6 +109,12 @@ export default function InvoicesPage() {
         paymentMethod: "transferencia",
         notes: "",
         companyLogo: "",
+        // CFDI fields
+        rfc: "",
+        zipCode: "",
+        taxSystem: "601",
+        usage: "G03",
+        satProductCode: "01010101",
     })
 
 
@@ -69,10 +122,54 @@ export default function InvoicesPage() {
     const handleSubmit = async (e: React.FormEvent) => {
 
         e.preventDefault()
+        setError(null)
 
-        if (!formData.clientName || !formData.description) return
+        // Validation
+        const requiredFields = [
+            { key: "clientName", label: "Nombre del cliente" },
+            { key: "rfc", label: "RFC" },
+            { key: "zipCode", label: "Código Postal" },
+            { key: "description", label: "Descripción" },
+            { key: "satProductCode", label: "Clave SAT" },
+        ]
 
+        for (const field of requiredFields) {
+            // @ts-expect-error - indexing formData by key
+            if (!formData[field.key]?.trim()) {
+                setError(`El campo "${field.label}" es obligatorio.`)
+                const element = document.getElementById(field.key)
+                if (element) element.focus()
+                return
+            }
+        }
 
+        // Format validation
+        const rfcRegex = /^[A-Z&Ñ]{3,4}\d{6}[A-Z0-9]{3}$/
+        if (!rfcRegex.test(formData.rfc)) {
+            setError("El RFC no tiene un formato válido (Ej: XAXX010101000).")
+            document.getElementById("rfc")?.focus()
+            return
+        }
+
+        const zipRegex = /^\d{5}$/
+        if (!zipRegex.test(formData.zipCode)) {
+            setError("El Código Postal debe tener 5 dígitos.")
+            document.getElementById("zipCode")?.focus()
+            return
+        }
+
+        const satRegex = /^\d{8}$/
+        if (!satRegex.test(formData.satProductCode)) {
+            setError("La Clave SAT debe tener 8 dígitos.")
+            document.getElementById("satProductCode")?.focus()
+            return
+        }
+
+        if (formData.unitPrice <= 0) {
+            setError("El precio unitario debe ser mayor a 0.")
+            document.getElementById("unitPrice")?.focus()
+            return
+        }
 
         setSaving(true)
 
@@ -109,6 +206,11 @@ export default function InvoicesPage() {
                     paymentMethod: formData.paymentMethod,
                     notes: formData.notes,
                     companyLogo: formData.companyLogo,
+                    rfc: formData.rfc,
+                    zipCode: formData.zipCode,
+                    taxSystem: formData.taxSystem,
+                    usage: formData.usage,
+                    satProductCode: formData.satProductCode,
                 })
             } else {
                 await createInvoice({
@@ -134,6 +236,11 @@ export default function InvoicesPage() {
                     paymentMethod: formData.paymentMethod,
                     notes: formData.notes,
                     companyLogo: formData.companyLogo,
+                    rfc: formData.rfc,
+                    zipCode: formData.zipCode,
+                    taxSystem: formData.taxSystem,
+                    usage: formData.usage,
+                    satProductCode: formData.satProductCode,
                 })
             }
 
@@ -165,7 +272,13 @@ export default function InvoicesPage() {
                 paymentMethod: "transferencia",
                 notes: "",
                 companyLogo: "",
+                rfc: "",
+                zipCode: "",
+                taxSystem: "601",
+                usage: "G03",
+                satProductCode: "01010101",
             })
+            setError(null)
 
         } catch (error) {
             const e = error as { message?: string, details?: string, hint?: string, code?: string }
@@ -176,6 +289,7 @@ export default function InvoicesPage() {
                 code: e.code,
                 error: e
             })
+            setError(e.message || "Error al procesar la factura. Verifica tu conexión.")
         } finally {
 
             setSaving(false)
@@ -201,6 +315,11 @@ export default function InvoicesPage() {
             paymentMethod: invoice.paymentMethod,
             notes: invoice.notes,
             companyLogo: invoice.companyLogo || "",
+            rfc: invoice.rfc || "",
+            zipCode: invoice.zipCode || "",
+            taxSystem: invoice.taxSystem || "601",
+            usage: invoice.usage || "G03",
+            satProductCode: invoice.satProductCode || "01010101",
         })
         setShowForm(true)
     }
@@ -327,38 +446,63 @@ export default function InvoicesPage() {
         html2pdf().from(element).set(opt).save();
     }
 
+    const handleDownloadFacturapi = async (invoiceId: string, format: 'pdf' | 'xml') => {
+        try {
+            const response = await fetch(`/api/invoices/${invoiceId}/download/${format}`);
+            if (!response.ok) throw new Error(`Error al descargar ${format.toUpperCase()}`);
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `factura-${invoiceId}.${format}`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error(`Error downloading ${format}:`, error);
+            setError(`Error al descargar el archivo ${format.toUpperCase()}.`);
+        }
+    };
+
     const handleShare = (invoice: Invoice) => {
         handleDownload(invoice, true);
         setCopiedId(invoice.id);
         setTimeout(() => setCopiedId(null), 2000);
     }
 
+    const handleStamp = async (id: string) => {
+        setStampingId(id)
+        try {
+            await stampInvoice(id)
+            // No alert on success for a more professional feel
+        } catch (error) {
+            console.error("Stamping error:", error)
+            setError(error instanceof Error ? error.message : "Error al timbrar la factura")
+        } finally {
+            setStampingId(null)
+        }
+    }
+
 
 
     const statusColors: Record<string, string> = {
-
         paid: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-
         sent: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-
         draft: "bg-gray-500/20 text-gray-400 border-gray-500/30",
-
         overdue: "bg-red-500/20 text-red-400 border-red-500/30",
-
+        stamped: "bg-blue-500/20 text-blue-400 border-blue-500/30",
     }
 
 
 
     const statusLabels: Record<string, string> = {
-
         paid: "Pagada",
-
         sent: "Enviada",
-
         draft: "Borrador",
-
         overdue: "Vencida",
-
+        stamped: "Timbrada",
     }
 
 
@@ -444,9 +588,16 @@ export default function InvoicesPage() {
 
                         <div className="flex items-center justify-between">
 
-                            <CardTitle className="text-white">
-                                {editingInvoice ? "Editar Factura" : "Nueva Factura"}
-                            </CardTitle>
+                            <div className="flex flex-col">
+                                {error && (
+                                    <p className="text-red-500 text-sm mb-1 font-medium">
+                                        {error}
+                                    </p>
+                                )}
+                                <CardTitle className="text-white">
+                                    {editingInvoice ? "Editar Factura" : "Nueva Factura"}
+                                </CardTitle>
+                            </div>
 
                             <Button
 
@@ -498,59 +649,99 @@ export default function InvoicesPage() {
                                     <Label className="text-gray-300">Nombre del cliente *</Label>
 
                                     <Input
-
+                                        id="clientName"
                                         value={formData.clientName}
-
                                         onChange={(e) => setFormData({ ...formData, clientName: e.target.value })}
-
                                         placeholder="Juan Pérez"
-
                                         className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
-
                                         required
-
                                     />
-
                                 </div>
 
                                 <div className="space-y-2">
-
-                                    <Label className="text-gray-300">Email</Label>
-
+                                    <Label className="text-gray-300">RFC del cliente *</Label>
                                     <Input
-
-                                        type="email"
-
-                                        value={formData.clientEmail}
-
-                                        onChange={(e) => setFormData({ ...formData, clientEmail: e.target.value })}
-
-                                        placeholder="cliente@email.com"
-
+                                        id="rfc"
+                                        value={formData.rfc}
+                                        onChange={(e) => setFormData({ ...formData, rfc: e.target.value.toUpperCase() })}
+                                        placeholder="XAXX010101000"
                                         className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
-
+                                        required
                                     />
-
                                 </div>
 
                                 <div className="space-y-2">
-
-                                    <Label className="text-gray-300">Teléfono</Label>
-
+                                    <Label className="text-gray-300">Código Postal *</Label>
                                     <Input
-
-                                        value={formData.clientPhone}
-
-                                        onChange={(e) => setFormData({ ...formData, clientPhone: e.target.value })}
-
-                                        placeholder="+52 555 123 4567"
-
+                                        id="zipCode"
+                                        value={formData.zipCode}
+                                        onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
+                                        placeholder="01234"
                                         className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
-
+                                        required
                                     />
-
                                 </div>
 
+                                <div className="space-y-2">
+                                    <Label className="text-gray-300">Régimen Fiscal *</Label>
+                                    <select
+                                        value={formData.taxSystem}
+                                        onChange={(e) => setFormData({ ...formData, taxSystem: e.target.value })}
+                                        className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+                                        required
+                                    >
+                                        {TAX_SYSTEMS.map(ts => (
+                                            <option key={ts.code} value={ts.code} className="bg-zinc-900">{ts.code} - {ts.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <Label className="text-gray-300">Uso de CFDI *</Label>
+                                    <select
+                                        value={formData.usage}
+                                        onChange={(e) => setFormData({ ...formData, usage: e.target.value })}
+                                        className="w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white focus:outline-none focus:ring-2 focus:ring-white/20"
+                                        required
+                                    >
+                                        {CFDI_USAGES.map(usage => (
+                                            <option key={usage.code} value={usage.code} className="bg-zinc-900">{usage.code} - {usage.name}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                            </div>
+
+                            <div className="space-y-2">
+
+                                <Label className="text-gray-300">Email</Label>
+
+                                <Input
+
+                                    type="email"
+
+                                    value={formData.clientEmail}
+
+                                    onChange={(e) => setFormData({ ...formData, clientEmail: e.target.value })}
+
+                                    placeholder="cliente@email.com"
+
+                                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+
+                                />
+
+                            </div>
+
+                            <div className="space-y-2">
+
+                                <Label className="text-gray-300">Teléfono</Label>
+
+                                <Input
+                                    value={formData.clientPhone}
+                                    onChange={(e) => setFormData({ ...formData, clientPhone: e.target.value })}
+                                    placeholder="+52 555 123 4567"
+                                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                                />
                             </div>
 
 
@@ -581,24 +772,29 @@ export default function InvoicesPage() {
                                 </div>
                             </div>
 
-                            <div className="space-y-2">
-
-                                <Label className="text-gray-300">Descripción del producto/servicio *</Label>
-
-                                <Input
-
-                                    value={formData.description}
-
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-
-                                    placeholder="Descripción del servicio o producto"
-
-                                    className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
-
-                                    required
-
-                                />
-
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label className="text-gray-300">Descripción del producto/servicio *</Label>
+                                    <Input
+                                        id="description"
+                                        value={formData.description}
+                                        onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                        placeholder="Descripción del servicio o producto"
+                                        className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label className="text-gray-300">Clave Prod/Serv SAT *</Label>
+                                    <Input
+                                        id="satProductCode"
+                                        value={formData.satProductCode}
+                                        onChange={(e) => setFormData({ ...formData, satProductCode: e.target.value })}
+                                        placeholder="01010101"
+                                        className="bg-white/5 border-white/10 text-white placeholder:text-gray-500"
+                                        required
+                                    />
+                                </div>
                             </div>
 
 
@@ -630,19 +826,13 @@ export default function InvoicesPage() {
                                     <Label className="text-gray-300">Precio unitario (MXN)</Label>
 
                                     <Input
-
+                                        id="unitPrice"
                                         type="number"
-
                                         min="0"
-
                                         step="0.01"
-
                                         value={formData.unitPrice}
-
                                         onChange={(e) => setFormData({ ...formData, unitPrice: parseFloat(e.target.value) || 0 })}
-
                                         className="bg-white/5 border-white/10 text-white"
-
                                     />
 
                                 </div>
@@ -696,89 +886,52 @@ export default function InvoicesPage() {
                                 >
 
                                     {saving ? (editingInvoice ? "Guardando..." : "Creando...") : (editingInvoice ? "Guardar Cambios" : "Crear Factura")}
-
                                 </Button>
 
                                 <Button
-
                                     type="button"
-
                                     variant="ghost"
-
                                     onClick={() => {
                                         setShowForm(false)
                                         setEditingInvoice(null)
                                     }}
-
                                     className="text-gray-400 hover:text-white hover:bg-white/10"
-
                                 >
-
                                     Cancelar
-
                                 </Button>
-
                             </div>
-
                         </form>
-
                     </CardContent>
-
                 </Card>
-
-            )}
-
-
-
+            )
+            }
             {/* Invoices Table */}
-
             <Card className="bg-white/5 border-white/10">
-
                 <CardContent className="pt-6">
-
                     {invoices.length === 0 ? (
-
                         <div className="text-center py-16">
-
                             <FileText className="h-16 w-16 text-gray-600 mx-auto mb-4" />
-
                             <p className="text-gray-400 text-lg mb-2">No tienes facturas</p>
-
                             <p className="text-gray-500 text-sm mb-6">
-
                                 Crea tu primera factura para empezar a gestionar tus ventas
-
                             </p>
-
                             {canCreateInvoice && (
-
                                 <Button
-
                                     onClick={() => setShowForm(true)}
-
                                     className="bg-white text-black hover:bg-gray-200 font-medium gap-2"
-
                                 >
-
                                     <Plus className="h-4 w-4" />
-
                                     Crear Factura
-
                                 </Button>
-
                             )}
-
                         </div>
-
                     ) : (
-
                         <div className="overflow-x-auto -mx-6 px-6">
                             <Table>
                                 <TableHeader>
                                     <TableRow className="border-white/10 hover:bg-transparent">
                                         <TableHead className="text-gray-400 whitespace-nowrap">Número</TableHead>
                                         <TableHead className="text-gray-400 whitespace-nowrap">Cliente</TableHead>
-                                        <TableHead className="text-gray-400 whitespace-nowrap">Plataforma</TableHead>
                                         <TableHead className="text-gray-400 whitespace-nowrap">Monto</TableHead>
                                         <TableHead className="text-gray-400 whitespace-nowrap">Estado</TableHead>
                                         <TableHead className="text-gray-400 whitespace-nowrap">Fecha</TableHead>
@@ -794,11 +947,8 @@ export default function InvoicesPage() {
                                             <TableCell className="whitespace-nowrap">
                                                 <div>
                                                     <div className="text-gray-300">{invoice.clientName}</div>
-                                                    <div className="text-gray-500 text-xs">{invoice.clientEmail}</div>
+                                                    <div className="text-gray-500 text-xs">{invoice.rfc}</div>
                                                 </div>
-                                            </TableCell>
-                                            <TableCell className="text-gray-300 capitalize whitespace-nowrap">
-                                                {invoice.platform}
                                             </TableCell>
                                             <TableCell className="text-white font-medium whitespace-nowrap">
                                                 ${invoice.total.toLocaleString()}
@@ -816,20 +966,71 @@ export default function InvoicesPage() {
                                             </TableCell>
                                             <TableCell className="whitespace-nowrap">
                                                 <div className="flex gap-1">
+                                                    {(invoice.status === "draft" || invoice.status === "paid") && !invoice.facturapiId && (
+                                                        <Button
+                                                            variant="outline"
+                                                            size="default"
+                                                            className="bg-white/10 hover:bg-white/20 text-white font-semibold gap-2 px-6 h-10 border-white/20 transition-all hover:scale-105 active:scale-95"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleStamp(invoice.id);
+                                                            }}
+                                                            disabled={stampingId === invoice.id}
+                                                        >
+                                                            <ShieldCheck className={`h-5 w-5 ${stampingId === invoice.id ? "animate-pulse font-bold" : ""}`} />
+                                                            <span className="text-base">{stampingId === invoice.id ? "Timbrando..." : "Timbrar"}</span>
+                                                        </Button>
+                                                    )}
+                                                    {invoice.facturapiId && (
+                                                        <>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleDownloadFacturapi(invoice.facturapiId!, 'pdf');
+                                                                }}
+                                                                title="Descargar PDF SAT"
+                                                            >
+                                                                <Download className="h-4 w-4" />
+                                                            </Button>
+                                                            <Button
+                                                                variant="ghost"
+                                                                size="icon"
+                                                                className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    handleDownloadFacturapi(invoice.facturapiId!, 'xml');
+                                                                }}
+                                                                title="Descargar XML SAT"
+                                                            >
+                                                                <FileText className="h-4 w-4" />
+                                                            </Button>
+                                                        </>
+                                                    )}
+                                                    {!invoice.facturapiId && (
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDownload(invoice);
+                                                            }}
+                                                            title="Descargar Vista Previa PDF"
+                                                        >
+                                                            <Download className="h-4 w-4" />
+                                                        </Button>
+                                                    )}
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
                                                         className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
-                                                        onClick={() => handleDownload(invoice)}
-                                                        title="Descargar PDF"
-                                                    >
-                                                        <Download className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
-                                                        onClick={() => handleShare(invoice)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleShare(invoice);
+                                                        }}
                                                         title="Copiar link"
                                                     >
                                                         {copiedId === invoice.id ? (
@@ -842,7 +1043,10 @@ export default function InvoicesPage() {
                                                         variant="ghost"
                                                         size="icon"
                                                         className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 h-8 w-8"
-                                                        onClick={() => handleEdit(invoice)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleEdit(invoice);
+                                                        }}
                                                         title="Editar"
                                                     >
                                                         <Pencil className="h-4 w-4" />
@@ -863,16 +1067,10 @@ export default function InvoicesPage() {
                                 </TableBody>
                             </Table>
                         </div>
-
                     )}
-
                 </CardContent>
-
             </Card>
-
-        </div>
-
+        </div >
     )
-
 }
 
