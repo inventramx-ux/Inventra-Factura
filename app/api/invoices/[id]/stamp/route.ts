@@ -45,7 +45,7 @@ export async function POST(
                     product: {
                         description: firstItem.description || invoice.description || "Servicio comercial",
                         product_key: invoice.sat_product_code || "01010101",
-                        price: firstItem.unitPrice || invoice.unit_price || 0,
+                        price: Math.max(firstItem.unitPrice ?? invoice.unit_price ?? 0, 0.000001),
                     },
                     quantity: firstItem.quantity || invoice.quantity || 1,
                 },

@@ -94,7 +94,7 @@ export function ClientProvider({ children }: { children: ReactNode }) {
       if (error) throw error
 
       const mapped = mapClient(data)
-      setClients(prev => [mapped, ...prev])
+      await refreshClients()
       return mapped
     } catch (error) {
       console.error("Error creating client:", error)

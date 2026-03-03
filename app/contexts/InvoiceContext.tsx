@@ -191,7 +191,7 @@ export function InvoiceProvider({ children }: { children: ReactNode }) {
       }
 
       const mapped = mapInvoice(data)
-      setInvoices(prev => [mapped, ...prev])
+      await refreshInvoices()
       return mapped
     } catch (error) {
       const e = error as { message?: string, details?: string, hint?: string, code?: string }
