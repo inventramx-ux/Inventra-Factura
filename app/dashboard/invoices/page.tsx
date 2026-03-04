@@ -830,8 +830,9 @@ export default function InvoicesPage() {
                                         type="number"
                                         min="0"
                                         step="0.01"
-                                        value={formData.unitPrice}
+                                        value={formData.unitPrice === 0 ? "" : formData.unitPrice}
                                         onChange={(e) => setFormData({ ...formData, unitPrice: parseFloat(e.target.value) || 0 })}
+                                        placeholder="0.00"
                                         className="bg-white/5 border-white/10 text-white"
                                     />
 
