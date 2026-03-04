@@ -20,13 +20,13 @@ import { Label } from "@/components/ui/label"
 
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
-import { Plus, FileText, Trash2, X, Download, AlertCircle, Pencil, Share2, Check, Image as ImageIcon } from "lucide-react"
+import { Plus, FileText, Trash2, X, Download, AlertCircle, Pencil, Share2, Check, Image as ImageIcon, ShieldCheck } from "lucide-react"
 
 
 
 export default function InvoicesPage() {
 
-    const { invoices, loading: invoicesLoading, totalInvoices, createInvoice, updateInvoice, deleteInvoice } = useInvoice()
+    const { invoices, loading: invoicesLoading, totalInvoices, createInvoice, updateInvoice, deleteInvoice, stampInvoice } = useInvoice()
     const { clients, loading: clientsLoading } = useClient()
     const loading = invoicesLoading || clientsLoading
 
@@ -36,6 +36,8 @@ export default function InvoicesPage() {
     const [saving, setSaving] = useState(false)
     const [editingInvoice, setEditingInvoice] = useState<Invoice | null>(null)
     const [copiedId, setCopiedId] = useState<string | null>(null)
+    const [stampingId, setStampingId] = useState<string | null>(null)
+    const [error, setError] = useState<string | null>(null)
 
 
 
@@ -319,32 +321,56 @@ export default function InvoicesPage() {
         setTimeout(() => setCopiedId(null), 2000);
     }
 
+    const handleDownloadFacturapi = async (invoiceId: string, format: 'pdf' | 'xml') => {
+        try {
+            const response = await fetch(`/api/invoices/${invoiceId}/download/${format}`);
+            if (!response.ok) throw new Error(`Error al descargar ${format.toUpperCase()}`);
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `factura-${invoiceId}.${format}`;
+            document.body.appendChild(a);
+            a.click();
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error(`Error downloading ${format}:`, error);
+            setError(`Error al descargar el archivo ${format.toUpperCase()}.`);
+        }
+    };
+
+    const handleStamp = async (id: string) => {
+        setStampingId(id)
+        try {
+            await stampInvoice(id)
+        } catch (error) {
+            console.error("Stamping error:", error)
+            setError(error instanceof Error ? error.message : "Error al timbrar la factura")
+        } finally {
+            setStampingId(null)
+        }
+    }
+
 
 
     const statusColors: Record<string, string> = {
-
         paid: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-
         sent: "bg-blue-500/20 text-blue-400 border-blue-500/30",
-
         draft: "bg-gray-500/20 text-gray-400 border-gray-500/30",
-
         overdue: "bg-red-500/20 text-red-400 border-red-500/30",
-
+        stamped: "bg-blue-500/20 text-blue-400 border-blue-500/30",
     }
 
 
 
     const statusLabels: Record<string, string> = {
-
         paid: "Pagada",
-
         sent: "Enviada",
-
         draft: "Borrador",
-
         overdue: "Vencida",
-
+        stamped: "Timbrada",
     }
 
 
@@ -452,10 +478,16 @@ export default function InvoicesPage() {
                     <CardHeader>
 
                         <div className="flex items-center justify-between">
-
-                            <CardTitle className="text-white">
-                                {editingInvoice ? "Editar Factura" : "Nueva Factura"}
-                            </CardTitle>
+                            <div className="flex flex-col">
+                                {error && (
+                                    <p className="text-red-500 text-sm mb-1 font-medium">
+                                        {error}
+                                    </p>
+                                )}
+                                <CardTitle className="text-white">
+                                    {editingInvoice ? "Editar Factura" : "Nueva Factura"}
+                                </CardTitle>
+                            </div>
 
                             <Button
 
@@ -881,20 +913,73 @@ export default function InvoicesPage() {
 
                                             <div className="flex gap-1">
                                                 <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
-                                                    onClick={() => handleDownload(invoice)}
-                                                    title="Descargar PDF"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="text-gray-400 hover:text-white hover:bg-white/10 h-8 gap-2 border-white/10"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleDownload(invoice);
+                                                    }}
+                                                    title="Descargar Vista Previa"
                                                 >
-                                                    <Download className="h-4 w-4" />
+                                                    <Download className="h-3.5 w-3.5" />
+                                                    <span className="text-[10px] uppercase font-bold">No timbrada</span>
                                                 </Button>
-
+                                                {invoice.facturapiId && (
+                                                    <>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 gap-2 border-blue-500/20"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDownloadFacturapi(invoice.facturapiId!, 'pdf');
+                                                            }}
+                                                            title="Descargar PDF SAT"
+                                                        >
+                                                            <ShieldCheck className="h-3.5 w-3.5" />
+                                                            <span className="text-[10px] uppercase font-bold">Factura timbrada</span>
+                                                        </Button>
+                                                        <Button
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 gap-2 border-blue-500/20"
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleDownloadFacturapi(invoice.facturapiId!, 'xml');
+                                                            }}
+                                                            title="Descargar XML SAT"
+                                                        >
+                                                            <FileText className="h-3.5 w-3.5" />
+                                                            <span className="text-[10px] uppercase font-bold">XML</span>
+                                                        </Button>
+                                                    </>
+                                                )}
+                                                {(invoice.status === "draft" || invoice.status === "paid") && !invoice.facturapiId && (
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 h-8 gap-2 border-emerald-500/20"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleStamp(invoice.id);
+                                                        }}
+                                                        disabled={stampingId === invoice.id}
+                                                        title="Timbrar Factura"
+                                                    >
+                                                        <span className={`text-[10px] uppercase font-bold ${stampingId === invoice.id ? "animate-pulse" : ""}`}>
+                                                            {stampingId === invoice.id ? "Timbrando..." : "Timbrar factura"}
+                                                        </span>
+                                                    </Button>
+                                                )}
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
                                                     className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
-                                                    onClick={() => handleShare(invoice)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleShare(invoice);
+                                                    }}
                                                     title="Copiar link"
                                                 >
                                                     {copiedId === invoice.id ? (
@@ -903,34 +988,27 @@ export default function InvoicesPage() {
                                                         <Share2 className="h-4 w-4" />
                                                     )}
                                                 </Button>
-
                                                 <Button
                                                     variant="ghost"
                                                     size="icon"
                                                     className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 h-8 w-8"
-                                                    onClick={() => handleEdit(invoice)}
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        handleEdit(invoice);
+                                                    }}
                                                     title="Editar"
                                                 >
                                                     <Pencil className="h-4 w-4" />
                                                 </Button>
-
                                                 <Button
-
                                                     variant="ghost"
-
                                                     size="icon"
-
                                                     className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 h-8 w-8"
-
                                                     onClick={() => deleteInvoice(invoice.id)}
                                                     title="Eliminar"
-
                                                 >
-
                                                     <Trash2 className="h-4 w-4" />
-
                                                 </Button>
-
                                             </div>
 
                                         </TableCell>

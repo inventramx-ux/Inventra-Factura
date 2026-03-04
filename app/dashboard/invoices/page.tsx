@@ -967,61 +967,65 @@ export default function InvoicesPage() {
                                             </TableCell>
                                             <TableCell className="whitespace-nowrap">
                                                 <div className="flex gap-1">
-                                                    {(invoice.status === "draft" || invoice.status === "paid") && !invoice.facturapiId && (
-                                                        <Button
-                                                            variant="outline"
-                                                            size="default"
-                                                            className="bg-white/10 hover:bg-white/20 text-white font-semibold gap-2 px-6 h-10 border-white/20 transition-all hover:scale-105 active:scale-95"
-                                                            onClick={(e) => {
-                                                                e.stopPropagation();
-                                                                handleStamp(invoice.id);
-                                                            }}
-                                                            disabled={stampingId === invoice.id}
-                                                        >
-                                                            <ShieldCheck className={`h-5 w-5 ${stampingId === invoice.id ? "animate-pulse font-bold" : ""}`} />
-                                                            <span className="text-base">{stampingId === invoice.id ? "Timbrando..." : "Timbrar"}</span>
-                                                        </Button>
-                                                    )}
+
+                                                    <Button
+                                                        variant="outline"
+                                                        size="sm"
+                                                        className="text-gray-400 hover:text-white hover:bg-white/10 h-8 gap-2 border-white/10"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDownload(invoice);
+                                                        }}
+                                                        title="Descargar Vista Previa"
+                                                    >
+                                                        <Download className="h-3.5 w-3.5" />
+                                                        <span className="text-[10px] uppercase font-bold">No timbrada</span>
+                                                    </Button>
                                                     {invoice.facturapiId && (
                                                         <>
                                                             <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 gap-2 border-blue-500/20"
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     handleDownloadFacturapi(invoice.facturapiId!, 'pdf');
                                                                 }}
                                                                 title="Descargar PDF SAT"
                                                             >
-                                                                <Download className="h-4 w-4" />
+                                                                <ShieldCheck className="h-3.5 w-3.5" />
+                                                                <span className="text-[10px] uppercase font-bold">Factura timbrada</span>
                                                             </Button>
                                                             <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="text-blue-400 hover:text-blue-300 hover:bg-blue-500/10 h-8 gap-2 border-blue-500/20"
                                                                 onClick={(e) => {
                                                                     e.stopPropagation();
                                                                     handleDownloadFacturapi(invoice.facturapiId!, 'xml');
                                                                 }}
                                                                 title="Descargar XML SAT"
                                                             >
-                                                                <FileText className="h-4 w-4" />
+                                                                <FileText className="h-3.5 w-3.5" />
+                                                                <span className="text-[10px] uppercase font-bold">XML</span>
                                                             </Button>
                                                         </>
                                                     )}
-                                                    {!invoice.facturapiId && (
+                                                    {(invoice.status === "draft" || invoice.status === "paid") && !invoice.facturapiId && (
                                                         <Button
-                                                            variant="ghost"
-                                                            size="icon"
-                                                            className="text-gray-400 hover:text-white hover:bg-white/10 h-8 w-8"
+                                                            variant="outline"
+                                                            size="sm"
+                                                            className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 h-8 gap-2 border-emerald-500/20"
                                                             onClick={(e) => {
                                                                 e.stopPropagation();
-                                                                handleDownload(invoice);
+                                                                handleStamp(invoice.id);
                                                             }}
-                                                            title="Descargar Vista Previa PDF"
+                                                            disabled={stampingId === invoice.id}
+                                                            title="Timbrar Factura"
                                                         >
-                                                            <Download className="h-4 w-4" />
+                                                            <span className={`text-[10px] uppercase font-bold ${stampingId === invoice.id ? "animate-pulse" : ""}`}>
+                                                                {stampingId === invoice.id ? "Timbrando..." : "Timbrar factura"}
+                                                            </span>
                                                         </Button>
                                                     )}
                                                     <Button
