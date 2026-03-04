@@ -30,7 +30,7 @@ export default function SettingsPage() {
                             variant="outline"
                             className={
                                 isPro
-                                    ? "bg-amber-500/20 text-amber-400 border-amber-500/30"
+                                    ? "bg-blue-400/10 text-blue-400 border border-blue-400/20"
                                     : "bg-white/10 text-gray-300 border-white/20"
                             }
                         >
@@ -113,7 +113,7 @@ export default function SettingsPage() {
                                 </div>
                             </div>
                             <Link href="/checkout">
-                                <Button className="bg-blue-400 from-amber-500 to-orange-500 text-black font-semibold hover:from-amber-400 hover:to-orange-400 gap-2 mt-2">
+                                <Button className="bg-blue-400 text-black font-semibold hover:bg-blue-300 gap-2 mt-2">
                                     Actualizar a Pro — $199/mes
                                     <ArrowRight className="h-4 w-4" />
                                 </Button>

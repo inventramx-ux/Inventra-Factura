@@ -27,7 +27,7 @@ import Link from "next/link"
 
 const STATUS_COLORS = {
     paid: "#10b981", // emerald-500
-    sent: "#3b82f6", // blue-500
+    sent: "#60a5fa", // blue-400
     overdue: "#f43f5e", // rose-500
     draft: "#94a3b8", // slate-400
 }
@@ -289,8 +289,8 @@ export default function AnalyticsPage() {
                             <AreaChart data={stats.revenueOverTime}>
                                 <defs>
                                     <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.3} />
-                                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#60a5fa" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#60a5fa" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
@@ -316,7 +316,7 @@ export default function AnalyticsPage() {
                                 <Area
                                     type="monotone"
                                     dataKey="revenue"
-                                    stroke="#3b82f6"
+                                    stroke="#60a5fa"
                                     fillOpacity={1}
                                     fill="url(#colorRevenue)"
                                     strokeWidth={3}
@@ -365,7 +365,7 @@ export default function AnalyticsPage() {
                                         itemStyle={{ color: '#fff' }}
                                         labelStyle={{ color: '#fff' }}
                                     />
-                                    <Bar dataKey="revenue" fill="#6366f1" radius={[0, 4, 4, 0]} barSize={20} />
+                                    <Bar dataKey="revenue" fill="#60a5fa" radius={[0, 4, 4, 0]} barSize={20} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>

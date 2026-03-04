@@ -357,10 +357,10 @@ export default function InvoicesPage() {
 
     const statusColors: Record<string, string> = {
         paid: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-        sent: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+        sent: "bg-blue-400/20 text-blue-400 border-blue-400/30",
         draft: "bg-gray-500/20 text-gray-400 border-gray-500/30",
         overdue: "bg-red-500/20 text-red-400 border-red-500/30",
-        stamped: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+        stamped: "bg-blue-400/20 text-blue-400 border-blue-400/30",
     }
 
 
@@ -455,7 +455,7 @@ export default function InvoicesPage() {
 
                     <div
 
-                        className={`h-2 rounded-full transition-all ${totalInvoices >= invoicesLimit ? "bg-red-500" : "bg-blue-500"
+                        className={`h-2 rounded-full transition-all ${totalInvoices >= invoicesLimit ? "bg-red-500" : "bg-blue-400"
 
                             }`}
 
@@ -959,7 +959,7 @@ export default function InvoicesPage() {
                                                     <Button
                                                         variant="outline"
                                                         size="sm"
-                                                        className="text-emerald-400 hover:text-emerald-300 hover:bg-emerald-500/10 h-8 gap-2 border-emerald-500/20"
+                                                        className="text-blue-400 hover:text-blue-300 hover:bg-blue-400/10 h-8 gap-2 border-blue-400/20"
                                                         onClick={(e) => {
                                                             e.stopPropagation();
                                                             handleStamp(invoice.id);

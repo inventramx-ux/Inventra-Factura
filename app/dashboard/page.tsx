@@ -28,7 +28,7 @@ export default function DashboardPage() {
 
     const statusColors: Record<string, string> = {
         paid: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-        sent: "bg-blue-500/20 text-blue-400 border-blue-500/30",
+        sent: "bg-blue-400/20 text-blue-400 border-blue-400/30",
         draft: "bg-gray-500/20 text-gray-400 border-gray-500/30",
         overdue: "bg-red-500/20 text-red-400 border-red-500/30",
     }
@@ -81,7 +81,7 @@ export default function DashboardPage() {
                         {!isPro && (
                             <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
                                 <div
-                                    className="bg-blue-500 h-1.5 rounded-full transition-all"
+                                    className="bg-blue-400 h-1.5 rounded-full transition-all"
                                     style={{ width: `${Math.min((totalInvoices / invoicesLimit) * 100, 100)}%` }}
                                 />
                             </div>
@@ -115,7 +115,7 @@ export default function DashboardPage() {
                         {!isPro && (
                             <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
                                 <div
-                                    className="bg-indigo-500 h-1.5 rounded-full transition-all"
+                                    className="bg-blue-400 h-1.5 rounded-full transition-all"
                                     style={{ width: `${Math.min((clients.length / clientsLimit) * 100, 100)}%` }}
                                 />
                             </div>

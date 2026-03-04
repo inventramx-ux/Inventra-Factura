@@ -67,8 +67,8 @@ const CheckoutPage = () => {
 
           {message && (
             <div className={`p-4 rounded-lg mb-6 text-sm ${message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-                message.type === 'error' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                  'bg-blue-500/10 text-blue-400 border border-blue-500/20'
+              message.type === 'error' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
+                'bg-blue-400/10 text-blue-400 border border-blue-400/20'
               }`}>
               {message.text}
             </div>

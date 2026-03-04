@@ -102,11 +102,13 @@ html {
 
     0%,
     100% {
-      box-shadow: 0 0 20px rgba(59, 130, 246, 0.5);
+      opacity: 0.5;
+      box-shadow: 0 0 20px rgba(96, 165, 250, 0.3);
     }
 
     50% {
-      box-shadow: 0 0 40px rgba(59, 130, 246, 0.8);
+      opacity: 1;
+      box-shadow: 0 0 35px rgba(96, 165, 250, 0.6);
     }
   }
 

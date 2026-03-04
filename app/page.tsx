@@ -173,13 +173,13 @@ export default function Home() {
 
 
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 leading-tight tracking-tight">
-Facturación Simple para negocios E-commerce
+              Facturación Simple para negocios E-commerce
             </h1>
 
 
 
             <p className="text-base md:text-lg text-gray-400 max-w-2xl mb-8 md:mb-10">
-Lleva tu negocio al siguiente nivel con herramientas de gestión de clientes y analíticas de venta integradas. Emite facturas en formato CFDI 4.0 de manera profesional con un sistema pensado exclusivamente para vendedores digitales.              <br className="hidden sm:block" />
+              Lleva tu negocio al siguiente nivel con herramientas de gestión de clientes y analíticas de venta integradas. Emite facturas en formato CFDI 4.0 de manera profesional con un sistema pensado exclusivamente para vendedores digitales.              <br className="hidden sm:block" />
 
 
             </p>
@@ -406,30 +406,30 @@ Lleva tu negocio al siguiente nivel con herramientas de gestión de clientes y a
 
           <div className="border-t border-white/10">
             {[
-        {
-  "q": "¿Qué es Inventra?",
-  "a": "Inventra es un sistema de facturación diseñado para el mundo del e-commerce, con herramientas sencillas para que puedas facturar tus ventas de forma ordenada y profesional."
-},
-{
-  "q": "¿Para quién es Inventra?",
-  "a": "Está creado para vendedores de e-commerce y dueños de negocios online que necesitan una plataforma clara y rápida para gestionar sus facturas manualmente."
-},
-{
-  "q": "¿Cómo funciona?",
-  "a": "Es muy simple: creas tu cuenta, accedes a tu panel de control y comienzas a generar tus facturas en cuestión de minutos con nuestra interfaz intuitiva."
-},
-{
-  "q": "¿Puedo usarlo aunque no tenga e-commerce?",
-  "a": "¡Claro! Funciona perfectamente como un sistema de facturación tradicional para emitir facturas manualmente siempre que lo necesites, sin importar tu modelo de negocio."
-},
-{
-  "q": "¿Qué nos diferencia de otros sistemas de facturación?",
-  "a": "Nos enfocamos en la simplicidad. Ofrecemos una herramienta diseñada para el ritmo del vendedor digital: rápida, sin complicaciones técnicas y con un precio muy competitivo."
-},
-{
-  "q": "¿Qué tipos de planes tiene Inventra?",
-  "a": "Ofrecemos un Plan Gratuito para quienes están comenzando y un Plan Pro por solo $199 MXN para quienes buscan facturación ilimitada y herramientas adicionales."
-}
+              {
+                "q": "¿Qué es Inventra?",
+                "a": "Inventra es un sistema de facturación diseñado para el mundo del e-commerce, con herramientas sencillas para que puedas facturar tus ventas de forma ordenada y profesional."
+              },
+              {
+                "q": "¿Para quién es Inventra?",
+                "a": "Está creado para vendedores de e-commerce y dueños de negocios online que necesitan una plataforma clara y rápida para gestionar sus facturas manualmente."
+              },
+              {
+                "q": "¿Cómo funciona?",
+                "a": "Es muy simple: creas tu cuenta, accedes a tu panel de control y comienzas a generar tus facturas en cuestión de minutos con nuestra interfaz intuitiva."
+              },
+              {
+                "q": "¿Puedo usarlo aunque no tenga e-commerce?",
+                "a": "¡Claro! Funciona perfectamente como un sistema de facturación tradicional para emitir facturas manualmente siempre que lo necesites, sin importar tu modelo de negocio."
+              },
+              {
+                "q": "¿Qué nos diferencia de otros sistemas de facturación?",
+                "a": "Nos enfocamos en la simplicidad. Ofrecemos una herramienta diseñada para el ritmo del vendedor digital: rápida, sin complicaciones técnicas y con un precio muy competitivo."
+              },
+              {
+                "q": "¿Qué tipos de planes tiene Inventra?",
+                "a": "Ofrecemos un Plan Gratuito para quienes están comenzando y un Plan Pro por solo $199 MXN para quienes buscan facturación ilimitada y herramientas adicionales."
+              }
             ].map((faq, index) => (
               <FAQItem key={index} question={faq.q} answer={faq.a} />
             ))}
@@ -557,7 +557,7 @@ function DashboardPreview() {
         </div>
 
         <div className="p-3 border-t border-white/5 flex items-center gap-3">
-          <div className="size-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-xs font-bold text-white">U</div>
+          <div className="size-8 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold text-white">U</div>
           <div className="min-w-0">
             <div className="text-xs font-medium text-white truncate">Usuario</div>
             <div className="text-[10px] text-gray-500 truncate">pro@inventra.mx</div>
@@ -589,7 +589,7 @@ function DashboardPreview() {
             {[
               { label: 'Facturas', value: '12', sub: 'Ilimitadas Pro', icon: FileText, color: 'text-blue-400' },
               { label: 'Ingresos', value: '$45,280', sub: 'Total facturado', icon: DollarSign, color: 'text-emerald-400' },
-              { label: 'Clientes', value: '8', sub: 'Ilimitados Pro', icon: Users, color: 'text-indigo-400' },
+              { label: 'Clientes', value: '8', sub: 'Ilimitados Pro', icon: Users, color: 'text-blue-400' },
               { label: 'Plan', value: 'Pro', sub: 'Acceso completo', icon: Crown, color: 'text-amber-400' },
             ].map((stat, i) => (
               <div key={i} className="bg-[#0a0a0a] border border-white/5 p-4 rounded-xl shadow-sm">
@@ -632,7 +632,7 @@ function DashboardPreview() {
                 <tbody className="divide-y divide-white/5">
                   {[
                     { no: 'INV-2024-001', client: 'Pixel Studio MX', amount: '$12,500.00', status: 'Pagada', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
-                    { no: 'INV-2024-002', client: 'Consultoría Tech', amount: '$8,200.00', status: 'Enviada', color: 'bg-blue-500/10 text-blue-400 border-blue-500/20' },
+                    { no: 'INV-2024-002', client: 'Consultoría Tech', amount: '$8,200.00', status: 'Enviada', color: 'bg-blue-400/10 text-blue-400 border-blue-400/20' },
                     { no: 'INV-2024-003', client: 'E-commerce Central', amount: '$4,150.00', status: 'Vencida', color: 'bg-red-500/10 text-red-400 border-red-500/20' },
                   ].map((inv, i) => (
                     <tr key={i}>

@@ -66,7 +66,7 @@ export default function ClientsPage() {
             {!isPro && (
                 <div className="w-full bg-white/10 rounded-full h-2">
                     <div
-                        className={`h-2 rounded-full transition-all ${clients.length >= clientsLimit ? "bg-red-500" : "bg-indigo-500"
+                        className={`h-2 rounded-full transition-all ${clients.length >= clientsLimit ? "bg-red-500" : "bg-blue-400"
                             }`}
                         style={{ width: `${Math.min((clients.length / clientsLimit) * 100, 100)}%` }}
                     />
@@ -185,7 +185,7 @@ export default function ClientsPage() {
                                         <TableRow key={client.id} className="border-white/10 hover:bg-white/5">
                                             <TableCell className="whitespace-nowrap">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-9 h-9 flex-shrink-0 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white text-sm font-semibold">
+                                                    <div className="w-9 h-9 flex-shrink-0 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white text-sm font-semibold">
                                                         {client.name.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div>
