@@ -204,7 +204,7 @@ export default function AnalyticsPage() {
                     <div className="flex items-center gap-2">
                         <h1 className="text-2xl font-semibold text-white">Analíticas</h1>
                         {isPro ? (
-                            <Badge className="bg-amber-500/10 text-amber-400 border-amber-500/20">Pro</Badge>
+                            <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20">Pro</Badge>
                         ) : (
                             <Badge variant="outline" className="text-gray-400 border-white/10">Gratis</Badge>
                         )}
@@ -339,7 +339,7 @@ export default function AnalyticsPage() {
                                 <h3 className="text-blue-400 font-semibold mb-2">Sección Pro</h3>
                                 <p className="text-blue-400 text-sm mb-4">Identifica a tus clientes más valiosos con el plan Pro.</p>
                                 <Link href="/dashboard/upgrade">
-                                    <Button size="sm" className="bg-blue-400 hover:bg-amber-600 text-black text-xs font-bold">
+                                    <Button size="sm" className="bg-blue-400 hover:bg-blue-500 text-black text-xs font-bold">
                                         Mejorar ahora
                                     </Button>
                                 </Link>
@@ -385,7 +385,7 @@ export default function AnalyticsPage() {
                                 <h3 className="text-blue-400 font-semibold mb-2">Sección Pro</h3>
                                 <p className="text-blue-400 text-sm mb-4">Analiza el estado de tus cobros a detalle con el plan Pro.</p>
                                 <Link href="/dashboard/upgrade">
-                                    <Button size="sm" className="bg-blue-400 hover:bg-amber-600 text-black text-xs font-bold">
+                                    <Button size="sm" className="bg-blue-400 hover:bg-blue-500 text-black text-xs font-bold">
                                         Mejorar ahora
                                     </Button>
                                 </Link>

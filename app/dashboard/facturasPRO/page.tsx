@@ -433,7 +433,7 @@ export default function InvoicesPage() {
 
                 ) : (
 
-                    <div className="flex items-center gap-2 text-amber-400 text-sm">
+                    <div className="flex items-center gap-2 text-blue-400 text-sm">
 
                         <AlertCircle className="h-4 w-4" />
 

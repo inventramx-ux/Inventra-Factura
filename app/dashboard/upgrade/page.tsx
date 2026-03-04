@@ -40,8 +40,8 @@ export default function UpgradePage() {
         <div className="flex items-center justify-center min-h-[70vh]">
             <div className="max-w-lg w-full">
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-amber-500/20 to-orange-500/20 border border-amber-500/30 flex items-center justify-center mx-auto mb-6">
-                        <Crown className="w-8 h-8 text-amber-400" />
+                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6">
+                        <Crown className="w-8 h-8 text-blue-400" />
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-3">
                         Actualiza a Pro
@@ -56,8 +56,8 @@ export default function UpgradePage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {proFeatures.map((feature) => (
                                 <div key={feature.text} className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center flex-shrink-0">
-                                        <feature.icon className="w-4 h-4 text-amber-400" />
+                                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
+                                        <feature.icon className="w-4 h-4 text-blue-400" />
                                     </div>
                                     <span className="text-gray-300 text-sm">{feature.text}</span>
                                 </div>
@@ -73,8 +73,8 @@ export default function UpgradePage() {
                     </div>
 
                     <Link href="/checkout" className="block">
-                        <Button className="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-black font-semibold py-6 text-base hover:from-amber-400 hover:to-orange-400 transition-all shadow-lg shadow-amber-500/20 gap-2">
-                            <Sparkles className="h-5 w-5" />
+                        <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold py-6 text-base hover:from-blue-400 hover:to-blue-500 transition-all shadow-lg shadow-blue-500/20 gap-2">
+                           
                             Comenzar con Pro
                             <ArrowRight className="h-5 w-5" />
                         </Button>
