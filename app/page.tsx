@@ -424,7 +424,7 @@ export default function Home() {
               },
               {
                 "q": "¿Qué nos diferencia de otros sistemas de facturación?",
-                "a": "Nos enfocamos en la simplicidad. Ofrecemos una herramienta diseñada para el ritmo del vendedor digital: rápida, sin complicaciones técnicas y con un precio muy competitivo."
+             "a": "Está diseñado específicamente para ecommerce. Además de facturar, incluye gestión de clientes y analíticas de ventas para ayudarte a entender y hacer crecer tu negocio."
               },
               {
                 "q": "¿Qué tipos de planes tiene Inventra?",

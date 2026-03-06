@@ -15,7 +15,10 @@ if (fs.existsSync(envPath)) {
 const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
 const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
 const planId = process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID;
-const baseUrl = 'https://api-m.sandbox.paypal.com';
+const mode = process.env.PAYPAL_MODE || "sandbox";
+const baseUrl = mode === "live"
+    ? "https://api-m.paypal.com"
+    : "https://api-m.sandbox.paypal.com";
 
 async function getAccessToken() {
     const auth = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');

@@ -240,7 +240,7 @@ export default function AnalyticsPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="flex items-center text-xs text-emerald-400 gap-1">
+                        <div className="flex items-center text-xs text-gray-400 gap-1">
                             <TrendingUp className="h-3 w-3" />
                             <span>Recuperado: ${stats.metrics.paidRevenue.toLocaleString()}</span>
                         </div>
@@ -254,7 +254,7 @@ export default function AnalyticsPage() {
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="flex items-center text-xs text-blue-400 gap-1">
+                        <div className="flex items-center text-xs text-gray-400 gap-1">
                             <FileText className="h-3 w-3" />
                             <span>Sobre {stats.metrics.totalInvoices} facturas</span>
                         </div>
@@ -281,8 +281,7 @@ export default function AnalyticsPage() {
                 {/* Revenue Chart */}
                 <Card className="bg-white/5 border-white/10 lg:col-span-2">
                     <CardHeader>
-                        <CardTitle className="text-white">Ingresos por Mes</CardTitle>
-                        <CardDescription className="text-gray-400">Tus ingresos brutos en los últimos 6 meses</CardDescription>
+                        <CardDescription className="text-gray-400"></CardDescription>
                     </CardHeader>
                     <CardContent className="h-[300px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">

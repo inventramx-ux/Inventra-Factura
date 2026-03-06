@@ -22,7 +22,7 @@ const CheckoutPage = () => {
 
   const [plan, setPlan] = useState("Pro");
 
-  const [price] = useState("199.00");
+  const [price] = useState("2.00");
 
   const router = useRouter();
 
