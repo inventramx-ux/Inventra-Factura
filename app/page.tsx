@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Crown, FileText, Users, DollarSign, Plus, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown } from 'lucide-react';
 
-import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton } from '@clerk/nextjs';
+import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import { animate } from 'framer-motion';
 
 
@@ -424,7 +424,7 @@ export default function Home() {
               },
               {
                 "q": "¿Qué nos diferencia de otros sistemas de facturación?",
-             "a": "Está diseñado específicamente para ecommerce. Además de facturar, incluye gestión de clientes y analíticas de ventas para ayudarte a entender y hacer crecer tu negocio."
+                "a": "Está diseñado específicamente para ecommerce. Además de facturar, incluye gestión de clientes y analíticas de ventas para ayudarte a entender y hacer crecer tu negocio."
               },
               {
                 "q": "¿Qué tipos de planes tiene Inventra?",
@@ -661,7 +661,7 @@ function DashboardPreview() {
 // Inline Navbar component implementation
 
 function InlineNavbar() {
-
+  const { isLoaded } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 
@@ -726,21 +726,27 @@ function InlineNavbar() {
             </a>
           </div>
 
-          <div className="hidden md:flex items-center gap-4">
-            <SignedOut>
-              <SignInButton>
-                <a className="text-slate-300 hover:text-white">Iniciar Sesión</a>
-              </SignInButton>
-              <SignUpButton>
-                <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm !transition-none !duration-0">Registrarse</a>
-              </SignUpButton>
-            </SignedOut>
-            <SignedIn>
-              <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm">
-                Dashboard
-              </Link>
-              <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
-            </SignedIn>
+          <div className="hidden md:flex items-center gap-4 min-w-[200px] justify-end">
+            {!isLoaded ? (
+              <div className="h-9 w-40 bg-white/5 animate-pulse rounded-lg" />
+            ) : (
+              <>
+                <SignedOut>
+                  <SignInButton>
+                    <a className="text-slate-300 hover:text-white cursor-pointer px-2">Iniciar Sesión</a>
+                  </SignInButton>
+                  <SignUpButton>
+                    <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm cursor-pointer ml-2">Registrarse</a>
+                  </SignUpButton>
+                </SignedOut>
+                <SignedIn>
+                  <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                    Dashboard
+                  </Link>
+                  <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
+                </SignedIn>
+              </>
+            )}
           </div>
 
           <button className="md:hidden text-white" onClick={() => setIsMenuOpen(!isMenuOpen)}>
@@ -773,23 +779,29 @@ function InlineNavbar() {
               >
                 Planes
               </Link>
-              <SignedOut>
-                <SignInButton>
-                  <a className="text-slate-300 hover:text-white">Iniciar Sesión</a>
-                </SignInButton>
-                <SignUpButton>
-                  <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm text-center !transition-none !duration-0">Registrarse</a>
-                </SignUpButton>
-              </SignedOut>
-              <SignedIn>
-                <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm text-center">
-                  Dashboard
-                </Link>
-                <div className="flex items-center gap-2">
-                  <UserButton afterSignOutUrl="/" />
-                  <span className="text-slate-400 text-sm">Cuenta</span>
-                </div>
-              </SignedIn>
+              {!isLoaded ? (
+                <div className="h-10 w-full bg-white/5 animate-pulse rounded-lg" />
+              ) : (
+                <>
+                  <SignedOut>
+                    <SignInButton>
+                      <a className="text-slate-300 hover:text-white cursor-pointer py-2">Iniciar Sesión</a>
+                    </SignInButton>
+                    <SignUpButton>
+                      <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm text-center cursor-pointer">Registrarse</a>
+                    </SignUpButton>
+                  </SignedOut>
+                  <SignedIn>
+                    <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm text-center">
+                      Dashboard
+                    </Link>
+                    <div className="flex items-center gap-2">
+                      <UserButton afterSignOutUrl="/" />
+                      <span className="text-slate-400 text-sm">Cuenta</span>
+                    </div>
+                  </SignedIn>
+                </>
+              )}
             </div>
           </div>
         )}
