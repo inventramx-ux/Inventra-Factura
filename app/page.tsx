@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 import Link from 'next/link';
 
-import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Crown, FileText, Users, DollarSign, Plus, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown } from 'lucide-react';
+import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Crown, FileText, Users, DollarSign, Plus, BriefcaseBusiness, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard } from 'lucide-react';
 
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import { animate } from 'framer-motion';
@@ -226,9 +226,11 @@ export default function Home() {
               </Link>
 
             </div>
-
-            {/* Dashboard Preview */}
-            <div className="mt-16 md:mt-24 relative">
+       <div className='text-blue-400 flex items-center gap-2 mt-8'>
+  <BriefcaseBusiness size={14}/>
+  <p> MÁS DE 100 EMPRESAS EN MÉXICO CONFÍAN EN INVENTRA </p>
+</div>
+             <div className="mt-16 md:mt-24 relative">
               <div
                 className="relative rounded-2xl border border-white/10 bg-[#0a0a0a] overflow-hidden shadow-2xl shadow-white/5 pointer-events-none select-none origin-bottom opacity-100"
                 style={{
