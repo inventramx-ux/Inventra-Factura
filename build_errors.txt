@@ -1,0 +1,107 @@
+﻿node.exe : ΓÜá 
+Warning: Next.js 
+inferred your 
+workspace root, but it 
+may not be correct.
+En línea: 1 Carácter: 1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: (ΓÜá Warning:    
+ Ne...not be correc    
+t.:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+ We detected multiple 
+lockfiles and selected 
+the directory of C:\Use
+rs\matia\package-lock.j
+son as the root 
+directory.
+ To silence this 
+warning, set 
+`turbopack.root` in 
+your Next.js config, 
+or consider removing 
+one of the lockfiles 
+if it's not needed.
+   See https://nextjs.o
+rg/docs/app/api-referen
+ce/config/next-config-j
+s/turbopack#root-direct
+ory for more 
+information.
+ Detected additional 
+lockfiles: 
+   * C:\Users\matia\ivn
+cl\package-lock.json
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+- Environments: .env.local
+
+ΓÜá The "middleware" 
+file convention is 
+deprecated. Please use 
+"proxy" instead. Learn 
+more: https://nextjs.or
+g/docs/messages/middlew
+are-to-proxy
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 8.1s
+  Running TypeScript ...
+  Collecting page data using 11 workers ...
+FACTURAPI_KEY is not 
+set in environment 
+variables
+FACTURAPI_KEY is not 
+set in environment 
+variables
+  Generating static pages using 11 workers (0/19) ...
+  Generating static pages using 11 workers (4/19) 
+  Generating static pages using 11 workers (9/19) 
+  Generating static pages using 11 workers (14/19) 
+Γ£ô Generating static pages using 11 workers (19/19) in 642.4ms
+  Finalizing page optimization ...
+
+Route (app)
+Γöî Γùï /
+Γö£ Γùï /_not-found
+Γö£ ╞Æ /api/checkout
+Γö£ ╞Æ /api/invoices
+Γö£ ╞Æ /api/invoices/[id]
+Γö£ ╞Æ /api/invoices/[id]/download/[format]
+Γö£ ╞Æ /api/invoices/[id]/stamp
+Γö£ ╞Æ /api/subscription/update
+Γö£ ╞Æ /api/webhooks/stripe
+Γö£ Γùï /checkout
+Γö£ Γùï /dashboard
+Γö£ Γùï /dashboard/analytics
+Γö£ Γùï /dashboard/clients
+Γö£ Γùï /dashboard/dashboardPRO
+Γö£ Γùï /dashboard/facturasPRO
+Γö£ Γùï /dashboard/invoices
+Γö£ Γùï /dashboard/reminders
+Γö£ Γùï /dashboard/settings
+Γö£ Γùï /dashboard/templates
+Γö£ Γùï /dashboard/upgrade
+Γö£ Γùï /icon.png
+Γö£ ╞Æ /sign-in/[[...sign-in]]
+Γöö ╞Æ /sign-up/[[...sign-up]]
+
+
+╞Æ Proxy (Middleware)
+
+Γùï  (Static)   prerendered as static content
+╞Æ  (Dynamic)  server-rendered on demand
+
