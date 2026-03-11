@@ -147,9 +147,8 @@ export default function Home() {
 
     <div className="min-h-screen">
 
-      {/* Inlined Navbar (previously in app/components/Navbar.tsx) */}
 
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-[#080808] backdrop-blur-lg border-b border-white/20">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-lg border-b border-white/20">
         <InlineNavbar />
       </nav>
 
@@ -163,7 +162,7 @@ export default function Home() {
 
           <div className="animate-fade-in-up">
 
-            <p className="bg-[#080808] px-4 py-2 rounded-full w-fit flex items-center gap-2 border border-white/10 text-sm text-gray-300 mb-8">
+            <p className="bg-white/5 px-4 py-2 rounded-full w-fit flex items-center gap-2 border border-white/10 text-sm text-gray-300 mb-8">
 
               <HeartHandshakeIcon size={14} />
 
