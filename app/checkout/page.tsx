@@ -31,7 +31,7 @@ function CheckoutContent() {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || "Error al iniciar el pago");
+        throw new Error(data.details || data.error || "Error al iniciar el pago");
       }
 
       if (data.url) {

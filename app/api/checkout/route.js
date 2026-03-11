@@ -22,6 +22,8 @@ export async function POST(request) {
       );
     }
 
+    const origin = request.headers.get("origin") || new URL(request.url).origin;
+
     const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
@@ -31,8 +33,8 @@ export async function POST(request) {
           quantity: 1,
         },
       ],
-      success_url: `${request.headers.get("origin")}/dashboard?checkout=success`,
-      cancel_url: `${request.headers.get("origin")}/checkout?cancelled=true`,
+      success_url: `${origin}/dashboard?checkout=success`,
+      cancel_url: `${origin}/checkout?cancelled=true`,
       metadata: {
         userId: userId,
       },
