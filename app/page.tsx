@@ -217,7 +217,7 @@ export default function Home() {
                   e.preventDefault();
                   scrollToSection('features');
                 }}
-                className="w-full sm:w-auto justify-center border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/10 transition-colors inline-flex items-center gap-1"
+                className="bg-white/10 w-full sm:w-auto justify-center border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/5 transition-colors inline-flex items-center gap-1"
               >
 
                 Más información <ArrowRight size={14} />
@@ -225,7 +225,7 @@ export default function Home() {
               </Link>
 
             </div>
-       <div className='text-blue-400 flex items-center gap-2 mt-8'>
+       <div className='text-blue-400 flex items-center gap-2 mt-8 font-semibold'>
   <BriefcaseBusiness size={14}/>
   <p> MÁS DE 100 EMPRESAS EN MÉXICO CONFÍAN EN INVENTRA </p>
 </div>
