@@ -92,7 +92,7 @@ export function SubscriptionProvider({ children }: { children: React.ReactNode }
   }
 
   const upgradeToPro = async () => {
-    // This will be called after successful PayPal payment
+    // This will be called after successful Stripe payment
     window.location.href = "/checkout"
   }
 

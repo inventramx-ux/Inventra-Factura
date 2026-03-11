@@ -2,7 +2,7 @@ import { clerkClient } from "@clerk/nextjs/server"
 
 export async function POST(request) {
   try {
-    const { userId, orderID, plan } = await request.json()
+    const { userId, subscriptionId, plan } = await request.json()
 
     if (!userId) {
       return Response.json(
@@ -17,7 +17,7 @@ export async function POST(request) {
       publicMetadata: {
         subscriptionStatus: plan === "Pro" ? "pro" : "free",
         subscriptionUpdated: new Date().toISOString(),
-        paypalOrderID: orderID,
+        stripeSubscriptionId: subscriptionId || null,
       }
     })
 
@@ -28,7 +28,7 @@ export async function POST(request) {
       .upsert({
         user_id: userId,
         status: plan === "Pro" ? "pro" : "free",
-        paypal_order_id: orderID || null,
+        stripe_subscription_id: subscriptionId || null,
         updated_at: new Date().toISOString()
       });
 

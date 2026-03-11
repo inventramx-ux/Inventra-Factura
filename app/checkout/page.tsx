@@ -1,196 +1,123 @@
 "use client";
 
-
-
-import React, { useEffect, useState } from "react";
-
-import {
-
-  PayPalScriptProvider,
-
-  PayPalButtons,
-
-} from "@paypal/react-paypal-js";
-
-import { useRouter } from "next/navigation";
-
+import React, { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 
-
-
 const CheckoutPage = () => {
-
-  const [plan, setPlan] = useState("Pro");
-
-  const [price] = useState("2.00");
-
   const router = useRouter();
-
+  const searchParams = useSearchParams();
   const { user } = useUser();
-  const [message, setMessage] = useState<{ text: string, type: 'success' | 'error' | 'info' } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error" | "info";
+  } | null>(
+    searchParams.get("cancelled") === "true"
+      ? { text: "Pago cancelado. Puedes intentarlo de nuevo cuando quieras.", type: "info" }
+      : null
+  );
 
+  const handleCheckout = async () => {
+    setIsLoading(true);
+    setMessage(null);
 
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Error al iniciar el pago");
+      }
+
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error("No se recibió la URL de pago");
+      }
+    } catch (error) {
+      console.error("Checkout error:", error);
+      setMessage({
+        text: error instanceof Error ? error.message : "Error al procesar el pago. Intenta de nuevo.",
+        type: "error",
+      });
+      setIsLoading(false);
+    }
+  };
 
   return (
+    <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center px-4">
+      <div className="max-w-md w-full">
+        <div className="bg-[#111111] rounded-2xl p-8 border border-[#1e1e1e]">
+          {/* Header */}
+          <h1 className="text-2xl font-semibold text-white tracking-tight">Plan Pro</h1>
+          <p className="text-[#555] text-sm mt-1 mb-8">Inventra Factura</p>
 
-    <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-
-      <div className="max-w-md w-full mx-4">
-
-        <div className="bg-white/10 backdrop-blur-lg rounded-xl p-8 border border-white/20">
-
-          <h1 className="text-2xl font-bold text-white mb-2">Completa tu pago</h1>
-
-          <p className="text-gray-400 mb-6">Plan Pro - Inventra Factura</p>
-
-
-
-          <div className="bg-white/5 rounded-lg p-4 mb-6">
-
-            <div className="flex justify-between items-center mb-2">
-
-              <span className="text-gray-300">Plan:</span>
-
-              <span className="text-white font-medium">{plan}</span>
-
+          {/* Plan details */}
+          <div className="border border-[#1e1e1e] rounded-xl p-5 mb-6">
+            <div className="flex justify-between items-center mb-3">
+              <span className="text-[#666] text-sm">Plan</span>
+              <span className="text-white text-sm font-medium">Pro</span>
             </div>
-
             <div className="flex justify-between items-center">
-
-              <span className="text-gray-300">Precio:</span>
-
-              <span className="text-white font-medium">${price} MXN/mes</span>
-
+              <span className="text-[#666] text-sm">Precio</span>
+              <span className="text-white text-sm font-medium">$199 MXN/mes</span>
             </div>
-
           </div>
 
+          {/* Features */}
+          <div className="space-y-2.5 mb-8">
+            {["Facturas ilimitadas", "Clientes ilimitados", "Reportes avanzados", "Soporte prioritario"].map((feature) => (
+              <div key={feature} className="flex items-center gap-3 text-sm text-[#888]">
+                <span className="text-[#444]">—</span>
+                {feature}
+              </div>
+            ))}
+          </div>
+
+          {/* Message */}
           {message && (
-            <div className={`p-4 rounded-lg mb-6 text-sm ${message.type === 'success' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' :
-              message.type === 'error' ? 'bg-red-500/10 text-red-400 border border-red-500/20' :
-                'bg-blue-400/10 text-blue-400 border border-blue-400/20'
-              }`}>
+            <div
+              className={`p-4 rounded-xl mb-6 text-sm ${
+                message.type === "success"
+                  ? "bg-[#0a1a0a] text-[#4a8] border border-[#1a2a1a]"
+                  : message.type === "error"
+                  ? "bg-[#1a0a0a] text-[#a44] border border-[#2a1a1a]"
+                  : "bg-[#0a0a1a] text-[#88a] border border-[#1a1a2a]"
+              }`}
+            >
               {message.text}
             </div>
           )}
 
-
-
-          <PayPalScriptProvider
-            options={{
-              clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "",
-              currency: "MXN",
-              vault: true,
-              intent: "subscription",
-            }}
-          >
-
-            <PayPalButtons
-
-              style={{
-
-                layout: "vertical",
-
-                color: "blue",
-
-                shape: "rect",
-
-                label: "subscribe",
-
-              }}
-
-              createSubscription={async (data, actions) => {
-
-                return actions.subscription.create({
-
-                  plan_id: process.env.NEXT_PUBLIC_PAYPAL_PLAN_ID || "",
-
-                });
-
-              }}
-
-              onApprove={async (data) => {
-
-                try {
-
-                  console.log("Subscription approved, ID:", data.subscriptionID);
-
-                  const res = await fetch("/api/checkout/confirm", {
-
-                    method: "POST",
-
-                    headers: {
-
-                      "Content-Type": "application/json",
-
-                    },
-
-                    body: JSON.stringify({
-
-                      subscriptionID: data.subscriptionID,
-
-                      userId: user?.id,
-
-                    }),
-
-                  });
-
-
-
-                  const result = await res.json();
-
-
-
-                  if (res.ok && result.success) {
-                    setMessage({ text: "¡Suscripción exitosa! Redirigiendo al dashboard...", type: 'success' });
-                    setTimeout(() => {
-                      window.location.href = "/dashboard";
-                    }, 2000);
-                  } else {
-                    throw new Error(result.error || "Subscription confirmation failed");
-                  }
-                } catch (error) {
-                  console.error("Subscription confirmation error:", error);
-                  setMessage({ text: "Error al confirmar la suscripción. Por favor contacta soporte.", type: 'error' });
-                }
-              }}
-              onCancel={() => {
-                setMessage({ text: "Pago cancelado. Puedes intentarlo de nuevo cuando quieras.", type: 'info' });
-              }}
-              onError={(err) => {
-                console.error("PayPal error:", err);
-                setMessage({ text: "Ocurrió un error con PayPal. Por favor intenta de nuevo.", type: 'error' });
-              }}
-
-            />
-
-          </PayPalScriptProvider>
-
-
-
+          {/* Checkout button */}
           <button
-
-            onClick={() => router.back()}
-
-            className="mt-6 w-full text-center text-gray-400 hover:text-white transition-colors text-sm"
-
+            onClick={handleCheckout}
+            disabled={isLoading}
+            className="w-full text-sm font-medium py-3.5 rounded-xl transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed bg-white text-black hover:bg-[#e0e0e0] active:bg-[#ccc]"
           >
-
-            ← Volver
-
+            {isLoading ? "Redirigiendo..." : "Continuar al pago"}
           </button>
 
+          <p className="text-[#444] text-xs text-center mt-3">
+            Serás redirigido a Stripe para completar el pago
+          </p>
+
+          {/* Back */}
+          <button
+            onClick={() => router.push("/")}
+            className="mt-6 w-full text-center text-[#555] hover:text-[#999] transition-colors text-sm"
+          >
+            Volver
+          </button>
         </div>
-
       </div>
-
     </div>
-
   );
-
 };
 
-
-
 export default CheckoutPage;
-

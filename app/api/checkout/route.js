@@ -1,80 +1,48 @@
-import paypal from "@paypal/checkout-server-sdk";
-import dotenv from "dotenv";
-
-dotenv.config({ path: '.env.local' });
-
-const getPayPalClient = () => {
-  const clientID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID;
-  const clientSecret = process.env.PAYPAL_CLIENT_SECRET;
-  const mode = process.env.PAYPAL_MODE || "sandbox";
-
-  if (!clientID || !clientSecret) {
-    return null;
-  }
-
-  console.log(`Initializing PayPal in ${mode} mode`);
-
-  const environment = mode === "live"
-    ? new paypal.core.LiveEnvironment(clientID, clientSecret)
-    : new paypal.core.SandboxEnvironment(clientID, clientSecret);
-
-  return new paypal.core.PayPalHttpClient(environment);
-};
+import { stripe } from "@/lib/stripe";
+import { auth } from "@clerk/nextjs/server";
 
 export async function POST(request) {
   try {
-    const client = getPayPalClient();
+    const { userId } = await auth();
 
-    if (!client) {
-      console.error("PayPal credentials not configured in environment variables");
+    if (!userId) {
       return Response.json(
-        {
-          error: "Configuración de PayPal incompleta",
-          details: "Las credenciales de PayPal no están configuradas en el servidor (.env.local)."
-        },
+        { error: "No autorizado" },
+        { status: 401 }
+      );
+    }
+
+    const priceId = process.env.STRIPE_PRICE_ID;
+
+    if (!priceId) {
+      console.error("STRIPE_PRICE_ID not configured");
+      return Response.json(
+        { error: "Configuración de Stripe incompleta" },
         { status: 503 }
       );
     }
 
-    const { plan, price } = await request.json();
-
-    console.log("Creating PayPal order with:", { plan, price });
-
-    const requestPaypal = new paypal.orders.OrdersCreateRequest();
-    requestPaypal.requestBody({
-      intent: "CAPTURE",
-      purchase_units: [
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      payment_method_types: ["card"],
+      line_items: [
         {
-          amount: {
-            currency_code: "MXN",
-            value: price || "199.00",
-          },
-          description: `Plan ${plan || "Pro"} - Inventra Factura`,
+          price: priceId,
+          quantity: 1,
         },
       ],
-    });
-
-    console.log("Sending PayPal request...");
-    const response = await client.execute(requestPaypal);
-    console.log("PayPal response:", response.result);
-
-    return Response.json({
-      orderID: response.result.id,
-      status: response.result.status
-    });
-  } catch (error) {
-    console.error("PayPal order creation error:", error);
-    console.error("Error details:", {
-      message: error.message,
-      stack: error.stack,
-      statusCode: error.statusCode,
-      details: error.details
-    });
-    return Response.json(
-      {
-        error: "Failed to create PayPal order",
-        details: error.message
+      success_url: `${request.headers.get("origin")}/dashboard?checkout=success`,
+      cancel_url: `${request.headers.get("origin")}/checkout?cancelled=true`,
+      metadata: {
+        userId: userId,
       },
+    });
+
+    return Response.json({ url: session.url });
+  } catch (error) {
+    console.error("Stripe checkout session error:", error);
+    return Response.json(
+      { error: "Error al crear la sesión de pago", details: error.message },
       { status: 500 }
     );
   }
