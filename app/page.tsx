@@ -248,6 +248,59 @@ export default function Home() {
 
       </section>
 
+      {/* Logos Section */}
+      <section className="py-12 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-sm font-medium text-gray-500 mb-8 uppercase tracking-widest">
+            Usado por vendedores en empresas como
+          </p>
+          <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 md:gap-x-20 lg:gap-x-24">
+            {/* Mercado Libre - Local SVG */}
+            <img 
+              src="/logos/mercadolibre.svg" 
+              alt="Mercado Libre" 
+              className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            />
+            
+            {/* Facebook Marketplace */}
+            <img 
+              src="https://cdn.simpleicons.org/facebook/white" 
+              alt="Facebook Marketplace" 
+              className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            />
+            
+            {/* eBay */}
+            <img 
+              src="https://cdn.simpleicons.org/ebay/white" 
+              alt="eBay" 
+              className="h-8 md:h-9 lg:h-10 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            />
+            
+            {/* Shopify */}
+            <img 
+              src="https://cdn.simpleicons.org/shopify/white" 
+              alt="Shopify" 
+              className="h-8 md:h-9 lg:h-10 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            />
+            
+            {/* Amazon */}
+            <img 
+              src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" 
+              alt="Amazon" 
+              className="h-6 md:h-7 lg:h-8 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+              style={{ filter: 'brightness(0) invert(1)', marginTop: '6px' }} 
+            />
+            
+            {/* Etsy - Local wordmark SVG */}
+            <img 
+              src="/logos/etsy.svg" 
+              alt="Etsy" 
+              className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            />
+          </div>
+        </div>
+      </section>
+
 
 
       {/* Features Section */}
