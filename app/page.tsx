@@ -257,9 +257,10 @@ export default function Home() {
           <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 md:gap-x-20 lg:gap-x-24">
             {/* Mercado Libre - Local SVG */}
             <img 
-              src="/logos/mercadolibre.svg" 
+              src="/logos/mercadolibre.png" 
               alt="Mercado Libre" 
               className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+              style={{ filter: 'brightness(0) invert(1)' }}
             />
             
             {/* Facebook Marketplace */}
@@ -293,9 +294,10 @@ export default function Home() {
             
             {/* Etsy - Local wordmark SVG */}
             <img 
-              src="/logos/etsy.svg" 
+              src="/logos/etsy.png" 
               alt="Etsy" 
               className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+              style={{ filter: 'brightness(0) invert(1)' }}
             />
           </div>
         </div>
