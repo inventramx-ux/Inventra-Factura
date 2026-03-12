@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 
 import Link from 'next/link';
 
-import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Crown, FileText, Users, DollarSign, Plus, BriefcaseBusiness, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard } from 'lucide-react';
+import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Crown, Users, Plus, BriefcaseBusiness, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard, ShoppingBag, Sparkles, TrendingUp } from 'lucide-react';
 
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import { animate } from 'framer-motion';
@@ -20,9 +20,9 @@ const features = [
 
   {
 
-    title: 'Facturas CFDI 4.0',
+    title: 'Optimizador de publicaciones IA',
 
-    description: 'Facturas validadas por el SAT CFDI 4.0, timbradas a través de Facturapi.',
+    description: 'Optimiza tus publicaciones con IA. Tomando en cuenta palabras clave, descripciones, títulos, etc.',
 
   },
 
@@ -30,28 +30,13 @@ const features = [
 
   {
 
-    title: 'Facturación Manual',
+    title: 'Analíticas de publicaciones',
 
-    description: 'Ingresa los datos manualmente y genera facturas profesionales en cuestión de segundos.',
-
-  },
-
-  {
-
-    title: 'Gestión de Clientes',
-
-    description: 'Mantén un registro completo de tus clientes y consulta sus historiales de compra detallados.',
+    description: 'Obtén analíticas valiosos de tus publicaciones y mejora tus ventas.',
 
   },
 
-  {
-
-    title: 'Analíticas',
-
-    description: 'Visualiza reportes detallados y estadísticas de tus facturas y el comportamiento de tus clientes.',
-
-  },
-
+ 
 
 
 ];
@@ -72,13 +57,14 @@ const plans = [
 
     features: [
 
-      'Hasta 3 facturas por mes',
+      'Hasta 3 publicaciones por mes',
 
-      'Gestión de hasta 2 clientes',
 
-      'Personalización básica',
+     
 
-      'Soporte por email',
+      'Analíticas limitadas',
+            'Soporte por email',
+
 
     ],
 
@@ -100,18 +86,16 @@ const plans = [
 
     features: [
 
-      'Facturas ilimitadas',
-      'Personalización avanzada',
-
-      'Clientes ilimitados',
+      'Publicaciones ilimitadas',
+     
 
 
 
-      'Soporte prioritario',
 
-      'Sin marca de agua',
-      'Analíticas de facturación',
+ 
 
+      'Analíticas de publicaciones ilimitadas',
+     'Soporte prioritario',
     ],
 
     cta: 'Comenzar ahora',
@@ -166,24 +150,39 @@ export default function Home() {
 
               <HeartHandshakeIcon size={14} />
 
-              SISTEMA DE FACTURACIÓN PARA E-COMMERCE CDFI 4.0
+             SISTEMA DE OPTIMIZACIÓN DE PUBLICACIONES PARA E-COMMERCE IA
             </p>
 
 
-
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-semibold text-white mb-6 leading-tight tracking-tight">
-              Facturación Simple para negocios E-commerce
-            </h1>
+<h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
+bg-gradient-to-b from-white via-white to-gray-400
+bg-clip-text text-transparent pb-2">
+  Crea publicaciones en segundos, no horas con IA
+</h1>
 
 
 
             <p className="text-base md:text-lg text-gray-400 max-w-2xl mb-8 md:mb-10">
-              Lleva tu negocio al siguiente nivel con herramientas de gestión de clientes y analíticas de venta integradas. Emite facturas en formato CFDI 4.0 de manera profesional con un sistema pensado exclusivamente para vendedores digitales.              <br className="hidden sm:block" />
+              Crea publicaciones optimizadas para e-commerce con IA No vuelvas a perder tiempo ni estresarte por las palabras clave ni completar campos con Inventra puedes hacer todo en segundos con IA           <br className="hidden sm:block" />
 
 
             </p>
 
-
+            <div className="flex items-center gap-3 mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <img
+                    key={i}
+                    src={`/avatar${i}.png`}
+                    alt={`User ${i}`}
+                    className="h-10 w-10 md:h-11 md:w-11 rounded-full border-2 border-white object-cover shadow-lg"
+                  />
+                ))}
+              </div>
+              <p className="text-white font-semibold text-lg md:text-2xl tracking-tight ml-2">
+                Únete a <span className="text-white">+100 usuarios</span>
+              </p>
+            </div>
 
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6">
 
@@ -225,21 +224,24 @@ export default function Home() {
               </Link>
 
             </div>
-       <div className='text-blue-400 flex items-center gap-2 mt-8 font-semibold'>
-  <BriefcaseBusiness size={14}/>
-  <p> MÁS DE 100 EMPRESAS EN MÉXICO CONFÍAN EN INVENTRA </p>
+       <div className='text-white/30 flex items-center gap-2 mt-8 font-semibold tracking-wider'>
+  <CreditCard size={14}/>
+  <p> NO SE REQUIERE TARJETA DE CRÉDITO </p>
 </div>
-             <div className="mt-16 md:mt-24 relative">
+             <div className="mt-16 md:mt-24 relative px-4 sm:px-0">
               <div
-                className="relative rounded-2xl border border-white/10 bg-[#0a0a0a] overflow-hidden shadow-2xl shadow-white/5 pointer-events-none select-none origin-bottom opacity-100"
+                className="relative rounded-3xl border-[12px] border-[#1a1a1a] ring-1 ring-white/10 bg-[#0a0a0a] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] pointer-events-none select-none origin-bottom opacity-100"
                 style={{
-                  perspective: '1200px',
-                  transform: 'rotateX(4deg) scale(0.98)',
+                  perspective: '2000px',
+                  transform: 'rotateX(6deg) scale(1)',
                 }}
               >
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10" />
                 <DashboardPreview />
               </div>
+              
+              {/* Decorative elements to match the reference style */}
+              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-3xl -z-10 opacity-50" />
             </div>
 
           </div>
@@ -315,13 +317,13 @@ export default function Home() {
 
             <h2 className="text-3xl font-medium text-white mb-4">
 
-              Todo lo que necesitas para facturar
+              Todo lo que necesitas para optimizar tus publicaciones
 
             </h2>
 
             <p className="text-gray-400">
 
-              Herramientas potentes para gestionar tus facturas y clientes de forma eficiente.
+              Herramientas potentes para optimizar tus publicaciones de forma eficiente.
 
             </p>
 
@@ -464,27 +466,27 @@ export default function Home() {
             {[
               {
                 "q": "¿Qué es Inventra?",
-                "a": "Inventra es un sistema de facturación diseñado para el mundo del e-commerce, con herramientas sencillas para que puedas facturar tus ventas de forma ordenada y profesional."
+                "a": "Inventra es una herramienta impulsada por inteligencia artificial que te ayuda a crear publicaciones optimizadas para e-commerce en segundos, ahorrándote horas de trabajo."
               },
               {
                 "q": "¿Para quién es Inventra?",
-                "a": "Está creado para vendedores de e-commerce y dueños de negocios online que necesitan una plataforma clara y rápida para gestionar sus facturas manualmente."
+                "a": "Inventra está diseñado para vendedores de e-commerce que necesitan crear publicaciones rápidas, claras y optimizadas para plataformas como Mercado Libre, Facebook Marketplace y más."
               },
               {
                 "q": "¿Cómo funciona?",
-                "a": "Es muy simple: creas tu cuenta, accedes a tu panel de control y comienzas a generar tus facturas en cuestión de minutos con nuestra interfaz intuitiva."
+                "a": "Solo ingresas la información básica de tu producto y nuestra IA genera automáticamente una publicación optimizada según la plataforma donde quieras vender."
               },
               {
                 "q": "¿Puedo usarlo aunque no tenga e-commerce?",
-                "a": "¡Claro! Funciona perfectamente como un sistema de facturación tradicional para emitir facturas manualmente siempre que lo necesites, sin importar tu modelo de negocio."
+                "a": "Sí. No necesitas tener un e-commerce propio. Inventra funciona para cualquier persona que necesite crear publicaciones para vender productos en plataformas online."
               },
               {
                 "q": "¿Qué nos diferencia de otros sistemas de facturación?",
-                "a": "Está diseñado específicamente para ecommerce. Además de facturar, incluye gestión de clientes y analíticas de ventas para ayudarte a entender y hacer crecer tu negocio."
+                "a": "Inventra está específicamente diseñado para crear publicaciones de e-commerce. Utiliza formatos optimizados, estructuras de venta probadas y datos actualizados de las plataformas para generar publicaciones listas para publicar."
               },
               {
                 "q": "¿Qué tipos de planes tiene Inventra?",
-                "a": "Ofrecemos un Plan Gratuito para quienes están comenzando y un Plan Pro por solo $199 MXN para quienes buscan facturación ilimitada y herramientas adicionales."
+                "a": "Inventra está específicamente diseñado para crear publicaciones de e-commerce. Utiliza formatos optimizados, estructuras de venta probadas y datos actualizados de las plataformas para generar publicaciones listas para publicar."
               }
             ].map((faq, index) => (
               <FAQItem key={index} question={faq.q} answer={faq.a} />
@@ -588,11 +590,11 @@ function DashboardPreview() {
             <div className="space-y-1">
               {[
                 { icon: LayoutDashboard, label: 'Dashboard', active: true },
-                { icon: FileText, label: 'Facturas', active: false },
+                { icon: ShoppingBag, label: 'Publicaciones', active: false },
                 { icon: Users, label: 'Clientes', active: false },
                 { icon: Settings, label: 'Configuración', active: false },
               ].map((item, i) => (
-                <div key={i} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${item.active ? 'text-white bg-white/10' : 'text-gray-400'}`}>
+                <div key={i} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${item.active ? 'text-white bg-white/10 font-medium' : 'text-gray-400'}`}>
                   <item.icon className="size-4" />
                   <span>{item.label}</span>
                 </div>
@@ -643,9 +645,9 @@ function DashboardPreview() {
           {/* Stats Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {[
-              { label: 'Facturas', value: '12', sub: 'Ilimitadas Pro', icon: FileText, color: 'text-blue-400' },
-              { label: 'Ingresos', value: '$45,280', sub: 'Total facturado', icon: DollarSign, color: 'text-emerald-400' },
-              { label: 'Clientes', value: '8', sub: 'Ilimitados Pro', icon: Users, color: 'text-blue-400' },
+              { label: 'Publicaciones', value: '48', sub: 'Total creadas', icon: ShoppingBag, color: 'text-blue-400' },
+              { label: 'Optimizaciones', value: '32', sub: 'Generadas con IA', icon: Sparkles, color: 'text-emerald-400' },
+              { label: 'Eficiencia', value: '86%', sub: 'Tasa de éxito', icon: TrendingUp, color: 'text-indigo-400' },
               { label: 'Plan', value: 'Pro', sub: 'Acceso completo', icon: Crown, color: 'text-amber-400' },
             ].map((stat, i) => (
               <div key={i} className="bg-[#0a0a0a] border border-white/5 p-4 rounded-xl shadow-sm">
@@ -662,44 +664,44 @@ function DashboardPreview() {
           {/* Quick Actions */}
           <div className="flex gap-2">
             <div className="px-4 py-1.5 bg-white text-black text-xs font-semibold rounded-lg flex items-center gap-2">
-              <Plus className="size-3" /> Nueva Factura
+              <Plus className="size-3" /> Nueva Publicación
             </div>
             <div className="px-4 py-1.5 border border-white/10 text-white text-xs font-semibold rounded-lg flex items-center gap-2">
-              <Users className="size-3" /> Ver Clientes
+              <Sparkles className="size-3" /> Ver Analíticas
             </div>
           </div>
 
           {/* Table */}
           <div className="bg-[#0a0a0a] border border-white/5 rounded-xl overflow-hidden shadow-sm">
             <div className="p-4 border-b border-white/5 flex justify-between items-center">
-              <div className="text-xs font-bold text-white">Facturas Recientes</div>
+              <div className="text-xs font-bold text-white">Publicaciones Recientes</div>
               <div className="text-[10px] text-blue-400 font-medium">Ver todas →</div>
             </div>
             <div className="p-0 overflow-x-auto">
               <table className="w-full text-left text-[11px]">
                 <thead className="bg-white/[0.02] text-gray-500 border-b border-white/5">
                   <tr>
-                    <th className="px-4 py-3 font-medium uppercase tracking-tighter">Número</th>
-                    <th className="px-4 py-3 font-medium uppercase tracking-tighter">Cliente</th>
-                    <th className="px-4 py-3 font-medium uppercase tracking-tighter text-right">Monto</th>
+                    <th className="px-4 py-3 font-medium uppercase tracking-tighter">Producto</th>
+                    <th className="px-4 py-3 font-medium uppercase tracking-tighter">Plataforma</th>
                     <th className="px-4 py-3 font-medium uppercase tracking-tighter text-center">Estado</th>
+                    <th className="px-4 py-3 font-medium uppercase tracking-tighter text-right">Fecha</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {[
-                    { no: 'INV-2024-001', client: 'Pixel Studio MX', amount: '$12,500.00', status: 'Pagada', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
-                    { no: 'INV-2024-002', client: 'Consultoría Tech', amount: '$8,200.00', status: 'Enviada', color: 'bg-blue-400/10 text-blue-400 border-blue-400/20' },
-                    { no: 'INV-2024-003', client: 'E-commerce Central', amount: '$4,150.00', status: 'Vencida', color: 'bg-red-500/10 text-red-400 border-red-500/20' },
-                  ].map((inv, i) => (
+                    { name: 'iPhone 15 Pro Max', platform: 'Mercado Libre', date: 'Hoy', status: 'Optimizado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+                    { name: 'MacBook Air M2', platform: 'Amazon', date: 'Ayer', status: 'Borrador', color: 'bg-blue-400/10 text-blue-400 border-blue-400/20' },
+                    { name: 'Sony WH-1000XM5', platform: 'Etsy', date: '12 Mar', status: 'Optimizado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+                  ].map((pub, i) => (
                     <tr key={i}>
-                      <td className="px-4 py-3 text-white font-medium">{inv.no}</td>
-                      <td className="px-4 py-3 text-gray-400">{inv.client}</td>
-                      <td className="px-4 py-3 text-white text-right font-mono">{inv.amount}</td>
+                      <td className="px-4 py-3 text-white font-medium">{pub.name}</td>
+                      <td className="px-4 py-3 text-gray-400">{pub.platform}</td>
                       <td className="px-4 py-3 text-center">
-                        <span className={`px-2 py-0.5 rounded-full border text-[9px] font-medium ${inv.color}`}>
-                          {inv.status}
+                        <span className={`px-2 py-0.5 rounded-full border text-[9px] font-medium ${pub.color}`}>
+                          {pub.status}
                         </span>
                       </td>
+                      <td className="px-4 py-3 text-right text-gray-500">{pub.date}</td>
                     </tr>
                   ))}
                 </tbody>

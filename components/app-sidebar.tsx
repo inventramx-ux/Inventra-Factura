@@ -50,16 +50,18 @@ const freeItems = [
         url: "/dashboard",
         icon: LayoutDashboard,
     },
-    {
-        title: "Facturas",
-        url: "/dashboard/invoices",
-        icon: FileText,
+       {
+        title: "Publicaciones",
+        url: "/dashboard/publications",
+        icon: ShoppingBag,
     },
+   
     {
         title: "Clientes",
         url: "/dashboard/clients",
         icon: Users,
     },
+ 
     {
         title: "Analíticas",
         url: "/dashboard/analytics",

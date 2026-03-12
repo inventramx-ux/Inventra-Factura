@@ -71,7 +71,7 @@ function CheckoutContent() {
 
           {/* Features */}
           <div className="space-y-2.5 mb-8">
-            {["Facturas ilimitadas", "Clientes ilimitados", "Reportes avanzados", "Soporte prioritario"].map((feature) => (
+            {["Publicaciones ilimitadas", "Analíticas avanzadas", "Soporte prioritario"].map((feature) => (
               <div key={feature} className="flex items-center gap-3 text-sm text-[#888]">
                 <span className="text-[#444]">—</span>
                 {feature}

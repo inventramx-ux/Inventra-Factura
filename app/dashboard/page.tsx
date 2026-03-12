@@ -9,36 +9,37 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { FileText, Users, DollarSign, Crown, Plus, ArrowRight } from "lucide-react"
+import { ShoppingBag, Sparkles, LayoutDashboard, Crown, Plus, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { publicationOperations, Publication } from "@/lib/publications"
 
 export default function DashboardPage() {
     const { user } = useUser()
-    const { invoices, loading: invoicesLoading, totalInvoices, totalRevenue } = useInvoice()
-    const { clients, loading: clientsLoading } = useClient()
-    const loading = invoicesLoading || clientsLoading
-    const { isPro, invoicesLimit, clientsLimit, refreshSubscription } = useSubscription()
+    const [publications, setPublications] = React.useState<Publication[]>([])
+    const [loading, setLoading] = React.useState(true)
+    const { isPro, refreshSubscription } = useSubscription()
 
-    // Refresh subscription status when dashboard loads
+    const loadData = React.useCallback(async () => {
+        if (!user?.id) return
+        try {
+            setLoading(true)
+            const pubs = await publicationOperations.getAll(user.id)
+            setPublications(pubs)
+        } catch (error) {
+            console.error("Error loading dashboard data:", error)
+        } finally {
+            setLoading(false)
+        }
+    }, [user?.id])
+
     React.useEffect(() => {
         if (user) {
             refreshSubscription()
+            loadData()
         }
-    }, [user, refreshSubscription])
+    }, [user, refreshSubscription, loadData])
 
-    const statusColors: Record<string, string> = {
-        paid: "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-        sent: "bg-blue-400/20 text-blue-400 border-blue-400/30",
-        draft: "bg-gray-500/20 text-gray-400 border-gray-500/30",
-        overdue: "bg-red-500/20 text-red-400 border-red-500/30",
-    }
-
-    const statusLabels: Record<string, string> = {
-        paid: "Pagada",
-        sent: "Enviada",
-        draft: "Borrador",
-        overdue: "Vencida",
-    }
+    const totalOptimized = publications.filter(p => p.optimized_content?.title).length
 
     if (loading) {
         return (
@@ -62,7 +63,7 @@ export default function DashboardPage() {
                     Bienvenido, {user?.firstName || "Usuario"}
                 </h1>
                 <p className="text-gray-400 mt-1">
-                    Aquí tienes un resumen de tu actividad.
+                    Aquí tienes un resumen de tu actividad de optimización.
                 </p>
             </div>
 
@@ -70,56 +71,38 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-400">Facturas</CardTitle>
-                        <FileText className="h-4 w-4 text-blue-400" />
+                        <CardTitle className="text-sm font-medium text-gray-400">Publicaciones</CardTitle>
+                        <ShoppingBag className="h-4 w-4 text-blue-400" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-white">{totalInvoices}</div>
-                        <p className="text-xs text-gray-500 mt-1">
-                            {isPro ? "Ilimitadas" : `${totalInvoices}/${invoicesLimit} este mes`}
-                        </p>
-                        {!isPro && (
-                            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
-                                <div
-                                    className="bg-blue-400 h-1.5 rounded-full transition-all"
-                                    style={{ width: `${Math.min((totalInvoices / invoicesLimit) * 100, 100)}%` }}
-                                />
-                            </div>
-                        )}
+                        <div className="text-2xl font-bold text-white">{publications.length}</div>
+                        <p className="text-xs text-gray-500 mt-1">Total creadas</p>
                     </CardContent>
                 </Card>
 
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-400">Ingresos</CardTitle>
-                        <DollarSign className="h-4 w-4 text-emerald-400" />
+                        <CardTitle className="text-sm font-medium text-gray-400">Optimizaciones</CardTitle>
+                        <Sparkles className="h-4 w-4 text-emerald-400" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">
-                            ${totalRevenue.toLocaleString()}
+                            {totalOptimized}
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Total facturado</p>
+                        <p className="text-xs text-gray-500 mt-1">Contenido generado con IA</p>
                     </CardContent>
                 </Card>
 
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-400">Clientes</CardTitle>
-                        <Users className="h-4 w-4 text-indigo-400" />
+                        <CardTitle className="text-sm font-medium text-gray-400">Eficiencia</CardTitle>
+                        <LayoutDashboard className="h-4 w-4 text-indigo-400" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-white">{clients.length}</div>
-                        <p className="text-xs text-gray-500 mt-1">
-                            {isPro ? "Ilimitados" : `${clients.length}/${clientsLimit} disponibles`}
-                        </p>
-                        {!isPro && (
-                            <div className="w-full bg-white/10 rounded-full h-1.5 mt-2">
-                                <div
-                                    className="bg-blue-400 h-1.5 rounded-full transition-all"
-                                    style={{ width: `${Math.min((clients.length / clientsLimit) * 100, 100)}%` }}
-                                />
-                            </div>
-                        )}
+                        <div className="text-2xl font-bold text-white">
+                            {publications.length > 0 ? Math.round((totalOptimized / publications.length) * 100) : 0}%
+                        </div>
+                        <p className="text-xs text-gray-500 mt-1">Tasa de optimización</p>
                     </CardContent>
                 </Card>
 
@@ -146,31 +129,31 @@ export default function DashboardPage() {
 
             {/* Quick Actions */}
             <div className="flex gap-3">
-                <Link href="/dashboard/invoices">
+                <Link href="/dashboard/publications">
                     <Button className="bg-white text-black hover:bg-gray-200 font-medium gap-2">
                         <Plus className="h-4 w-4" />
-                        Nueva Factura
+                        Nueva Publicación
                     </Button>
                 </Link>
-                <Link href="/dashboard/clients">
+                <Link href="/dashboard/analytics">
                     <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 font-medium gap-2">
-                        <Users className="h-4 w-4" />
-                        Ver Clientes
+                        <Sparkles className="h-4 w-4" />
+                        Ver Analíticas
                     </Button>
                 </Link>
             </div>
 
-            {/* Recent Invoices */}
+            {/* Recent Publications */}
             <Card className="bg-white/5 border-white/10">
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-white">Facturas Recientes</CardTitle>
+                            <CardTitle className="text-white">Publicaciones Recientes</CardTitle>
                             <CardDescription className="text-gray-400">
-                                Tus últimas facturas creadas
+                                Tus últimas publicaciones creadas
                             </CardDescription>
                         </div>
-                        <Link href="/dashboard/invoices">
+                        <Link href="/dashboard/publications">
                             <Button variant="ghost" className="text-gray-400 hover:text-white hover:bg-white/10 gap-1 text-sm">
                                 Ver todas <ArrowRight className="h-3 w-3" />
                             </Button>
@@ -178,15 +161,15 @@ export default function DashboardPage() {
                     </div>
                 </CardHeader>
                 <CardContent>
-                    {invoices.length === 0 ? (
+                    {publications.length === 0 ? (
                         <div className="text-center py-12">
-                            <FileText className="h-12 w-12 text-gray-600 mx-auto mb-4" />
-                            <p className="text-gray-400 mb-2">No tienes facturas aún</p>
-                            <p className="text-gray-500 text-sm mb-4">Crea tu primera factura para empezar</p>
-                            <Link href="/dashboard/invoices">
+                            <ShoppingBag className="h-12 w-12 text-gray-600 mx-auto mb-4" />
+                            <p className="text-gray-400 mb-2">No tienes publicaciones aún</p>
+                            <p className="text-gray-500 text-sm mb-4">Crea tu primera publicación para empezar</p>
+                            <Link href="/dashboard/publications">
                                 <Button className="bg-white text-black hover:bg-gray-200 font-medium gap-2">
                                     <Plus className="h-4 w-4" />
-                                    Crear Factura
+                                    Crear Publicación
                                 </Button>
                             </Link>
                         </div>
@@ -194,33 +177,29 @@ export default function DashboardPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow className="border-white/10 hover:bg-transparent">
-                                    <TableHead className="text-gray-400">Número</TableHead>
-                                    <TableHead className="text-gray-400">Cliente</TableHead>
-                                    <TableHead className="text-gray-400">Monto</TableHead>
+                                    <TableHead className="text-gray-400">Nombre</TableHead>
+                                    <TableHead className="text-gray-400">Plataforma</TableHead>
                                     <TableHead className="text-gray-400">Estado</TableHead>
                                     <TableHead className="text-gray-400">Fecha</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {invoices.slice(0, 5).map((invoice) => (
-                                    <TableRow key={invoice.id} className="border-white/10 hover:bg-white/5">
+                                {publications.slice(0, 5).map((pub) => (
+                                    <TableRow key={pub.id} className="border-white/10 hover:bg-white/5">
                                         <TableCell className="text-white font-medium">
-                                            {invoice.invoiceNumber}
+                                            {pub.name}
                                         </TableCell>
-                                        <TableCell className="text-gray-300">{invoice.clientName}</TableCell>
-                                        <TableCell className="text-white">
-                                            ${invoice.total.toLocaleString()}
-                                        </TableCell>
+                                        <TableCell className="text-gray-300 capitalize">{pub.platform || "No especificada"}</TableCell>
                                         <TableCell>
                                             <Badge
                                                 variant="outline"
-                                                className={statusColors[invoice.status] || statusColors.draft}
+                                                className={pub.optimized_content?.title ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-gray-500/20 text-gray-400 border-gray-500/30"}
                                             >
-                                                {statusLabels[invoice.status] || invoice.status}
+                                                {pub.optimized_content?.title ? "Optimizado" : "Borrador"}
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-gray-400">
-                                            {new Date(invoice.createdAt).toLocaleDateString("es-MX")}
+                                            {new Date(pub.created_at).toLocaleDateString("es-MX")}
                                         </TableCell>
                                     </TableRow>
                                 ))}
