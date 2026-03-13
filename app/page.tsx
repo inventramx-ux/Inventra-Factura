@@ -36,7 +36,7 @@ const features = [
 
   },
 
- 
+
 
 
 ];
@@ -60,10 +60,10 @@ const plans = [
       'Hasta 3 publicaciones por mes',
 
 
-     
+
 
       'Analíticas limitadas',
-            'Soporte por email',
+      'Soporte por email',
 
 
     ],
@@ -87,15 +87,15 @@ const plans = [
     features: [
 
       'Publicaciones ilimitadas',
-     
 
 
 
 
- 
+
+
 
       'Analíticas de publicaciones ilimitadas',
-     'Soporte prioritario',
+      'Soporte prioritario',
     ],
 
     cta: 'Comenzar ahora',
@@ -150,15 +150,15 @@ export default function Home() {
 
               <HeartHandshakeIcon size={14} />
 
-             SISTEMA DE OPTIMIZACIÓN DE PUBLICACIONES PARA E-COMMERCE IA
+              SISTEMA DE OPTIMIZACIÓN DE PUBLICACIONES PARA E-COMMERCE IA
             </p>
 
 
-<h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
 bg-gradient-to-b from-white via-white to-gray-400
 bg-clip-text text-transparent pb-2">
-  Crea publicaciones en segundos, no horas con IA
-</h1>
+              Crea publicaciones en segundos, no horas con IA
+            </h1>
 
 
 
@@ -224,25 +224,33 @@ bg-clip-text text-transparent pb-2">
               </Link>
 
             </div>
-       <div className='text-white/30 flex items-center gap-2 mt-8 font-semibold tracking-wider'>
-  <CreditCard size={14}/>
-  <p> NO SE REQUIERE TARJETA DE CRÉDITO </p>
-</div>
-             <div className="mt-16 md:mt-24 relative px-4 sm:px-0">
-              <div
-                className="relative rounded-3xl border-[12px] border-[#1a1a1a] ring-1 ring-white/10 bg-[#0a0a0a] overflow-hidden shadow-[0_0_50px_rgba(0,0,0,0.8)] pointer-events-none select-none origin-bottom opacity-100"
-                style={{
-                  perspective: '2000px',
-                  transform: 'rotateX(6deg) scale(1)',
-                }}
-              >
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent z-10" />
-                <DashboardPreview />
-              </div>
-              
-              {/* Decorative elements to match the reference style */}
-              <div className="absolute -inset-4 bg-gradient-to-r from-blue-500/10 to-purple-500/10 blur-3xl -z-10 opacity-50" />
+            <div className='text-white/30 flex items-center gap-2 mt-8 font-semibold tracking-wider'>
+              <CreditCard size={14} />
+              <p> NO SE REQUIERE TARJETA DE CRÉDITO </p>
             </div>
+           {/* PEGA ESTO AQUÍ */}
+<div className="mt-16 md:mt-24 relative px-4 sm:px-0">
+  {/* Marco exterior grueso (Chasis) */}
+  <div 
+    className="relative rounded-[2.5rem] border-[10px] border-[#1a1a1a] p-0.5 bg-[#0a0a0a] shadow-[0_0_60px_rgba(0,0,0,0.9)] pointer-events-none select-none origin-bottom opacity-100"
+    style={{
+      perspective: '2000px',
+      transform: 'rotateX(6deg) scale(1)',
+    }}
+  >
+    {/* Borde interior fino (Efecto cristal/luz) */}
+    <div className="relative rounded-[1.8rem] border  bg-[#070707] overflow-hidden">
+      {/* Reflejo de luz superior */}
+      <div className="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent pointer-events-none z-20" />
+      
+      {/* El Dashboard real */}
+      <DashboardPreview />
+    </div>
+  </div>
+
+  {/* Brillo de fondo mejorado */}
+  <div className="absolute -inset-10 bg-gradient-to-r from-blue-600/10 via-transparent to-purple-600/10 blur-[100px] -z-10 opacity-60" />
+</div>
 
           </div>
 
@@ -258,47 +266,47 @@ bg-clip-text text-transparent pb-2">
           </p>
           <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 md:gap-x-20 lg:gap-x-24">
             {/* Mercado Libre - Local SVG */}
-            <img 
-              src="/logos/mercadolibre.png" 
-              alt="Mercado Libre" 
-              className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            <img
+              src="/logos/mercadolibre.png"
+              alt="Mercado Libre"
+              className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
-            
+
             {/* Facebook Marketplace */}
-            <img 
-              src="https://cdn.simpleicons.org/facebook/white" 
-              alt="Facebook Marketplace" 
-              className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            <img
+              src="https://cdn.simpleicons.org/facebook/white"
+              alt="Facebook Marketplace"
+              className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300"
             />
-            
+
             {/* eBay */}
-            <img 
-              src="https://cdn.simpleicons.org/ebay/white" 
-              alt="eBay" 
-              className="h-8 md:h-9 lg:h-10 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            <img
+              src="https://cdn.simpleicons.org/ebay/white"
+              alt="eBay"
+              className="h-8 md:h-9 lg:h-10 w-auto opacity-70 hover:opacity-100 transition-all duration-300"
             />
-            
+
             {/* Shopify */}
-            <img 
-              src="https://cdn.simpleicons.org/shopify/white" 
-              alt="Shopify" 
-              className="h-8 md:h-9 lg:h-10 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            <img
+              src="https://cdn.simpleicons.org/shopify/white"
+              alt="Shopify"
+              className="h-8 md:h-9 lg:h-10 w-auto opacity-70 hover:opacity-100 transition-all duration-300"
             />
-            
+
             {/* Amazon */}
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" 
-              alt="Amazon" 
-              className="h-6 md:h-7 lg:h-8 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
-              style={{ filter: 'brightness(0) invert(1)', marginTop: '6px' }} 
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg"
+              alt="Amazon"
+              className="h-6 md:h-7 lg:h-8 w-auto opacity-70 hover:opacity-100 transition-all duration-300"
+              style={{ filter: 'brightness(0) invert(1)', marginTop: '6px' }}
             />
-            
+
             {/* Etsy - Local wordmark SVG */}
-            <img 
-              src="/logos/etsy.png" 
-              alt="Etsy" 
-              className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300" 
+            <img
+              src="/logos/etsy.png"
+              alt="Etsy"
+              className="h-7 md:h-8 lg:h-9 w-auto opacity-70 hover:opacity-100 transition-all duration-300"
               style={{ filter: 'brightness(0) invert(1)' }}
             />
           </div>
@@ -584,7 +592,6 @@ function DashboardPreview() {
         <div className="flex-1 py-4 px-3 space-y-6">
           <div>
             <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2 flex items-center gap-2">
-              <Crown className="size-3 text-amber-400" />
               General
             </div>
             <div className="space-y-1">
