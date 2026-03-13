@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useUser } from '@clerk/nextjs';
 import { 
   Plus, 
@@ -47,6 +47,85 @@ export default function PublicationsPage() {
   const [isOptimizing, setIsOptimizing] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+
+  // Local state for debounced text fields
+  const [localFields, setLocalFields] = useState<Record<string, Record<string, string>>>({});
+  const debounceTimers = useRef<Record<string, NodeJS.Timeout>>({});
+
+  // Initialize local fields when a publication is expanded
+  useEffect(() => {
+    if (expandedId) {
+      const pub = publications.find(p => p.id === expandedId);
+      if (pub && !localFields[expandedId]) {
+        setLocalFields(prev => ({
+          ...prev,
+          [expandedId]: {
+            name: pub.name || '',
+            description: pub.product_data.description || '',
+            tags: pub.product_data.tags || '',
+            price: pub.product_data.price || '',
+            brand: pub.product_data.brand || '',
+            stock: pub.product_data.stock || '',
+            model: pub.product_data.model || '',
+            category: pub.product_data.category || '',
+            warranty: pub.product_data.warranty || '',
+          }
+        }));
+      }
+    }
+  }, [expandedId, publications]);
+
+  // Sync local fields when publications change externally (e.g. after optimize)
+  useEffect(() => {
+    setLocalFields(prev => {
+      const next = { ...prev };
+      for (const pub of publications) {
+        if (next[pub.id]) {
+          const current = next[pub.id];
+          // Only update fields that the user is NOT actively editing (no pending debounce timer)
+          const timerKey = pub.id;
+          if (!debounceTimers.current[timerKey + '_name'] && current.name !== pub.name) {
+            next[pub.id] = { ...current, name: pub.name || '' };
+          }
+        }
+      }
+      return next;
+    });
+  }, [publications]);
+
+  const handleLocalChange = useCallback((pubId: string, field: string, value: string) => {
+    // Update local state immediately for responsive typing
+    setLocalFields(prev => ({
+      ...prev,
+      [pubId]: { ...(prev[pubId] || {}), [field]: value }
+    }));
+
+    // Clear previous debounce timer for this field
+    const timerKey = `${pubId}_${field}`;
+    if (debounceTimers.current[timerKey]) {
+      clearTimeout(debounceTimers.current[timerKey]);
+    }
+
+    // Set new debounce timer
+    debounceTimers.current[timerKey] = setTimeout(() => {
+      const pub = publications.find(p => p.id === pubId);
+      if (!pub) return;
+
+      if (field === 'name') {
+        handleUpdate(pubId, { name: value });
+      } else {
+        handleUpdate(pubId, {
+          product_data: { ...pub.product_data, [field]: value }
+        });
+      }
+      delete debounceTimers.current[timerKey];
+    }, 600);
+  }, [publications]);
+
+  // Helper to get local field value
+  const getLocal = (pubId: string, field: string, fallback: string = '') => {
+    return localFields[pubId]?.[field] ?? fallback;
+  };
 
   useEffect(() => {
     if (user?.id) {
@@ -351,8 +430,8 @@ export default function PublicationsPage() {
                                 <div className="grid gap-2">
                                   <Label className="text-gray-400 text-xs">Título del Producto</Label>
                                   <Input 
-                                    value={pub.name}
-                                    onChange={(e) => handleUpdate(pub.id, { name: e.target.value })}
+                                    value={getLocal(pub.id, 'name', pub.name)}
+                                    onChange={(e) => handleLocalChange(pub.id, 'name', e.target.value)}
                                     className="bg-black/60 border-white/10 text-white font-medium"
                                   />
                                 </div>
@@ -368,10 +447,8 @@ export default function PublicationsPage() {
                                     />
                                   </div>
                                   <textarea 
-                                    value={pub.product_data.description || ''}
-                                    onChange={(e) => handleUpdate(pub.id, { 
-                                      product_data: { ...pub.product_data, description: e.target.value } 
-                                    })}
+                                    value={getLocal(pub.id, 'description', pub.product_data.description || '')}
+                                    onChange={(e) => handleLocalChange(pub.id, 'description', e.target.value)}
                                     className="min-h-[100px] w-full rounded-md border border-white/10 bg-black/60 px-3 py-2 text-sm text-white focus:ring-1 focus:ring-blue-500/30"
                                     placeholder="Describe tu producto..."
                                   />
@@ -388,10 +465,8 @@ export default function PublicationsPage() {
                                     />
                                   </div>
                                   <Input 
-                                    value={pub.product_data.tags || ''}
-                                    onChange={(e) => handleUpdate(pub.id, { 
-                                      product_data: { ...pub.product_data, tags: e.target.value } 
-                                    })}
+                                    value={getLocal(pub.id, 'tags', pub.product_data.tags || '')}
+                                    onChange={(e) => handleLocalChange(pub.id, 'tags', e.target.value)}
                                     placeholder="Ej: vintage, algodon, oferta, verano"
                                     className="bg-black/60 border-white/10 text-white italic"
                                   />
@@ -420,13 +495,13 @@ export default function PublicationsPage() {
                                       <div className="grid grid-cols-2 gap-4">
                                         <div className="grid gap-2">
                                           <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Precio</Label><input type="checkbox" checked={isFieldEnabled(pub, 'price')} onChange={() => toggleField(pub, 'price')} className="h-2 w-2 accent-blue-500"/></div>
-                                          <Input value={pub.product_data.price || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, price: e.target.value }})} placeholder="0.00" className="h-8 bg-black/40 border-white/5 text-xs"/>
+                                          <Input value={getLocal(pub.id, 'price', pub.product_data.price || '')} onChange={(e) => handleLocalChange(pub.id, 'price', e.target.value)} placeholder="0.00" className="h-8 bg-black/40 border-white/5 text-xs text-white"/>
                                         </div>
                                         <div className="grid gap-2">
                                           <Label className="text-[10px] text-gray-500">Plataforma</Label>
-                                          <select value={pub.platform || ''} onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })} className="h-8 bg-black/40 border-white/5 text-xs rounded-md px-2">
-                                            <option value="">Marketplace</option>
-                                            {platforms.map(p => (<option key={p.id} value={p.id}>{p.name}</option>))}
+                                          <select value={pub.platform || ''} onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })} className="h-8 bg-black/40 border border-white/5 text-xs text-white rounded-md px-2 w-full appearance-none">
+                                            <option value="" className="bg-[#111] text-white">Marketplace</option>
+                                            {platforms.map(p => (<option key={p.id} value={p.id} className="bg-[#111] text-white">{p.name}</option>))}
                                           </select>
                                         </div>
                                       </div>
@@ -434,22 +509,22 @@ export default function PublicationsPage() {
                                       <div className="grid grid-cols-2 gap-4">
                                         <div className="grid gap-2">
                                           <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Marca</Label><input type="checkbox" checked={isFieldEnabled(pub, 'brand')} onChange={() => toggleField(pub, 'brand')} className="h-2 w-2 accent-blue-500"/></div>
-                                          <Input value={pub.product_data.brand || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, brand: e.target.value }})} placeholder="Ej. Apple" className="h-8 bg-black/40 border-white/5 text-xs"/>
+                                          <Input value={getLocal(pub.id, 'brand', pub.product_data.brand || '')} onChange={(e) => handleLocalChange(pub.id, 'brand', e.target.value)} placeholder="Ej. Apple" className="h-8 bg-black/40 border-white/5 text-xs text-white"/>
                                         </div>
                                         <div className="grid gap-2">
                                           <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Stock</Label><input type="checkbox" checked={isFieldEnabled(pub, 'stock')} onChange={() => toggleField(pub, 'stock')} className="h-2 w-2 accent-blue-500"/></div>
-                                          <Input value={pub.product_data.stock || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, stock: e.target.value }})} placeholder="Q" className="h-8 bg-black/40 border-white/5 text-xs"/>
+                                          <Input value={getLocal(pub.id, 'stock', pub.product_data.stock || '')} onChange={(e) => handleLocalChange(pub.id, 'stock', e.target.value)} placeholder="Q" className="h-8 bg-black/40 border-white/5 text-xs text-white"/>
                                         </div>
                                       </div>
 
                                       <div className="grid grid-cols-2 gap-4">
                                         <div className="grid gap-2">
                                           <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Modelo</Label><input type="checkbox" checked={isFieldEnabled(pub, 'model')} onChange={() => toggleField(pub, 'model')} className="h-2 w-2 accent-blue-500"/></div>
-                                          <Input value={pub.product_data.model || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, model: e.target.value }})} placeholder="Ej. iPhone 15" className="h-8 bg-black/40 border-white/5 text-xs"/>
+                                          <Input value={getLocal(pub.id, 'model', pub.product_data.model || '')} onChange={(e) => handleLocalChange(pub.id, 'model', e.target.value)} placeholder="Ej. iPhone 15" className="h-8 bg-black/40 border-white/5 text-xs text-white"/>
                                         </div>
                                         <div className="grid gap-2">
                                           <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Categoría</Label><input type="checkbox" checked={isFieldEnabled(pub, 'category')} onChange={() => toggleField(pub, 'category')} className="h-2 w-2 accent-blue-500"/></div>
-                                          <Input value={pub.product_data.category || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, category: e.target.value }})} placeholder="Ej. Electrónica" className="h-8 bg-black/40 border-white/5 text-xs"/>
+                                          <Input value={getLocal(pub.id, 'category', pub.product_data.category || '')} onChange={(e) => handleLocalChange(pub.id, 'category', e.target.value)} placeholder="Ej. Electrónica" className="h-8 bg-black/40 border-white/5 text-xs text-white"/>
                                         </div>
                                       </div>
 
@@ -493,10 +568,8 @@ export default function PublicationsPage() {
                                             />
                                           </div>
                                           <Input 
-                                            value={pub.product_data.warranty || ''}
-                                            onChange={(e) => handleUpdate(pub.id, { 
-                                              product_data: { ...pub.product_data, warranty: e.target.value } 
-                                            })}
+                                            value={getLocal(pub.id, 'warranty', pub.product_data.warranty || '')}
+                                            onChange={(e) => handleLocalChange(pub.id, 'warranty', e.target.value)}
                                             placeholder="Ej. 12 meses"
                                             className="h-8 bg-black/40 border-white/10 text-xs text-white"
                                           />

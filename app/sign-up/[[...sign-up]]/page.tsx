@@ -8,13 +8,13 @@ export default function SignUpPage() {
         <Link href="/" className="flex items-center justify-center gap-2 mb-6">
           <img
             src="/inventralogo.png"
-            alt="Inventra Factura"
+            alt="Inventra"
             width={48}
             height={48}
             className="h-12 w-auto"
           />
           <span className="text-white text-2xl font-bold hidden sm:inline">
-            Inventra Factura
+            Inventra
           </span>
         </Link>
       </div>
