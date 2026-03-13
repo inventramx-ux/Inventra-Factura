@@ -252,7 +252,7 @@ export default function AnalyticsPage() {
             {/* Charts Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Activity Chart */}
-                <Card className="bg-white/5 border-white/10 lg:col-span-2">
+                <Card className="bg-white/5 border-white/10 lg:col-span-2 min-w-0 overflow-hidden">
                     <CardHeader>
                         <CardTitle className="text-white text-lg font-medium">Actividad de Publicación</CardTitle>
                     </CardHeader>
@@ -280,7 +280,7 @@ export default function AnalyticsPage() {
                 </Card>
 
                 {/* Platform Distribution */}
-                <Card className="bg-white/5 border-white/10 relative overflow-hidden">
+                <Card className="bg-white/5 border-white/10 relative overflow-hidden min-w-0">
                     <CardHeader>
                         <CardTitle className="text-white">Canales de Venta</CardTitle>
                         <CardDescription className="text-gray-400">Distribución por Marketplace</CardDescription>
@@ -311,7 +311,7 @@ export default function AnalyticsPage() {
                 </Card>
 
                 {/* Status Distribution */}
-                <Card className="bg-white/5 border-white/10 relative overflow-hidden">
+                <Card className="bg-white/5 border-white/10 relative overflow-hidden min-w-0">
                     <CardHeader>
                         <CardTitle className="text-white">Estado de Optimización</CardTitle>
                         <CardDescription className="text-gray-400">Borradores vs Finalizados</CardDescription>

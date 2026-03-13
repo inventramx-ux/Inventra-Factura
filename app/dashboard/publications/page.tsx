@@ -29,13 +29,14 @@ import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { motion, AnimatePresence } from 'framer-motion';
 import { publicationOperations, Publication } from '@/lib/publications';
+import { useSubscription } from '@/app/contexts/SubscriptionContext';
 
 const formatText = (text: string) => {
   if (!text) return null;
   return text.split('\n').map((line, i) => {
     let content = line;
     let isBullet = false;
-    
+
     // Support basic list items
     if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
       isBullet = true;
@@ -44,7 +45,7 @@ const formatText = (text: string) => {
 
     // Parse **bold** parts
     const parts = content.split(/(\*\*.*?\*\*)/g);
-    
+
     const formattedLine = parts.map((part, j) => {
       if (part.startsWith('**') && part.endsWith('**')) {
         return <strong key={j} className="text-white font-bold">{part.slice(2, -2)}</strong>;
@@ -69,14 +70,15 @@ const formatText = (text: string) => {
 };
 const platforms = [
   { id: 'mercadolibre', name: 'Mercado Libre', icon: Store },
+  { id: 'facebook', name: 'Facebook Marketplace', icon: Store },
   { id: 'etsy', name: 'Etsy', icon: ShoppingBag },
   { id: 'amazon', name: 'Amazon', icon: Globe },
   { id: 'shopify', name: 'Shopify', icon: ShoppingBag },
-  { id: 'custom', name: 'Personalizado', icon: Plus },
 ];
 
 export default function PublicationsPage() {
   const { user } = useUser();
+  const { isPro } = useSubscription();
   const [publications, setPublications] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -87,6 +89,7 @@ export default function PublicationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [copyStatus, setCopyStatus] = useState<Record<string, boolean>>({});
+  const [optimizationCount, setOptimizationCount] = useState(0);
   const updateTimeoutRef = useRef<Record<string, NodeJS.Timeout>>({});
 
   useEffect(() => {
@@ -112,7 +115,9 @@ export default function PublicationsPage() {
       setLoading(true);
       setError(null);
       const data = await publicationOperations.getAll(user!.id);
+      const count = await publicationOperations.getCountThisMonth(user!.id);
       setPublications(data);
+      setOptimizationCount(count);
     } catch (err: any) {
       console.error('Error loading publications:', err);
       setError(err.message || 'Error al cargar las publicaciones.');
@@ -127,6 +132,7 @@ export default function PublicationsPage() {
       setError(null);
       const newPub = await publicationOperations.create(user!.id, newPubName);
       setPublications([newPub, ...publications]);
+      setOptimizationCount(prev => prev + 1);
       setNewPubName('');
       setIsCreateModalOpen(false);
       setExpandedId(newPub.id);
@@ -518,9 +524,13 @@ export default function PublicationsPage() {
                                         <Input value={pub.product_data.price || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, price: e.target.value } }, true)} placeholder="0.00" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />
                                       </div>
                                       <div className="grid gap-2">
-                                        <Label className="text-[10px] text-gray-500">Plataforma</Label>
-                                        <select value={pub.platform || ''} onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })} className="h-8 bg-black/40 border-white/5 text-xs rounded-md px-2 text-white outline-none focus:ring-1 focus:ring-blue-500/50">
-                                          <option value="" className="bg-[#111111]">Marketplace</option>
+                                        <Label className={`text-[10px] ${!pub.platform ? 'text-red-400 font-medium' : 'text-gray-500'}`}>Plataforma de Venta</Label>
+                                        <select 
+                                          value={pub.platform || ''} 
+                                          onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })} 
+                                          className={`h-8 bg-black/40 text-xs rounded-md px-2 text-white outline-none focus:ring-1 focus:ring-blue-500/50 transition-all ${!pub.platform ? 'border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : 'border border-white/5'}`}
+                                        >
+                                          <option value="" className="bg-[#111111]">Selecciona tu plataforma</option>
                                           {platforms.map(p => (<option key={p.id} value={p.id} className="bg-[#111111]">{p.name}</option>))}
                                         </select>
                                       </div>
@@ -605,8 +615,8 @@ export default function PublicationsPage() {
 
                           <Button
                             onClick={() => handleOptimize(pub)}
-                            disabled={isOptimizing === pub.id || !pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform}
-                            className={`w-full h-12 text-md font-bold transition-all ${(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform) ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'}`}
+                            disabled={isOptimizing === pub.id || !pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform || (!isPro && optimizationCount >= 3)}
+                            className={`w-full h-12 text-md font-bold transition-all ${(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform || (!isPro && optimizationCount >= 3)) ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'}`}
                           >
                             {isOptimizing === pub.id ? (
                               <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Optimizando...</>
@@ -614,9 +624,16 @@ export default function PublicationsPage() {
                               <><Sparkles className="mr-2 h-5 w-5" /> Optimizar Publicación</>
                             )}
                           </Button>
-                          {(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform) && (
-                            <p className="text-[10px] text-red-400/60 text-center">Debes subir una foto, un título y seleccionar una plataforma para generar.</p>
-                          )}
+                          <div className="text-center space-y-1">
+                            {(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform) && (
+                              <p className="text-[10px] text-red-400/60">Debes subir una foto, un título y seleccionar una plataforma para generar.</p>
+                            )}
+                            {!isPro && (
+                              <p className={`text-[11px] font-medium ${optimizationCount >= 3 ? 'text-red-400' : 'text-gray-400'}`}>
+                                Llevas {optimizationCount}/3 optimizaciones gratuitas este mes. {optimizationCount >= 3 && "Mejora a PRO para optimizar sin límites."}
+                              </p>
+                            )}
+                          </div>
                         </div>
                         {/* Result Section */}
                         <div className="space-y-6">
@@ -628,6 +645,11 @@ export default function PublicationsPage() {
                                 <div className="flex items-center justify-between">
                                   <Label className="text-[10px] text-blue-400 uppercase font-bold">Título Ganador</Label>
                                   <div className="flex items-center gap-2">
+                                    {isPro && pub.optimized_content.optimizationState && (
+                                      <Badge variant="outline" className="text-[10px] py-0 px-2 border-emerald-500/30 text-emerald-400 bg-emerald-500/10 shadow-[0_0_10px_rgba(16,185,129,0.2)]">
+                                        Estado: {pub.optimized_content.optimizationState}
+                                      </Badge>
+                                    )}
                                     {pub.optimized_content.modelUsed && (
                                       <Badge variant="outline" className="text-[8px] py-0 px-1.5 border-blue-500/30 text-blue-400/70 bg-blue-500/5">
                                         AI: {pub.optimized_content.modelUsed}

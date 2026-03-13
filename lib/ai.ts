@@ -8,6 +8,7 @@ export interface OptimizationResult {
   suggestedPrice: string;
   hashtags: string[];
   modelUsed?: string;
+  optimizationState?: string;
 }
 
 export async function optimizePublication(
@@ -15,7 +16,8 @@ export async function optimizePublication(
   platform: string,
   data: any,
   enabledFields: Record<string, boolean> = {},
-  style: string = "Profesional"
+  style: string = "Profesional",
+  isPro: boolean = false
 ): Promise<OptimizationResult> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.trim() === "" || apiKey === "tu_llave_aqui") {
@@ -56,14 +58,14 @@ export async function optimizePublication(
     1. Si un campo dice "No incluir", NO menciones ese dato en la optimización.
     2. Usa los "Tags SEO" para incorporar esas palabras clave de forma natural en la descripción y el título.
     3. Título: Maximizar clics y SEO específico para ${platform}.
-    4. Descripción: Persuasiva, con bullet points de beneficios, destacando MSI o Envío Gratis si están habilitados.
-       IMPORTANTE: Usa formato Markdown en la descripción. Usa **negritas** para resaltar palabras clave y beneficios importantes. Usa guiones (-) para las listas de viñetas. NO uses otro tipo de formato.
+    4. Descripción: Corta, persuasiva e ir directo al punto. Evita introducciones largas o texto de relleno. Usa bullet points de beneficios, destacando MSI o Envío Gratis si están habilitados.
+       IMPORTANTE: Usa formato Markdown en la descripción. Usa **negritas** para resaltar palabras clave. Usa guiones (-) para las listas de viñetas. NO uses otro tipo de formato. La descripción DEBE ser muy concisa y fácil de leer.
     5. Responde ÚNICAMENTE con un objeto JSON (sin bloques de código markdown, solo el texto del JSON):
     {
       "title": "título optimizado",
       "description": "descripción optimizada con formato markdown",
       "suggestedPrice": "precio sugerido",
-      "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+      "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"]${isPro ? ',\n      "optimizationState": "Estado de la optimización (ej. Excelente, Analizado)"' : ''}
     }
   `;
 
