@@ -15,7 +15,9 @@ import {
   Globe,
   Loader2,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Copy,
+  Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -36,6 +38,13 @@ const platforms = [
   { id: 'custom', name: 'Personalizado', icon: Plus },
 ];
 
+const platformGuideUrls: Record<string, string> = {
+  mercadolibre: 'https://www.mercadolibre.com.mx/publicar',
+  amazon: 'https://sellercentral.amazon.com.mx/help/hub/reference/G201468410',
+  etsy: 'https://help.etsy.com/hc/es/articles/115015672808',
+  shopify: 'https://help.shopify.com/es/manual/products/add-update-products',
+};
+
 export default function PublicationsPage() {
   const { user } = useUser();
   const [publications, setPublications] = useState<Publication[]>([]);
@@ -47,6 +56,17 @@ export default function PublicationsPage() {
   const [isOptimizing, setIsOptimizing] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [copiedField, setCopiedField] = useState<string | null>(null);
+
+  const handleCopy = useCallback(async (text: string, fieldId: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopiedField(fieldId);
+      setTimeout(() => setCopiedField(null), 2000);
+    } catch (err) {
+      console.error('Error copying to clipboard:', err);
+    }
+  }, []);
 
   // Local state for debounced text fields
   const [localFields, setLocalFields] = useState<Record<string, Record<string, string>>>({});
@@ -604,7 +624,20 @@ export default function PublicationsPage() {
                             <div className="space-y-4 p-4 rounded-xl bg-blue-500/5 border border-blue-500/10 animate-fade-in">
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between">
-                                  <Label className="text-[10px] text-blue-400 uppercase font-bold">Título Ganador</Label>
+                                  <div className="flex items-center gap-2">
+                                    <Label className="text-[10px] text-blue-400 uppercase font-bold">Título Ganador</Label>
+                                    <button
+                                      onClick={() => handleCopy(pub.optimized_content.title || '', `title-${pub.id}`)}
+                                      className="p-1 rounded hover:bg-white/10 transition-colors"
+                                      title="Copiar título"
+                                    >
+                                      {copiedField === `title-${pub.id}` ? (
+                                        <Check className="h-3 w-3 text-emerald-400" />
+                                      ) : (
+                                        <Copy className="h-3 w-3 text-gray-500 hover:text-blue-400" />
+                                      )}
+                                    </button>
+                                  </div>
                                   {pub.optimized_content.modelUsed && (
                                     <Badge variant="outline" className="text-[8px] py-0 px-1.5 border-blue-500/30 text-blue-400/70 bg-blue-500/5">
                                       AI: {pub.optimized_content.modelUsed}
@@ -615,7 +648,20 @@ export default function PublicationsPage() {
                               </div>
                               
                               <div className="space-y-2">
-                                <Label className="text-[10px] text-blue-400 uppercase font-bold">Descripción Estratégica</Label>
+                                <div className="flex items-center gap-2">
+                                  <Label className="text-[10px] text-blue-400 uppercase font-bold">Descripción Estratégica</Label>
+                                  <button
+                                    onClick={() => handleCopy(pub.optimized_content.description || '', `desc-${pub.id}`)}
+                                    className="p-1 rounded hover:bg-white/10 transition-colors"
+                                    title="Copiar descripción"
+                                  >
+                                    {copiedField === `desc-${pub.id}` ? (
+                                      <Check className="h-3 w-3 text-emerald-400" />
+                                    ) : (
+                                      <Copy className="h-3 w-3 text-gray-500 hover:text-blue-400" />
+                                    )}
+                                  </button>
+                                </div>
                                 <p className="text-gray-400 text-xs leading-relaxed">{pub.optimized_content.description}</p>
                               </div>
 
@@ -625,18 +671,25 @@ export default function PublicationsPage() {
                                   <p className="text-emerald-400 font-bold">${pub.optimized_content.suggestedPrice}</p>
                                 </div>
                                 <div className="space-y-1 flex-1">
-                                  <Label className="text-[10px] text-blue-400 uppercase font-bold">Hashtags</Label>
+                                  <Label className="text-[10px] text-blue-400 uppercase font-bold">Palabras Clave SEO</Label>
                                   <div className="flex flex-wrap gap-1 mt-1">
                                     {pub.optimized_content.hashtags?.map(tag => (
-                                      <span key={tag} className="text-[9px] text-gray-500 bg-white/5 px-1.5 py-0.5 rounded">#{tag}</span>
+                                      <span key={tag} className="text-[9px] text-gray-500 bg-white/5 px-1.5 py-0.5 rounded">{tag}</span>
                                     ))}
                                   </div>
                                 </div>
                               </div>
 
-                              <Button variant="ghost" size="sm" className="w-full mt-4 text-xs text-blue-400 hover:bg-blue-400/10">
-                                <ExternalLink className="mr-2 h-3 w-3" /> Ver guía de publicación en {pub.platform}
-                              </Button>
+                              {pub.platform && platformGuideUrls[pub.platform] && (
+                                <a
+                                  href={platformGuideUrls[pub.platform]}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="w-full mt-4 text-xs text-blue-400 hover:bg-blue-400/10 inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 transition-colors"
+                                >
+                                  <ExternalLink className="h-3 w-3" /> Ver guía de publicación en {platforms.find(p => p.id === pub.platform)?.name || pub.platform}
+                                </a>
+                              )}
                             </div>
                           ) : (
                             <div className="h-[250px] border border-dashed border-white/5 rounded-xl flex flex-col items-center justify-center text-center p-6 bg-white/[0.01]">

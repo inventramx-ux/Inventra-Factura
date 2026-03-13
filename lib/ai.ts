@@ -56,12 +56,13 @@ export async function optimizePublication(
     2. Usa los "Tags SEO" para incorporar esas palabras clave de forma natural en la descripción y el título.
     3. Título: Maximizar clics y SEO específico para ${platform}.
     4. Descripción: Persuasiva, con bullet points de beneficios, destacando MSI o Envío Gratis si están habilitados.
-    5. Responde ÚNICAMENTE con un objeto JSON (sin bloques de código markdown, solo el texto del JSON):
+    5. En el campo "hashtags", genera palabras clave SEO relevantes (sin el símbolo #). Son keywords que el vendedor quiere que aparezcan en la descripción.
+    6. Responde ÚNICAMENTE con un objeto JSON (sin bloques de código markdown, solo el texto del JSON):
     {
       "title": "título optimizado",
       "description": "descripción optimizada",
       "suggestedPrice": "precio sugerido",
-      "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
+      "hashtags": ["palabra clave 1", "palabra clave 2", "palabra clave 3", "palabra clave 4", "palabra clave 5"]
     }
   `;
 
