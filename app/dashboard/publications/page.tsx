@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
 import {
   Plus,
@@ -15,7 +15,9 @@ import {
   Globe,
   Loader2,
   AlertCircle,
-  CheckCircle2
+  CheckCircle2,
+  Copy,
+  Check
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,6 +30,43 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { motion, AnimatePresence } from 'framer-motion';
 import { publicationOperations, Publication } from '@/lib/publications';
 
+const formatText = (text: string) => {
+  if (!text) return null;
+  return text.split('\n').map((line, i) => {
+    let content = line;
+    let isBullet = false;
+    
+    // Support basic list items
+    if (line.trim().startsWith('- ') || line.trim().startsWith('* ')) {
+      isBullet = true;
+      content = line.trim().substring(2);
+    }
+
+    // Parse **bold** parts
+    const parts = content.split(/(\*\*.*?\*\*)/g);
+    
+    const formattedLine = parts.map((part, j) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return <strong key={j} className="text-white font-bold">{part.slice(2, -2)}</strong>;
+      }
+      return <span key={j}>{part}</span>;
+    });
+
+    if (isBullet) {
+      return (
+        <li key={i} className="ml-4 list-disc marker:text-blue-500 mb-1">
+          {formattedLine}
+        </li>
+      );
+    }
+
+    return (
+      <span key={i} className="block mb-2 last:mb-0">
+        {formattedLine}
+      </span>
+    );
+  });
+};
 const platforms = [
   { id: 'mercadolibre', name: 'Mercado Libre', icon: Store },
   { id: 'etsy', name: 'Etsy', icon: ShoppingBag },
@@ -47,6 +86,15 @@ export default function PublicationsPage() {
   const [isOptimizing, setIsOptimizing] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
+  const [copyStatus, setCopyStatus] = useState<Record<string, boolean>>({});
+  const updateTimeoutRef = useRef<Record<string, NodeJS.Timeout>>({});
+
+  useEffect(() => {
+    // Cleanup timeouts on unmount
+    return () => {
+      Object.values(updateTimeoutRef.current).forEach(clearTimeout);
+    };
+  }, []);
 
   useEffect(() => {
     if (user?.id) {
@@ -100,12 +148,64 @@ export default function PublicationsPage() {
     }
   };
 
-  const handleUpdate = async (id: string, updates: Partial<Publication>) => {
+  const handleUpdate = async (id: string, updates: Partial<Publication>, debounce = false) => {
+    let latestPub: Publication | undefined;
+
+    // Optimistically update local state immediately and capture the latest state
+    setPublications(prev => {
+      const newList = prev.map(p => {
+        if (p.id === id) {
+          const updated = { ...p, ...updates };
+          if (updates.product_data) {
+            updated.product_data = { ...p.product_data, ...updates.product_data };
+          }
+          latestPub = updated;
+          return updated;
+        }
+        return p;
+      });
+      return newList;
+    });
+
+    const triggerUpdate = async () => {
+      if (!latestPub) return;
+      try {
+        // Ensure we send the merged product_data to prevent overwriting other fields in JSONB
+        const dataToSave = { ...updates };
+        if (updates.product_data) {
+          dataToSave.product_data = latestPub.product_data;
+        }
+        await publicationOperations.update(id, user!.id, dataToSave);
+      } catch (error) {
+        console.error('Error updating publication:', error);
+      }
+    };
+
+    if (!debounce) {
+      await triggerUpdate();
+      return;
+    }
+
+    // Debounced update
+    if (updateTimeoutRef.current[id]) {
+      clearTimeout(updateTimeoutRef.current[id]);
+    }
+
+    updateTimeoutRef.current[id] = setTimeout(async () => {
+      await triggerUpdate();
+      delete updateTimeoutRef.current[id];
+    }, 1000);
+  };
+
+  const handleCopy = async (text: string, id: string) => {
     try {
-      const updated = await publicationOperations.update(id, user!.id, updates);
-      setPublications(publications.map(p => p.id === id ? updated : p));
-    } catch (error) {
-      console.error('Error updating publication:', error);
+      await navigator.clipboard.writeText(text);
+      setCopyStatus({ ...copyStatus, [id]: true });
+      setTimeout(() => {
+        setCopyStatus(prev => ({ ...prev, [id]: false }));
+      }, 2000);
+    } catch (err) {
+      console.error('Failed to copy text: ', err);
     }
   };
 
@@ -131,9 +231,9 @@ export default function PublicationsPage() {
             brand: true,
             model: true,
             category: true,
-            stock: true,
-            tags: true
-          }
+            stock: true
+          },
+          style: pub.product_data.style || 'Profesional'
         }),
       });
 
@@ -165,8 +265,7 @@ export default function PublicationsPage() {
       brand: true,
       model: true,
       category: true,
-      stock: true,
-      tags: true
+      stock: true
     };
     handleUpdate(pub.id, {
       product_data: {
@@ -314,7 +413,6 @@ export default function PublicationsPage() {
                                 htmlFor="file-upload"
                                 className="p-8 rounded-xl border-2 border-dashed border-blue-500/20 bg-blue-500/5 group hover:border-blue-500/40 transition-all text-center flex flex-col items-center gap-4 cursor-pointer w-full"
                               >
-                                <span className="text-blue-400 font-bold text-xs uppercase mb-1">1. Foto del Producto (Obligatorio)</span>
                                 <div className="h-40 w-40 rounded-xl border border-white/10 bg-black/40 flex items-center justify-center overflow-hidden shadow-2xl group-hover:scale-105 transition-transform">
                                   {pub.product_data.imageUrl ? (
                                     <img src={pub.product_data.imageUrl} alt="Preview" className="h-full w-full object-cover" />
@@ -352,8 +450,8 @@ export default function PublicationsPage() {
                                 <Label className="text-gray-400 text-xs">Título del Producto</Label>
                                 <Input
                                   value={pub.name}
-                                  onChange={(e) => handleUpdate(pub.id, { name: e.target.value })}
-                                  className="bg-black/60 border-white/10 text-white font-medium"
+                                  onChange={(e) => handleUpdate(pub.id, { name: e.target.value }, true)}
+                                  className="bg-black/60 border-white/10 text-white font-medium focus:ring-blue-500/50"
                                 />
                               </div>
 
@@ -371,30 +469,27 @@ export default function PublicationsPage() {
                                   value={pub.product_data.description || ''}
                                   onChange={(e) => handleUpdate(pub.id, {
                                     product_data: { ...pub.product_data, description: e.target.value }
-                                  })}
-                                  className="min-h-[100px] w-full rounded-md border border-white/10 bg-black/60 px-3 py-2 text-sm text-white focus:ring-1 focus:ring-blue-500/30"
+                                  }, true)}
+                                  className="min-h-[100px] w-full rounded-md border border-white/10 bg-black/60 px-3 py-2 text-sm text-white focus:ring-1 focus:ring-blue-500/50 transition-all outline-none"
                                   placeholder="Describe tu producto..."
                                 />
                               </div>
 
                               <div className="grid gap-2">
-                                <div className="flex items-center justify-between">
-                                  <Label className="text-gray-400 text-xs">Tags SEO (Keywords)</Label>
-                                  <input
-                                    type="checkbox"
-                                    checked={isFieldEnabled(pub, 'tags')}
-                                    onChange={() => toggleField(pub, 'tags')}
-                                    className="h-3 w-3 accent-blue-500"
-                                  />
+                                <Label className="text-gray-400 text-xs">Estilo de Redacción</Label>
+                                <div className="grid grid-cols-2 gap-2">
+                                  {['Persuasivo', 'Informativo', 'Profesional', 'Creativo'].map((style) => (
+                                    <Button
+                                      key={style}
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleUpdate(pub.id, { product_data: { ...pub.product_data, style } })}
+                                      className={`text-[10px] h-8 border-white/10 ${pub.product_data.style === style ? 'bg-blue-600 text-white border-blue-600' : 'bg-black/40 text-gray-400 hover:bg-white/5'}`}
+                                    >
+                                      {style}
+                                    </Button>
+                                  ))}
                                 </div>
-                                <Input
-                                  value={pub.product_data.tags || ''}
-                                  onChange={(e) => handleUpdate(pub.id, {
-                                    product_data: { ...pub.product_data, tags: e.target.value }
-                                  })}
-                                  placeholder="Ej: vintage, algodon, oferta, verano"
-                                  className="bg-black/60 border-white/10 text-white italic"
-                                />
                               </div>
                             </div>
 
@@ -420,13 +515,13 @@ export default function PublicationsPage() {
                                     <div className="grid grid-cols-2 gap-4">
                                       <div className="grid gap-2">
                                         <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Precio</Label><input type="checkbox" checked={isFieldEnabled(pub, 'price')} onChange={() => toggleField(pub, 'price')} className="h-2 w-2 accent-blue-500" /></div>
-                                        <Input value={pub.product_data.price || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, price: e.target.value } })} placeholder="0.00" className="h-8 bg-black/40 border-white/5 text-xs" />
+                                        <Input value={pub.product_data.price || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, price: e.target.value } }, true)} placeholder="0.00" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />
                                       </div>
                                       <div className="grid gap-2">
                                         <Label className="text-[10px] text-gray-500">Plataforma</Label>
-                                        <select value={pub.platform || ''} onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })} className="h-8 bg-black/40 border-white/5 text-xs rounded-md px-2">
-                                          <option value="">Marketplace</option>
-                                          {platforms.map(p => (<option key={p.id} value={p.id}>{p.name}</option>))}
+                                        <select value={pub.platform || ''} onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })} className="h-8 bg-black/40 border-white/5 text-xs rounded-md px-2 text-white outline-none focus:ring-1 focus:ring-blue-500/50">
+                                          <option value="" className="bg-[#111111]">Marketplace</option>
+                                          {platforms.map(p => (<option key={p.id} value={p.id} className="bg-[#111111]">{p.name}</option>))}
                                         </select>
                                       </div>
                                     </div>
@@ -434,22 +529,22 @@ export default function PublicationsPage() {
                                     <div className="grid grid-cols-2 gap-4">
                                       <div className="grid gap-2">
                                         <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Marca</Label><input type="checkbox" checked={isFieldEnabled(pub, 'brand')} onChange={() => toggleField(pub, 'brand')} className="h-2 w-2 accent-blue-500" /></div>
-                                        <Input value={pub.product_data.brand || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, brand: e.target.value } })} placeholder="Ej. Apple" className="h-8 bg-black/40 border-white/5 text-xs" />
+                                        <Input value={pub.product_data.brand || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, brand: e.target.value } }, true)} placeholder="Ej. Apple" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />
                                       </div>
                                       <div className="grid gap-2">
                                         <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Stock</Label><input type="checkbox" checked={isFieldEnabled(pub, 'stock')} onChange={() => toggleField(pub, 'stock')} className="h-2 w-2 accent-blue-500" /></div>
-                                        <Input value={pub.product_data.stock || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, stock: e.target.value } })} placeholder="Q" className="h-8 bg-black/40 border-white/5 text-xs" />
+                                        <Input value={pub.product_data.stock || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, stock: e.target.value } }, true)} placeholder="Q" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />
                                       </div>
                                     </div>
 
                                     <div className="grid grid-cols-2 gap-4">
                                       <div className="grid gap-2">
                                         <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Modelo</Label><input type="checkbox" checked={isFieldEnabled(pub, 'model')} onChange={() => toggleField(pub, 'model')} className="h-2 w-2 accent-blue-500" /></div>
-                                        <Input value={pub.product_data.model || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, model: e.target.value } })} placeholder="Ej. iPhone 15" className="h-8 bg-black/40 border-white/5 text-xs" />
+                                        <Input value={pub.product_data.model || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, model: e.target.value } }, true)} placeholder="Ej. iPhone 15" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />
                                       </div>
                                       <div className="grid gap-2">
                                         <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Categoría</Label><input type="checkbox" checked={isFieldEnabled(pub, 'category')} onChange={() => toggleField(pub, 'category')} className="h-2 w-2 accent-blue-500" /></div>
-                                        <Input value={pub.product_data.category || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, category: e.target.value } })} placeholder="Ej. Electrónica" className="h-8 bg-black/40 border-white/5 text-xs" />
+                                        <Input value={pub.product_data.category || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, category: e.target.value } }, true)} placeholder="Ej. Electrónica" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />
                                       </div>
                                     </div>
 
@@ -496,9 +591,9 @@ export default function PublicationsPage() {
                                           value={pub.product_data.warranty || ''}
                                           onChange={(e) => handleUpdate(pub.id, {
                                             product_data: { ...pub.product_data, warranty: e.target.value }
-                                          })}
+                                          }, true)}
                                           placeholder="Ej. 12 meses"
-                                          className="h-8 bg-black/40 border-white/10 text-xs text-white"
+                                          className="h-8 bg-black/40 border-white/10 text-xs text-white focus:ring-blue-500/50 outline-none"
                                         />
                                       </div>
                                     </div>
@@ -510,8 +605,8 @@ export default function PublicationsPage() {
 
                           <Button
                             onClick={() => handleOptimize(pub)}
-                            disabled={isOptimizing === pub.id || !pub.product_data.imageUrl}
-                            className={`w-full h-12 text-md font-bold transition-all ${!pub.product_data.imageUrl ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'}`}
+                            disabled={isOptimizing === pub.id || !pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform}
+                            className={`w-full h-12 text-md font-bold transition-all ${(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform) ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'}`}
                           >
                             {isOptimizing === pub.id ? (
                               <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Optimizando...</>
@@ -519,8 +614,8 @@ export default function PublicationsPage() {
                               <><Sparkles className="mr-2 h-5 w-5" /> Optimizar Publicación</>
                             )}
                           </Button>
-                          {!pub.product_data.imageUrl && (
-                            <p className="text-[10px] text-red-400/60 text-center">Debes subir una foto para poder generar.</p>
+                          {(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform) && (
+                            <p className="text-[10px] text-red-400/60 text-center">Debes subir una foto, un título y seleccionar una plataforma para generar.</p>
                           )}
                         </div>
                         {/* Result Section */}
@@ -532,18 +627,40 @@ export default function PublicationsPage() {
                               <div className="space-y-2">
                                 <div className="flex items-center justify-between">
                                   <Label className="text-[10px] text-blue-400 uppercase font-bold">Título Ganador</Label>
-                                  {pub.optimized_content.modelUsed && (
-                                    <Badge variant="outline" className="text-[8px] py-0 px-1.5 border-blue-500/30 text-blue-400/70 bg-blue-500/5">
-                                      AI: {pub.optimized_content.modelUsed}
-                                    </Badge>
-                                  )}
+                                  <div className="flex items-center gap-2">
+                                    {pub.optimized_content.modelUsed && (
+                                      <Badge variant="outline" className="text-[8px] py-0 px-1.5 border-blue-500/30 text-blue-400/70 bg-blue-500/5">
+                                        AI: {pub.optimized_content.modelUsed}
+                                      </Badge>
+                                    )}
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      className="h-6 w-6 text-blue-400 hover:bg-blue-400/10"
+                                      onClick={() => handleCopy(pub.optimized_content.title || '', pub.id + '-title')}
+                                    >
+                                      {copyStatus[pub.id + '-title'] ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                                    </Button>
+                                  </div>
                                 </div>
                                 <p className="text-white text-sm font-medium leading-tight">{pub.optimized_content.title}</p>
                               </div>
 
                               <div className="space-y-2">
-                                <Label className="text-[10px] text-blue-400 uppercase font-bold">Descripción Estratégica</Label>
-                                <p className="text-gray-400 text-xs leading-relaxed">{pub.optimized_content.description}</p>
+                                <div className="flex items-center justify-between">
+                                  <Label className="text-[10px] text-blue-400 uppercase font-bold">Descripción Estratégica</Label>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6 text-blue-400 hover:bg-blue-400/10"
+                                    onClick={() => handleCopy(pub.optimized_content.description || '', pub.id + '-desc')}
+                                  >
+                                    {copyStatus[pub.id + '-desc'] ? <Check className="h-3 w-3" /> : <Copy className="h-3 w-3" />}
+                                  </Button>
+                                </div>
+                                <div className="text-gray-400 text-xs leading-relaxed">
+                                  {formatText(pub.optimized_content.description || '')}
+                                </div>
                               </div>
 
                               <div className="flex gap-4">
@@ -551,19 +668,7 @@ export default function PublicationsPage() {
                                   <Label className="text-[10px] text-blue-400 uppercase font-bold">Precio Sugerido</Label>
                                   <p className="text-emerald-400 font-bold">${pub.optimized_content.suggestedPrice}</p>
                                 </div>
-                                <div className="space-y-1 flex-1">
-                                  <Label className="text-[10px] text-blue-400 uppercase font-bold">Hashtags</Label>
-                                  <div className="flex flex-wrap gap-1 mt-1">
-                                    {pub.optimized_content.hashtags?.map(tag => (
-                                      <span key={tag} className="text-[9px] text-gray-500 bg-white/5 px-1.5 py-0.5 rounded">#{tag}</span>
-                                    ))}
-                                  </div>
-                                </div>
                               </div>
-
-                              <Button variant="ghost" size="sm" className="w-full mt-4 text-xs text-blue-400 hover:bg-blue-400/10">
-                                <ExternalLink className="mr-2 h-3 w-3" /> Ver guía de publicación en {pub.platform}
-                              </Button>
                             </div>
                           ) : (
                             <div className="h-[250px] border border-dashed border-white/5 rounded-xl flex flex-col items-center justify-center text-center p-6 bg-white/[0.01]">

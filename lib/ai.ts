@@ -14,7 +14,8 @@ export async function optimizePublication(
   name: string,
   platform: string,
   data: any,
-  enabledFields: Record<string, boolean> = {}
+  enabledFields: Record<string, boolean> = {},
+  style: string = "Profesional"
 ): Promise<OptimizationResult> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.trim() === "" || apiKey === "tu_llave_aqui") {
@@ -56,10 +57,11 @@ export async function optimizePublication(
     2. Usa los "Tags SEO" para incorporar esas palabras clave de forma natural en la descripción y el título.
     3. Título: Maximizar clics y SEO específico para ${platform}.
     4. Descripción: Persuasiva, con bullet points de beneficios, destacando MSI o Envío Gratis si están habilitados.
+       IMPORTANTE: Usa formato Markdown en la descripción. Usa **negritas** para resaltar palabras clave y beneficios importantes. Usa guiones (-) para las listas de viñetas. NO uses otro tipo de formato.
     5. Responde ÚNICAMENTE con un objeto JSON (sin bloques de código markdown, solo el texto del JSON):
     {
       "title": "título optimizado",
-      "description": "descripción optimizada",
+      "description": "descripción optimizada con formato markdown",
       "suggestedPrice": "precio sugerido",
       "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"]
     }

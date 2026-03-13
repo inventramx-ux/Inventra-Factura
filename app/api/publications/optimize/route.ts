@@ -3,7 +3,7 @@ import { optimizePublication } from '@/lib/ai';
 
 export async function POST(request: Request) {
   try {
-    const { name, platform, product_data, enabled_fields } = await request.json();
+    const { name, platform, product_data, enabled_fields, style } = await request.json();
 
     if (!name || !platform) {
       return NextResponse.json(
@@ -12,7 +12,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const optimized = await optimizePublication(name, platform, product_data, enabled_fields);
+    const optimized = await optimizePublication(name, platform, product_data, enabled_fields, style);
 
     return NextResponse.json(optimized);
   } catch (error: any) {

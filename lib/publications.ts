@@ -16,7 +16,7 @@ export interface Publication {
     model?: string
     category?: string
     stock?: string
-    tags?: string
+    style?: string
     enabled_fields?: Record<string, boolean>
   }
   platform?: string
@@ -24,93 +24,125 @@ export interface Publication {
     title?: string
     description?: string
     suggestedPrice?: string
-    hashtags?: string[]
     modelUsed?: string
   }
   created_at: string
 }
 
+// Basic retry logic for transient network errors
+const withRetry = async <T>(operation: () => Promise<T>, maxRetries = 2, delay = 1000): Promise<T> => {
+  let lastError: any;
+  for (let i = 0; i <= maxRetries; i++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      lastError = error;
+      const isNetworkError = error.message?.toLowerCase().includes('fetch') || 
+                            error.message?.toLowerCase().includes('network') ||
+                            error.status >= 500;
+      
+      if (isNetworkError && i < maxRetries) {
+        console.warn(`Transient error detected, retrying (${i + 1}/${maxRetries})...`);
+        await new Promise(resolve => setTimeout(resolve, delay * (i + 1)));
+        continue;
+      }
+      throw error;
+    }
+  }
+  throw lastError;
+};
+
 export const publicationOperations = {
   // Get all publications for a user
   getAll: async (userId: string) => {
-    const { data, error } = await supabase
-      .from('publications')
-      .select('*')
-      .eq('user_id', userId)
-      .order('created_at', { ascending: false })
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('publications')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
 
-    if (error) {
-      console.error('Supabase error (getAll):', error.message, error.details)
-      throw new Error(`No se pudieron cargar las publicaciones: ${error.message}`)
-    }
-    return data as Publication[]
+      if (error) {
+        console.error('Supabase error (getAll):', error.message, error.details)
+        throw new Error(`No se pudieron cargar las publicaciones: ${error.message}`)
+      }
+      return data as Publication[]
+    });
   },
 
   // Get single publication
   getById: async (id: string, userId: string) => {
-    const { data, error } = await supabase
-      .from('publications')
-      .select('*')
-      .eq('id', id)
-      .eq('user_id', userId)
-      .single()
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('publications')
+        .select('*')
+        .eq('id', id)
+        .eq('user_id', userId)
+        .single()
 
-    if (error) {
-      console.error('Supabase error (getById):', error.message)
-      throw new Error(`No se pudo cargar la publicación: ${error.message}`)
-    }
-    return data as Publication
+      if (error) {
+        console.error('Supabase error (getById):', error.message)
+        throw new Error(`No se pudo cargar la publicación: ${error.message}`)
+      }
+      return data as Publication
+    });
   },
 
   // Create publication
   create: async (userId: string, name: string) => {
-    const { data, error } = await supabase
-      .from('publications')
-      .insert({
-        user_id: userId,
-        name: name,
-        product_data: {},
-        optimized_content: {}
-      })
-      .select()
-      .single()
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('publications')
+        .insert({
+          user_id: userId,
+          name: name,
+          product_data: {},
+          optimized_content: {}
+        })
+        .select()
+        .single()
 
-    if (error) {
-      console.error('Supabase error (create):', error.message)
-      throw new Error(`No se pudo crear la publicación: ${error.message}. ¿Ejecutaste el script SQL?`)
-    }
-    return data as Publication
+      if (error) {
+        console.error('Supabase error (create):', error.message)
+        throw new Error(`No se pudo crear la publicación: ${error.message}. ¿Ejecutaste el script SQL?`)
+      }
+      return data as Publication
+    });
   },
 
   // Update publication
   update: async (id: string, userId: string, updates: Partial<Publication>) => {
-    const { data, error } = await supabase
-      .from('publications')
-      .update(updates)
-      .eq('id', id)
-      .eq('user_id', userId)
-      .select()
-      .single()
+    return withRetry(async () => {
+      const { data, error } = await supabase
+        .from('publications')
+        .update(updates)
+        .eq('id', id)
+        .eq('user_id', userId)
+        .select()
+        .single()
 
-    if (error) {
-      console.error('Supabase error (update):', error.message)
-      throw new Error(`No se pudo actualizar: ${error.message}`)
-    }
-    return data as Publication
+      if (error) {
+        console.error('Supabase error (update):', error.message)
+        throw new Error(`No se pudo actualizar: ${error.message}`)
+      }
+      return data as Publication
+    });
   },
 
   // Delete publication
   delete: async (id: string, userId: string) => {
-    const { error } = await supabase
-      .from('publications')
-      .delete()
-      .eq('id', id)
-      .eq('user_id', userId)
+    return withRetry(async () => {
+      const { error } = await supabase
+        .from('publications')
+        .delete()
+        .eq('id', id)
+        .eq('user_id', userId)
 
-    if (error) {
-      console.error('Supabase error (delete):', error.message)
-      throw new Error(`No se pudo borrar: ${error.message}`)
-    }
-    return true
+      if (error) {
+        console.error('Supabase error (delete):', error.message)
+        throw new Error(`No se pudo borrar: ${error.message}`)
+      }
+      return true
+    });
   }
 }
