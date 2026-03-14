@@ -93,6 +93,12 @@ export const publicationOperations = {
   // Create publication
   create: async (userId: string, name: string) => {
     return withRetry(async () => {
+      // First check usage limit
+      const stats = await publicationOperations.getUsageStats(userId);
+      if (stats.count >= 3) {
+        throw new Error(`Has alcanzado el límite de 3 publicaciones en los últimos 30 días. Tu próxima publicación estará disponible el ${stats.resetDate?.toLocaleDateString('es-MX')}.`);
+      }
+
       const { data, error } = await supabase
         .from('publications')
         .insert({
@@ -148,24 +154,38 @@ export const publicationOperations = {
     });
   },
 
-  // Get count of publications this month
-  getCountThisMonth: async (userId: string) => {
+  // Get usage stats for the last 30 days
+  getUsageStats: async (userId: string) => {
     return withRetry(async () => {
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const { count, error } = await supabase
+      const { data, error } = await supabase
         .from('publications')
-        .select('*', { count: 'exact', head: true })
+        .select('created_at')
         .eq('user_id', userId)
-        .gte('created_at', startOfMonth.toISOString());
+        .gte('created_at', thirtyDaysAgo.toISOString())
+        .order('created_at', { ascending: true }); // Oldest first
 
       if (error) {
-        console.error('Supabase error (getCountThisMonth):', error.message);
-        throw new Error(`No se pudo obtener el conteo: ${error.message}`);
+        console.error('Supabase error (getUsageStats):', error.message);
+        throw new Error(`No se pudo obtener el uso: ${error.message}`);
       }
-      return count || 0;
+
+      const count = data?.length || 0;
+      let resetDate: Date | null = null;
+
+      if (count > 0 && data?.[0]?.created_at) {
+        // The oldest publication in the last 30 days
+        const oldestDate = new Date(data[0].created_at);
+        // It expires 30 days after it was created
+        resetDate = new Date(oldestDate.getTime() + 30 * 24 * 60 * 60 * 1000);
+      }
+
+      return {
+        count,
+        resetDate
+      };
     });
   }
 }

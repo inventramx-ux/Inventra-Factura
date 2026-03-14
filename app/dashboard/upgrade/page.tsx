@@ -73,7 +73,7 @@ export default function UpgradePage() {
                     </div>
 
                     <Link href="/checkout" className="block">
-                        <Button className="w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white font-semibold py-6 text-base hover:from-blue-400 hover:to-blue-500 transition-all shadow-lg shadow-blue-500/20 gap-2">
+                        <Button className="w-full bg-white text-black font-semibold py-6 text-base hover:bg-gray-200 transition-all shadow-lg gap-2">
                            
                             Comenzar con Pro
                             <ArrowRight className="h-5 w-5" />
