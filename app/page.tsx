@@ -1,5 +1,6 @@
 'use client';
 
+import { FaTiktok } from "react-icons/fa";
 
 
 import { useEffect, useState } from 'react';
@@ -8,7 +9,7 @@ import { useRouter } from 'next/navigation';
 
 import Link from 'next/link';
 
-import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Crown, Users, Plus, BriefcaseBusiness, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard, ShoppingBag, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram, Crown, Users, Plus, BriefcaseBusiness, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard, ShoppingBag, Sparkles, TrendingUp } from 'lucide-react';
 
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import { animate } from 'framer-motion';
@@ -489,7 +490,7 @@ bg-clip-text text-transparent pb-2">
                 "a": "Sí. No necesitas tener un e-commerce propio. Inventra funciona para cualquier persona que necesite crear publicaciones para vender productos en plataformas online."
               },
               {
-                "q": "¿Qué nos diferencia de otros sistemas de facturación?",
+                "q": "¿Qué nos diferencia de la competencia?",
                 "a": "Inventra está específicamente diseñado para crear publicaciones de e-commerce. Utiliza formatos optimizados, estructuras de venta probadas y datos actualizados de las plataformas para generar publicaciones listas para publicar."
               },
               {
@@ -531,10 +532,12 @@ bg-clip-text text-transparent pb-2">
 
               <p className="text-gray-500 text-sm">
 
-                &copy; {new Date().getFullYear()} Inventra Factura.
+                &copy; {new Date().getFullYear()} Inventra.
 
               </p>
-
+<a href="https://www.instagram.com/inventramx/"><Instagram size={24} className="text-white" /></a>
+<a href="https://www.tiktok.com/@inventra50"><FaTiktok size={24} className="text-white" />
+</a>
             </div>
 
           </div>
@@ -787,7 +790,6 @@ function InlineNavbar() {
               rel="noopener noreferrer"
               className="text-slate-300 hover:text-white transition-colors"
             >
-              Instagram
             </a>
           </div>
 
