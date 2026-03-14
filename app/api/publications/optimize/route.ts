@@ -35,8 +35,16 @@ export async function POST(request: Request) {
       isPro = userObj.publicMetadata?.subscriptionStatus === "pro";
     }
 
-    // Remove old limitation logic, limits are now on creation
-    // If the user is on free tier we just let them optimize the publications they managed to create
+    if (!isPro) {
+      const count = await publicationOperations.getCountThisMonth(userId);
+      if (count >= 3) {
+        return NextResponse.json(
+          { error: 'Has alcanzado el límite de 3 optimizaciones gratuitas este mes. Mejora a PRO para continuar.', limitReached: true },
+          { status: 403 }
+        );
+      }
+    }
+
     const optimized = await optimizePublication(name, platform, product_data, enabled_fields, style, isPro, length);
 
     return NextResponse.json(optimized);

@@ -4,6 +4,7 @@ const isPublicRoute = createRouteMatcher([
   "/",
   "/sign-in(.*)",
   "/sign-up(.*)",
+  "/api/webhooks(.*)"
 ]);
 
 export default clerkMiddleware(async (auth, request) => {
@@ -14,8 +15,8 @@ export default clerkMiddleware(async (auth, request) => {
 
 export const config = {
   matcher: [
-      // Skip Next.js internals and all static files
-      "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|png|jpe?g|webp|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    // Skip Next.js internals and all static files
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|png|jpe?g|webp|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
     // Always run for API routes
     "/(api|trpc)(.*)",
   ],

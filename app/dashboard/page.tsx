@@ -16,7 +16,6 @@ import { publicationOperations, Publication } from "@/lib/publications"
 export default function DashboardPage() {
     const { user } = useUser()
     const [publications, setPublications] = React.useState<Publication[]>([])
-    const [usageStats, setUsageStats] = React.useState<{ count: number, resetDate: Date | null }>({ count: 0, resetDate: null })
     const [loading, setLoading] = React.useState(true)
     const { isPro, refreshSubscription } = useSubscription()
 
@@ -24,12 +23,8 @@ export default function DashboardPage() {
         if (!user?.id) return
         try {
             setLoading(true)
-            const [pubs, stats] = await Promise.all([
-                publicationOperations.getAll(user.id),
-                publicationOperations.getUsageStats(user.id)
-            ])
+            const pubs = await publicationOperations.getAll(user.id)
             setPublications(pubs)
-            setUsageStats(stats)
         } catch (error) {
             console.error("Error loading dashboard data:", error)
         } finally {
@@ -80,17 +75,8 @@ export default function DashboardPage() {
                         <ShoppingBag className="h-4 w-4 text-blue-400" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold text-white">
-                            {isPro ? publications.length : `${usageStats.count}/3`}
-                        </div>
-                        <p className="text-xs text-gray-500 mt-1">
-                            {isPro ? "Total creadas" : "Publicaciones este ciclo"}
-                        </p>
-                        {!isPro && usageStats.resetDate && (
-                            <p className="text-[10px] text-gray-400 mt-1 font-medium">
-                                Se reinicia el: {new Date(usageStats.resetDate).toLocaleDateString("es-MX")}
-                            </p>
-                        )}
+                        <div className="text-2xl font-bold text-white">{publications.length}</div>
+                        <p className="text-xs text-gray-500 mt-1">Total creadas</p>
                     </CardContent>
                 </Card>
 

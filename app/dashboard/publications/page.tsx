@@ -89,7 +89,7 @@ export default function PublicationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [copyStatus, setCopyStatus] = useState<Record<string, boolean>>({});
-  const [usageStats, setUsageStats] = useState<{ count: number, resetDate: Date | null }>({ count: 0, resetDate: null });
+  const [optimizationCount, setOptimizationCount] = useState(0);
   const updateTimeoutRef = useRef<Record<string, NodeJS.Timeout>>({});
 
   useEffect(() => {
@@ -115,9 +115,9 @@ export default function PublicationsPage() {
       setLoading(true);
       setError(null);
       const data = await publicationOperations.getAll(user!.id);
-      const stats = await publicationOperations.getUsageStats(user!.id);
+      const count = await publicationOperations.getCountThisMonth(user!.id);
       setPublications(data);
-      setUsageStats(stats);
+      setOptimizationCount(count);
     } catch (err: any) {
       console.error('Error loading publications:', err);
       setError(err.message || 'Error al cargar las publicaciones.');
@@ -132,11 +132,7 @@ export default function PublicationsPage() {
       setError(null);
       const newPub = await publicationOperations.create(user!.id, newPubName);
       setPublications([newPub, ...publications]);
-      setUsageStats(prev => ({
-        ...prev,
-        count: prev.count + 1,
-        resetDate: prev.resetDate || new Date(Date.now() + 30 * 24 * 60 * 60 * 1000)
-      }));
+      setOptimizationCount(prev => prev + 1);
       setNewPubName('');
       setIsCreateModalOpen(false);
       setExpandedId(newPub.id);
@@ -300,28 +296,8 @@ export default function PublicationsPage() {
         <div>
           <h1 className="text-3xl font-bold text-white">Publicaciones</h1>
           <p className="text-gray-400 mt-1">Crea y optimiza tus publicaciones para diferentes marketplaces.</p>
-          {!isPro && (
-            <p className={`text-sm mt-2 font-medium ${usageStats.count >= 3 ? 'text-red-400' : 'text-gray-400'}`}>
-              Llevas {usageStats.count}/3 publicaciones gratuitas este ciclo.
-              {usageStats.resetDate && (
-                <span className="ml-1 opacity-80">
-                  El conteo se reiniciará el {new Date(usageStats.resetDate).toLocaleDateString('es-MX')}.
-                </span>
-              )}
-            </p>
-          )}
         </div>
-        <Button
-          onClick={() => {
-            if (!isPro && usageStats.count >= 3) {
-              setError(`Has alcanzado el límite de 3 publicaciones. Próximo reinicio: ${new Date(usageStats.resetDate!).toLocaleDateString('es-MX')}`);
-              return;
-            }
-            setIsCreateModalOpen(true);
-          }}
-          className="bg-white text-black hover:bg-gray-200"
-          disabled={!isPro && usageStats.count >= 3}
-        >
+        <Button onClick={() => setIsCreateModalOpen(true)} className="bg-white text-black hover:bg-gray-200">
           <Plus className="mr-2 h-4 w-4" /> Nueva Publicación
         </Button>
       </div>
@@ -657,8 +633,8 @@ export default function PublicationsPage() {
 
                           <Button
                             onClick={() => handleOptimize(pub)}
-                            disabled={isOptimizing === pub.id || !pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform}
-                            className={`w-full h-12 text-md font-bold transition-all ${(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform) ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'}`}
+                            disabled={isOptimizing === pub.id || !pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform || (!isPro && optimizationCount >= 3)}
+                            className={`w-full h-12 text-md font-bold transition-all ${(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform || (!isPro && optimizationCount >= 3)) ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'}`}
                           >
                             {isOptimizing === pub.id ? (
                               <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Optimizando...</>
@@ -669,6 +645,11 @@ export default function PublicationsPage() {
                           <div className="text-center space-y-1">
                             {(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform) && (
                               <p className="text-[10px] text-red-400/60">Debes subir una foto, un título y seleccionar una plataforma para generar.</p>
+                            )}
+                            {!isPro && (
+                              <p className={`text-[11px] font-medium ${optimizationCount >= 3 ? 'text-red-400' : 'text-gray-400'}`}>
+                                Llevas {optimizationCount}/3 optimizaciones gratuitas este mes. {optimizationCount >= 3 && "Mejora a PRO para optimizar sin límites."}
+                              </p>
                             )}
                           </div>
                         </div>
@@ -776,6 +757,6 @@ export default function PublicationsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div >
+    </div>
   );
 }
