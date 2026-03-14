@@ -17,7 +17,8 @@ export async function optimizePublication(
   data: any,
   enabledFields: Record<string, boolean> = {},
   style: string = "Profesional",
-  isPro: boolean = false
+  isPro: boolean = false,
+  length: string = "medium"
 ): Promise<OptimizationResult> {
   const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey || apiKey.trim() === "" || apiKey === "tu_llave_aqui") {
@@ -34,6 +35,15 @@ export async function optimizePublication(
 
   // Filtrar solo los datos habilitados
   const getVal = (field: string, val: any) => enabledFields[field] ? val : "No incluir";
+
+    let lengthInstruction = "";
+    if (length === "short") {
+      lengthInstruction = "IMPORTANTE: La descripción debe ser MUY CORTA y DIRECTA (1 o 2 párrafos breves máximo).";
+    } else if (length === "long") {
+      lengthInstruction = "IMPORTANTE: La descripción debe ser DETALLADA y LARGA (3 o 4 párrafos), enfatizando todas las características y beneficios a profundidad.";
+    } else {
+      lengthInstruction = "IMPORTANTE: La descripción debe tener una longitud MEDIA (2 o 3 párrafos), concisa pero informativa sobre los beneficios clave.";
+    }
 
   const prompt = `
     Actúa como un experto en marketing de e-commerce y optimización de marketplaces.
@@ -58,8 +68,8 @@ export async function optimizePublication(
     1. Si un campo dice "No incluir", NO menciones ese dato en la optimización.
     2. Usa los "Tags SEO" para incorporar esas palabras clave de forma natural en la descripción y el título.
     3. Título: Maximizar clics y SEO específico para ${platform}.
-    4. Descripción: Corta, persuasiva e ir directo al punto. Evita introducciones largas o texto de relleno. Usa bullet points de beneficios, destacando MSI o Envío Gratis si están habilitados.
-       IMPORTANTE: Usa formato Markdown en la descripción. Usa **negritas** para resaltar palabras clave. Usa guiones (-) para las listas de viñetas. NO uses otro tipo de formato. La descripción DEBE ser muy concisa y fácil de leer.
+    4. Descripción: ${lengthInstruction} Evita introducciones largas o texto excesivo de relleno. Usa bullet points de beneficios, destacando MSI o Envío Gratis si están habilitados.
+       IMPORTANTE: Usa formato Markdown en la descripción. Usa **negritas** para resaltar palabras clave. Usa guiones (-) para las listas de viñetas. NO uses otro tipo de formato. La descripción DEBE ser muy clara y fácil de leer.
     5. Responde ÚNICAMENTE con un objeto JSON (sin bloques de código markdown, solo el texto del JSON):
     {
       "title": "título optimizado",

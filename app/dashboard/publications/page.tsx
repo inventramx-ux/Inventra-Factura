@@ -239,7 +239,8 @@ export default function PublicationsPage() {
             category: true,
             stock: true
           },
-          style: pub.product_data.style || 'Profesional'
+          style: pub.product_data.style || 'Profesional',
+          length: pub.product_data.length || 'medium'
         }),
       });
 
@@ -493,6 +494,23 @@ export default function PublicationsPage() {
                                       className={`text-[10px] h-8 border-white/10 ${pub.product_data.style === style ? 'bg-blue-600 text-white border-blue-600' : 'bg-black/40 text-gray-400 hover:bg-white/5'}`}
                                     >
                                       {style}
+                                    </Button>
+                                  ))}
+                                </div>
+                              </div>
+
+                              <div className="grid gap-2">
+                                <Label className="text-gray-400 text-xs">Longitud de Publicación</Label>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {[{id: 'short', label: 'Corto'}, {id: 'medium', label: 'Mediano'}, {id: 'long', label: 'Largo'}].map((len) => (
+                                    <Button
+                                      key={len.id}
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() => handleUpdate(pub.id, { product_data: { ...pub.product_data, length: len.id as any } })}
+                                      className={`text-[10px] h-8 border-white/10 ${pub.product_data.length === len.id || (!pub.product_data.length && len.id === 'medium') ? 'bg-blue-600 text-white border-blue-600' : 'bg-black/40 text-gray-400 hover:bg-white/5'}`}
+                                    >
+                                      {len.label}
                                     </Button>
                                   ))}
                                 </div>

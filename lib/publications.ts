@@ -17,6 +17,7 @@ export interface Publication {
     category?: string
     stock?: string
     style?: string
+    length?: 'short' | 'medium' | 'long'
     enabled_fields?: Record<string, boolean>
   }
   platform?: string
