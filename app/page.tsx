@@ -188,10 +188,9 @@ bg-clip-text text-transparent pb-2">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6">
 
               <SignedIn>
+                <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
 
-                <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2">
-
-                  Ir al Dashboard
+                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
 
                 </Link>
 
@@ -201,9 +200,9 @@ bg-clip-text text-transparent pb-2">
 
                 <SignUpButton>
 
-                  <a className="w-full sm:w-auto justify-center bg-white text-black font-medium py-2.5 px-6 rounded-lg hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer">
+                  <a className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
 
-                    Comenzar gratis
+                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
 
                   </a>
 
@@ -217,10 +216,9 @@ bg-clip-text text-transparent pb-2">
                   e.preventDefault();
                   scrollToSection('features');
                 }}
-                className="bg-white/10 w-full sm:w-auto justify-center border border-white/20 text-white font-medium py-2.5 px-6 rounded-lg hover:bg-white/5 transition-colors inline-flex items-center gap-1"
+                className=""
               >
 
-                Más información <ArrowRight size={14} />
 
               </Link>
 
@@ -229,29 +227,29 @@ bg-clip-text text-transparent pb-2">
               <CreditCard size={14} />
               <p> NO SE REQUIERE TARJETA DE CRÉDITO </p>
             </div>
-           {/* PEGA ESTO AQUÍ */}
-<div className="mt-16 md:mt-24 relative px-4 sm:px-0">
-  {/* Marco exterior grueso (Chasis) */}
-  <div 
-    className="relative rounded-[2.5rem] border-[10px] border-[#1a1a1a] p-0.5 bg-[#0a0a0a] shadow-[0_0_60px_rgba(0,0,0,0.9)] pointer-events-none select-none origin-bottom opacity-100"
-    style={{
-      perspective: '2000px',
-      transform: 'rotateX(6deg) scale(1)',
-    }}
-  >
-    {/* Borde interior fino (Efecto cristal/luz) */}
-    <div className="relative rounded-[1.8rem] border  bg-[#070707] overflow-hidden">
-      {/* Reflejo de luz superior */}
-      <div className="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent pointer-events-none z-20" />
-      
-      {/* El Dashboard real */}
-      <DashboardPreview />
-    </div>
-  </div>
+            {/* PEGA ESTO AQUÍ */}
+            <div className="mt-16 md:mt-24 relative px-4 sm:px-0">
+              {/* Marco exterior grueso (Chasis) */}
+              <div
+                className="relative rounded-[2.5rem] border-[10px] border-[#1a1a1a] p-0.5 bg-[#0a0a0a] shadow-[0_0_60px_rgba(0,0,0,0.9)] pointer-events-none select-none origin-bottom opacity-100"
+                style={{
+                  perspective: '2000px',
+                  transform: 'rotateX(6deg) scale(1)',
+                }}
+              >
+                {/* Borde interior fino (Efecto cristal/luz) */}
+                <div className="relative rounded-[1.8rem] border  bg-[#070707] overflow-hidden">
+                  {/* Reflejo de luz superior */}
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent pointer-events-none z-20" />
 
-  {/* Brillo de fondo mejorado */}
-  <div className="absolute -inset-10 bg-gradient-to-r from-blue-600/10 via-transparent to-purple-600/10 blur-[100px] -z-10 opacity-60" />
-</div>
+                  {/* El Dashboard real */}
+                  <DashboardPreview />
+                </div>
+              </div>
+
+              {/* Brillo de fondo mejorado */}
+              <div className="absolute -inset-10 bg-gradient-to-r from-blue-600/10 via-transparent to-purple-600/10 blur-[100px] -z-10 opacity-60" />
+            </div>
 
           </div>
 
@@ -535,9 +533,9 @@ bg-clip-text text-transparent pb-2">
                 &copy; {new Date().getFullYear()} Inventra.
 
               </p>
-<a href="https://www.instagram.com/inventramx/"><Instagram size={24} className="text-white" /></a>
-<a href="https://www.tiktok.com/@inventra50"><FaTiktok size={24} className="text-white" />
-</a>
+              <a href="https://www.instagram.com/inventramx/"><Instagram size={24} className="text-white" /></a>
+              <a href="https://www.tiktok.com/@inventra50"><FaTiktok size={24} className="text-white" />
+              </a>
             </div>
 
           </div>

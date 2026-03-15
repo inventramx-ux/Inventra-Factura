@@ -4,7 +4,6 @@ import { useSubscription } from "@/app/contexts/SubscriptionContext"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import {
-    Crown,
     Check,
     ArrowRight,
     FileText,
@@ -19,12 +18,10 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 
 const proFeatures = [
-    { icon: FileText, text: "Facturas ilimitadas" },
+    { icon: FileText, text: "Publicaciones ilimitadas" },
     { icon: Users, text: "Clientes ilimitados" },
-    { icon: Palette, text: "Plantillas personalizables" },
-    { icon: BarChart3, text: "Reportes avanzados" },
+    { icon: Palette, text: "Analíticas avanzadas" },
     { icon: Headphones, text: "Soporte prioritario" },
-    { icon: Bell, text: "Recordatorios automáticos" },
 ]
 
 export default function UpgradePage() {
@@ -40,14 +37,13 @@ export default function UpgradePage() {
         <div className="flex items-center justify-center min-h-[70vh]">
             <div className="max-w-lg w-full">
                 <div className="text-center mb-8">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-blue-600/20 border border-blue-500/30 flex items-center justify-center mx-auto mb-6">
-                        <Crown className="w-8 h-8 text-blue-400" />
+                    <div className="">
                     </div>
                     <h1 className="text-3xl font-bold text-white mb-3">
                         Actualiza a Pro
                     </h1>
                     <p className="text-gray-400 leading-relaxed">
-                        Desbloquea todo el potencial de Inventra Factura para hacer crecer tu negocio.
+                        Desbloquea todo el potencial de Inventra para hacer crecer tu negocio.
                     </p>
                 </div>
 
@@ -56,8 +52,8 @@ export default function UpgradePage() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             {proFeatures.map((feature) => (
                                 <div key={feature.text} className="flex items-center gap-3">
-                                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center flex-shrink-0">
-                                        <feature.icon className="w-4 h-4 text-blue-400" />
+                                    <div className="w-8 h-8 rounded-lg bg-white/10 flex items-center justify-center flex-shrink-0">
+                                        <feature.icon className="w-4 h-4 text-white" />
                                     </div>
                                     <span className="text-gray-300 text-sm">{feature.text}</span>
                                 </div>
