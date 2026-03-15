@@ -298,7 +298,7 @@ export default function PublicationsPage() {
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold text-white">Publicaciones</h1>
           <div className="flex flex-col gap-1 mt-2">
@@ -477,7 +477,7 @@ export default function PublicationsPage() {
 
                             {/* 2. Título, Plataforma y Descripción */}
                             <div className="space-y-4">
-                              <div className="grid grid-cols-2 gap-4">
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div className="grid gap-2">
                                   <Label className="text-gray-400 text-xs">Título del Producto</Label>
                                   <Input
@@ -538,7 +538,7 @@ export default function PublicationsPage() {
 
                               <div className="grid gap-2">
                                 <Label className="text-gray-400 text-xs">Longitud de Publicación</Label>
-                                <div className="grid grid-cols-3 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                                   {[{ id: 'short', label: 'Corto' }, { id: 'medium', label: 'Mediano' }, { id: 'long', label: 'Largo' }].map((len) => (
                                     <Button
                                       key={len.id}
@@ -573,7 +573,7 @@ export default function PublicationsPage() {
                                     exit={{ height: 0, opacity: 0 }}
                                     className="overflow-hidden pt-4 space-y-4"
                                   >
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                       <div className="grid gap-2">
                                         <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Precio</Label><input type="checkbox" checked={isFieldEnabled(pub, 'price')} onChange={() => toggleField(pub, 'price')} className="h-2 w-2 accent-blue-500" /></div>
                                         <Input value={pub.product_data.price || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, price: e.target.value } }, true)} placeholder="0.00" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />
@@ -591,7 +591,7 @@ export default function PublicationsPage() {
                                       </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                       <div className="grid gap-2">
                                         <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Marca</Label><input type="checkbox" checked={isFieldEnabled(pub, 'brand')} onChange={() => toggleField(pub, 'brand')} className="h-2 w-2 accent-blue-500" /></div>
                                         <Input value={pub.product_data.brand || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, brand: e.target.value } }, true)} placeholder="Ej. Apple" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />
@@ -602,7 +602,7 @@ export default function PublicationsPage() {
                                       </div>
                                     </div>
 
-                                    <div className="grid grid-cols-2 gap-4">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                       <div className="grid gap-2">
                                         <div className="flex justify-between items-center"><Label className="text-[10px] text-gray-500">Modelo</Label><input type="checkbox" checked={isFieldEnabled(pub, 'model')} onChange={() => toggleField(pub, 'model')} className="h-2 w-2 accent-blue-500" /></div>
                                         <Input value={pub.product_data.model || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, model: e.target.value } }, true)} placeholder="Ej. iPhone 15" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />

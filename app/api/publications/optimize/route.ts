@@ -36,10 +36,10 @@ export async function POST(request: Request) {
     }
 
     if (!isPro) {
-      const count = await publicationOperations.getCountThisMonth(userId);
-      if (count >= 3) {
+      const stats = await publicationOperations.getUsageStats(userId);
+      if (stats.count >= 3) {
         return NextResponse.json(
-          { error: 'Has alcanzado el límite de 3 optimizaciones gratuitas este mes. Mejora a PRO para continuar.', limitReached: true },
+          { error: 'Has alcanzado el límite de 3 optimizaciones gratuitas cada 30 días. Mejora a PRO para continuar.', limitReached: true },
           { status: 403 }
         );
       }

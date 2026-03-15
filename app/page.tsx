@@ -230,7 +230,7 @@ bg-clip-text text-transparent pb-2">
             <div className="mt-16 md:mt-24 relative px-4 sm:px-0">
               {/* Marco exterior grueso (Chasis) */}
               <div
-                className="relative rounded-[2.5rem] border-[10px] border-[#1a1a1a] p-0.5 bg-[#0a0a0a] shadow-[0_0_60px_rgba(0,0,0,0.9)] pointer-events-none select-none origin-bottom opacity-100"
+                className="relative rounded-[2.5rem] border-[4px] md:border-[10px] border-[#1a1a1a] p-0.5 bg-[#0a0a0a] shadow-[0_0_60px_rgba(0,0,0,0.9)] pointer-events-none select-none origin-bottom opacity-100"
                 style={{
                   perspective: '2000px',
                   transform: 'rotateX(6deg) scale(1)',
@@ -584,7 +584,7 @@ function DashboardPreview() {
   return (
     <div className="flex h-[500px] w-full bg-[#070707] text-gray-300 font-sans overflow-hidden">
       {/* Mock Sidebar */}
-      <div className="w-56 border-r border-white/5 bg-[#0a0a0a] flex flex-col shrink-0">
+      <div className="w-56 border-r border-white/5 bg-[#0a0a0a] hidden sm:flex flex-col shrink-0">
         <div className="p-4 border-b border-white/5 flex justify-center">
           <img src="/inventralogo.png" alt="Logo" className="h-6 w-auto opacity-90" />
         </div>
