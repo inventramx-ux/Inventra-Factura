@@ -704,10 +704,7 @@ export default function PublicationsPage() {
                               </div>
 
                               <div className="flex gap-4">
-                                <div className="space-y-1">
-                                  <Label className="text-[10px] text-blue-400 uppercase font-bold">Precio Sugerido</Label>
-                                  <p className="text-emerald-400 font-bold">${pub.optimized_content.suggestedPrice}</p>
-                                </div>
+                              
                               </div>
                             </div>
                           ) : (
