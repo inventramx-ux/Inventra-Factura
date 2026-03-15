@@ -179,7 +179,7 @@ bg-clip-text text-transparent pb-2">
                   />
                 ))}
               </div>
-              <p className="text-white font-semibold text-lg md:text-258xl tracking-tight ml-2">
+              <p className="text-white font-semibold text-lg md:text-2xl tracking-tight ml-2">
                 Únete a <span className="text-white">+100 usuarios</span>
               </p>
             </div>
@@ -598,7 +598,6 @@ function DashboardPreview() {
               {[
                 { icon: LayoutDashboard, label: 'Dashboard', active: true },
                 { icon: ShoppingBag, label: 'Publicaciones', active: false },
-                { icon: Users, label: 'Clientes', active: false },
                 { icon: Settings, label: 'Configuración', active: false },
               ].map((item, i) => (
                 <div key={i} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${item.active ? 'text-white bg-white/10 font-medium' : 'text-gray-400'}`}>

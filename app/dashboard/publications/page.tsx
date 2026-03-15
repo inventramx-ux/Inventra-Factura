@@ -89,7 +89,8 @@ export default function PublicationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [copyStatus, setCopyStatus] = useState<Record<string, boolean>>({});
-  const [optimizationCount, setOptimizationCount] = useState(0);
+  const [publicationsCount, setPublicationsCount] = useState(0);
+  const [daysUntilReset, setDaysUntilReset] = useState(0);
   const updateTimeoutRef = useRef<Record<string, NodeJS.Timeout>>({});
 
   useEffect(() => {
@@ -115,9 +116,10 @@ export default function PublicationsPage() {
       setLoading(true);
       setError(null);
       const data = await publicationOperations.getAll(user!.id);
-      const count = await publicationOperations.getCountThisMonth(user!.id);
+      const stats = await publicationOperations.getUsageStats(user!.id);
       setPublications(data);
-      setOptimizationCount(count);
+      setPublicationsCount(stats.count);
+      setDaysUntilReset(stats.daysUntilReset);
     } catch (err: any) {
       console.error('Error loading publications:', err);
       setError(err.message || 'Error al cargar las publicaciones.');
@@ -132,7 +134,11 @@ export default function PublicationsPage() {
       setError(null);
       const newPub = await publicationOperations.create(user!.id, newPubName);
       setPublications([newPub, ...publications]);
-      setOptimizationCount(prev => prev + 1);
+      
+      const stats = await publicationOperations.getUsageStats(user!.id);
+      setPublicationsCount(stats.count);
+      setDaysUntilReset(stats.daysUntilReset);
+
       setNewPubName('');
       setIsCreateModalOpen(false);
       setExpandedId(newPub.id);
@@ -295,9 +301,27 @@ export default function PublicationsPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-white">Publicaciones</h1>
-          <p className="text-gray-400 mt-1">Crea y optimiza tus publicaciones para diferentes marketplaces.</p>
+          <div className="flex flex-col gap-1 mt-2">
+            <p className="text-gray-400">Crea y optimiza tus publicaciones para diferentes marketplaces.</p>
+            {!isPro && (
+              <div className="flex items-center gap-2 mt-1">
+                <Badge variant="outline" className={`${publicationsCount >= 3 ? 'border-red-500/30 text-red-400 bg-red-500/10' : 'border-blue-500/30 text-blue-400 bg-blue-500/10'}`}>
+                  {publicationsCount}/3 Publicaciones (30 días)
+                </Badge>
+                {publicationsCount >= 3 && daysUntilReset > 0 && (
+                  <span className="text-xs text-red-400 font-medium">
+                    Faltan {daysUntilReset} días para crear más
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-        <Button onClick={() => setIsCreateModalOpen(true)} className="bg-white text-black hover:bg-gray-200">
+        <Button 
+          onClick={() => setIsCreateModalOpen(true)} 
+          disabled={!isPro && publicationsCount >= 3}
+          className="bg-white text-black hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
           <Plus className="mr-2 h-4 w-4" /> Nueva Publicación
         </Button>
       </div>
@@ -451,15 +475,28 @@ export default function PublicationsPage() {
                               />
                             </div>
 
-                            {/* 2. Título y Descripción */}
+                            {/* 2. Título, Plataforma y Descripción */}
                             <div className="space-y-4">
-                              <div className="grid gap-2">
-                                <Label className="text-gray-400 text-xs">Título del Producto</Label>
-                                <Input
-                                  value={pub.name}
-                                  onChange={(e) => handleUpdate(pub.id, { name: e.target.value }, true)}
-                                  className="bg-black/60 border-white/10 text-white font-medium focus:ring-blue-500/50"
-                                />
+                              <div className="grid grid-cols-2 gap-4">
+                                <div className="grid gap-2">
+                                  <Label className="text-gray-400 text-xs">Título del Producto</Label>
+                                  <Input
+                                    value={pub.name}
+                                    onChange={(e) => handleUpdate(pub.id, { name: e.target.value }, true)}
+                                    className="bg-black/60 border-white/10 text-white font-medium focus:ring-blue-500/50"
+                                  />
+                                </div>
+                                <div className="grid gap-2">
+                                  <Label className={`text-xs ${!pub.platform ? 'text-red-400 font-medium' : 'text-gray-400'}`}>Plataforma de Venta</Label>
+                                  <select
+                                    value={pub.platform || ''}
+                                    onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })}
+                                    className={`h-10 bg-black/60 rounded-md px-3 text-sm text-white outline-none focus:ring-1 focus:ring-blue-500/50 transition-all ${!pub.platform ? 'border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : 'border border-white/10'}`}
+                                  >
+                                    <option value="" className="bg-[#111111]">Selecciona tu plataforma...</option>
+                                    {platforms.map(p => (<option key={p.id} value={p.id} className="bg-[#111111]">{p.name}</option>))}
+                                  </select>
+                                </div>
                               </div>
 
                               <div className="grid gap-2">
@@ -633,8 +670,8 @@ export default function PublicationsPage() {
 
                           <Button
                             onClick={() => handleOptimize(pub)}
-                            disabled={isOptimizing === pub.id || !pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform || (!isPro && optimizationCount >= 3)}
-                            className={`w-full h-12 text-md font-bold transition-all ${(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform || (!isPro && optimizationCount >= 3)) ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'}`}
+                            disabled={isOptimizing === pub.id || !pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform}
+                            className={`w-full h-12 text-md font-bold transition-all ${(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform) ? 'bg-gray-800 text-gray-500 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-500 text-white shadow-[0_0_20px_rgba(37,99,235,0.3)]'}`}
                           >
                             {isOptimizing === pub.id ? (
                               <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Optimizando...</>
@@ -647,8 +684,8 @@ export default function PublicationsPage() {
                               <p className="text-[10px] text-red-400/60">Debes subir una foto, un título y seleccionar una plataforma para generar.</p>
                             )}
                             {!isPro && (
-                              <p className={`text-[11px] font-medium ${optimizationCount >= 3 ? 'text-red-400' : 'text-gray-400'}`}>
-                                Llevas {optimizationCount}/3 optimizaciones gratuitas este mes. {optimizationCount >= 3 && "Mejora a PRO para optimizar sin límites."}
+                              <p className="text-[11px] font-medium text-gray-400">
+                                Optimizaciones ilimitadas para tus publicaciones activas.
                               </p>
                             )}
                           </div>

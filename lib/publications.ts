@@ -148,24 +148,38 @@ export const publicationOperations = {
     });
   },
 
-  // Get count of publications this month
-  getCountThisMonth: async (userId: string) => {
+  // Get usage stats strictly for the last 30 days
+  getUsageStats: async (userId: string) => {
     return withRetry(async () => {
-      const startOfMonth = new Date();
-      startOfMonth.setDate(1);
-      startOfMonth.setHours(0, 0, 0, 0);
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
 
-      const { count, error } = await supabase
+      const { data, count, error } = await supabase
         .from('publications')
-        .select('*', { count: 'exact', head: true })
+        .select('*', { count: 'exact' })
         .eq('user_id', userId)
-        .gte('created_at', startOfMonth.toISOString());
+        .gte('created_at', thirtyDaysAgo.toISOString())
+        .order('created_at', { ascending: true }); // Oldest first
 
       if (error) {
-        console.error('Supabase error (getCountThisMonth):', error.message);
-        throw new Error(`No se pudo obtener el conteo: ${error.message}`);
+        console.error('Supabase error (getUsageStats):', error.message);
+        throw new Error(`No se pudo obtener el uso: ${error.message}`);
       }
-      return count || 0;
+
+      const totalCount = count || 0;
+      let daysUntilReset = 0;
+
+      if (totalCount > 0 && data && data.length > 0) {
+        const oldestDate = new Date(data[0].created_at);
+        const resetDate = new Date(oldestDate);
+        resetDate.setDate(resetDate.getDate() + 30);
+        
+        const now = new Date();
+        const diffTime = resetDate.getTime() - now.getTime();
+        daysUntilReset = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+      }
+
+      return { count: totalCount, daysUntilReset };
     });
   }
 }
