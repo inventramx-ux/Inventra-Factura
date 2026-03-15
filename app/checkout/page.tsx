@@ -55,7 +55,7 @@ function CheckoutContent() {
         <div className="bg-[#111111] rounded-2xl p-8 border border-[#1e1e1e]">
           {/* Header */}
           <h1 className="text-2xl font-semibold text-white tracking-tight">Plan Pro</h1>
-          <p className="text-[#555] text-sm mt-1 mb-8">Inventra Factura</p>
+          <p className="text-[#555] text-sm mt-1 mb-8">Inventra</p>
 
           {/* Plan details */}
           <div className="border border-[#1e1e1e] rounded-xl p-5 mb-6">
