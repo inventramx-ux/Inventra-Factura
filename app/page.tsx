@@ -147,7 +147,7 @@ export default function Home() {
 
           <div className="animate-fade-in-up">
 
-            <p className="bg-white/5 px-4 py-2 rounded-full w-fit flex items-center gap-2 border border-white/10 text-sm text-gray-300 mb-8">
+            <p className="bg-white/5 px-4 py-2 rounded-full w-fit flex items-center gap-2 border border-white/10 text-sm text-gray-300 mb-8 mx-auto">
 
               <HeartHandshakeIcon size={14} />
 
@@ -155,7 +155,7 @@ export default function Home() {
             </p>
 
 
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
+            <h1 className="text-center text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
 bg-gradient-to-b from-white via-white to-gray-400
 bg-clip-text text-transparent pb-2">
               Crea publicaciones en segundos, no horas con IA
@@ -163,13 +163,12 @@ bg-clip-text text-transparent pb-2">
 
 
 
-            <p className="text-base md:text-lg text-gray-400 max-w-2xl mb-8 md:mb-10">
-              Crea publicaciones optimizadas para e-commerce con IA No vuelvas a perder tiempo ni estresarte por las palabras clave ni completar campos con Inventra puedes hacer todo en segundos con IA           <br className="hidden sm:block" />
-
+            <p className="text-center text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-8 md:mb-10">
+             Crea publicaciones optimizadas para e-commerce con IA en segundos.
 
             </p>
 
-            <div className="flex items-center gap-3 mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <div className="flex justify-center items-center gap-3 mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <img
@@ -180,12 +179,12 @@ bg-clip-text text-transparent pb-2">
                   />
                 ))}
               </div>
-              <p className="text-white font-semibold text-lg md:text-2xl tracking-tight ml-2">
+              <p className="text-white font-semibold text-lg md:text-258xl tracking-tight ml-2">
                 Únete a <span className="text-white">+100 usuarios</span>
               </p>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 md:gap-6">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
 
               <SignedIn>
                 <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
@@ -223,7 +222,7 @@ bg-clip-text text-transparent pb-2">
               </Link>
 
             </div>
-            <div className='text-white/30 flex items-center gap-2 mt-8 font-semibold tracking-wider'>
+            <div className='text-white/30 flex items-center justify-center gap-2 mt-8 font-semibold tracking-wider'>
               <CreditCard size={14} />
               <p> NO SE REQUIERE TARJETA DE CRÉDITO </p>
             </div>
@@ -782,13 +781,7 @@ function InlineNavbar() {
             >
               Planes
             </Link>
-            <a
-              href="https://www.instagram.com/inventramx/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-slate-300 hover:text-white transition-colors"
-            >
-            </a>
+           
           </div>
 
           <div className="hidden md:flex items-center gap-4 min-w-[200px] justify-end">
