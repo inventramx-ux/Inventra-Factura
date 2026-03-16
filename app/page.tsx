@@ -3,7 +3,7 @@
 import { FaTiktok } from "react-icons/fa";
 
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { useRouter } from 'next/navigation';
 
@@ -164,7 +164,7 @@ bg-clip-text text-transparent pb-2">
 
 
             <p className="text-center text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-8 md:mb-10">
-             Crea publicaciones optimizadas para e-commerce con IA en segundos.
+              Crea publicaciones optimizadas para e-commerce con IA en segundos.
 
             </p>
 
@@ -175,11 +175,11 @@ bg-clip-text text-transparent pb-2">
                     key={i}
                     src={`/avatar${i}.png`}
                     alt={`User ${i}`}
-                    className="h-10 w-10 md:h-11 md:w-11 rounded-full border-2 border-white object-cover shadow-lg"
+                    className="h-9 w-9 md:h-10 md:w-10 rounded-full border-2 border-white object-cover shadow-lg"
                   />
                 ))}
               </div>
-              <p className="text-white font-semibold text-lg md:text-2xl tracking-tight ml-2">
+              <p className="text-white font-semibold text-lg md:text-1xl tracking-tight ml-2">
                 Únete a <span className="text-white">+100 usuarios</span>
               </p>
             </div>
@@ -189,7 +189,7 @@ bg-clip-text text-transparent pb-2">
               <SignedIn>
                 <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
 
-                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+                  <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
 
                 </Link>
 
@@ -226,29 +226,9 @@ bg-clip-text text-transparent pb-2">
               <CreditCard size={14} />
               <p> NO SE REQUIERE TARJETA DE CRÉDITO </p>
             </div>
-            {/* PEGA ESTO AQUÍ */}
-            <div className="mt-16 md:mt-24 relative px-4 sm:px-0">
-              {/* Marco exterior grueso (Chasis) */}
-              <div
-                className="relative rounded-[2.5rem] border-[4px] md:border-[10px] border-[#1a1a1a] p-0.5 bg-[#0a0a0a] shadow-[0_0_60px_rgba(0,0,0,0.9)] pointer-events-none select-none origin-bottom opacity-100"
-                style={{
-                  perspective: '2000px',
-                  transform: 'rotateX(6deg) scale(1)',
-                }}
-              >
-                {/* Borde interior fino (Efecto cristal/luz) */}
-                <div className="relative rounded-[1.8rem] border  bg-[#070707] overflow-hidden">
-                  {/* Reflejo de luz superior */}
-                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent pointer-events-none z-20" />
 
-                  {/* El Dashboard real */}
-                  <DashboardPreview />
-                </div>
-              </div>
-
-              {/* Brillo de fondo mejorado */}
-              <div className="absolute -inset-10 bg-gradient-to-r from-blue-600/10 via-transparent to-purple-600/10 blur-[100px] -z-10 opacity-60" />
-            </div>
+            {/* Dashboard Preview Section */}
+            <DashboardPreview />
 
           </div>
 
@@ -581,137 +561,190 @@ function FAQItem({ question, answer }: { question: string, answer: string }) {
 
 
 function DashboardPreview() {
+  const [scale, setScale] = useState(1);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const updateScale = () => {
+      if (containerRef.current) {
+        // Obtenemos el ancho del contenedor padre (max-w-4xl aprox 896px)
+        const parentWidth = containerRef.current.offsetWidth || window.innerWidth;
+        // El chasis completo tiene un ancho de referencia de 1040px (1000px dash + padding/borders)
+        const referenceWidth = 1040;
+        const newScale = Math.min(1, parentWidth / referenceWidth);
+        setScale(newScale);
+      }
+    };
+
+    updateScale();
+    window.addEventListener('resize', updateScale);
+    return () => window.removeEventListener('resize', updateScale);
+  }, []);
+
   return (
-    <div className="flex h-[500px] w-full bg-[#070707] text-gray-300 font-sans overflow-hidden">
-      {/* Mock Sidebar */}
-      <div className="w-56 border-r border-white/5 bg-[#0a0a0a] hidden sm:flex flex-col shrink-0">
-        <div className="p-4 border-b border-white/5 flex justify-center">
-          <img src="/inventralogo.png" alt="Logo" className="h-6 w-auto opacity-90" />
-        </div>
+    <div ref={containerRef} className="mt-16 md:mt-24 relative w-full flex justify-center">
+      {/* Brillo de fondo mejorado - Escala con el contenedor */}
+      <div 
+        className="absolute -inset-10 bg-gradient-to-r from-blue-600/10 via-transparent to-purple-600/10 blur-[100px] -z-10 opacity-60"
+        style={{ transform: `scale(${scale})` }}
+      />
 
-        <div className="flex-1 py-4 px-3 space-y-6">
-          <div>
-            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2 flex items-center gap-2">
-              General
-            </div>
-            <div className="space-y-1">
-              {[
-                { icon: LayoutDashboard, label: 'Dashboard', active: true },
-                { icon: ShoppingBag, label: 'Publicaciones', active: false },
-                { icon: Settings, label: 'Configuración', active: false },
-              ].map((item, i) => (
-                <div key={i} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${item.active ? 'text-white bg-white/10 font-medium' : 'text-gray-400'}`}>
-                  <item.icon className="size-4" />
-                  <span>{item.label}</span>
+      <div 
+        className="relative origin-top transition-transform duration-200"
+        style={{ 
+          width: '1040px',
+          height: `${560 * scale}px`, // Altura base + margen chasis
+          transform: `scale(${scale})`
+        }}
+      >
+        {/* Marco exterior grueso (Chasis) */}
+        <div
+          className="relative rounded-[2.5rem] border-[10px] border-[#1a1a1a] p-0.5 bg-[#0a0a0a] shadow-[0_0_60px_rgba(0,0,0,0.9)] pointer-events-none select-none origin-bottom opacity-100"
+          style={{
+            perspective: '2000px',
+            transform: 'rotateX(6deg)',
+          }}
+        >
+          {/* Borde interior fino (Efecto cristal/luz) */}
+          <div className="relative rounded-[1.8rem] border border-white/5 bg-[#070707] overflow-hidden">
+            {/* Reflejo de luz superior */}
+            <div className="absolute inset-0 bg-gradient-to-b from-white/[0.05] to-transparent pointer-events-none z-20" />
+
+            {/* El Dashboard real (Interno) */}
+            <div className="flex h-[500px] w-[1000px] bg-[#070707] text-gray-300 font-sans shrink-0">
+              {/* Mock Sidebar */}
+              <div className="w-52 border-r border-white/5 bg-[#0a0a0a] flex flex-col shrink-0">
+                <div className="p-4 border-b border-white/5 flex justify-center">
+                  <img src="/inventralogo.png" alt="Logo" className="h-6 w-auto opacity-90" />
                 </div>
-              ))}
-            </div>
-          </div>
 
-          <div>
-            <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2">Soporte</div>
-            <div className="px-3 py-2 flex items-start gap-3 bg-white/5 rounded-lg border border-white/5">
-              <Mail className="size-4 mt-1" />
-              <div className="min-w-0">
-                <div className="text-xs font-medium text-white">Contacto</div>
-                <div className="text-[9px] text-blue-400 truncate">inventramx@gmail.com</div>
-              </div>
-            </div>
-          </div>
-        </div>
+                <div className="flex-1 py-4 px-3 space-y-6">
+                  <div>
+                    <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2 flex items-center gap-2">
+                      General
+                    </div>
+                    <div className="space-y-1">
+                      {[
+                        { icon: LayoutDashboard, label: 'Dashboard', active: true },
+                        { icon: ShoppingBag, label: 'Publicaciones', active: false },
+                        { icon: Settings, label: 'Configuración', active: false },
+                      ].map((item, i) => (
+                        <div key={i} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${item.active ? 'text-white bg-white/10 font-medium' : 'text-gray-400'}`}>
+                          <item.icon className="size-4" />
+                          <span>{item.label}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-        <div className="p-3 border-t border-white/5 flex items-center gap-3">
-          <div className="size-8 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold text-white">U</div>
-          <div className="min-w-0">
-            <div className="text-xs font-medium text-white truncate">Usuario</div>
-            <div className="text-[10px] text-gray-500 truncate">pro@inventra.mx</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Mock Main Content */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#070707]">
-        {/* Header */}
-        <header className="h-14 border-b border-white/5 flex items-center px-6 bg-[#0a0a0a]">
-          <Menu className="size-4 text-gray-500 mr-4" />
-          <div className="flex-1" />
-          <div className="flex items-center gap-4 text-gray-500">
-            <Bell className="size-4" />
-            <div className="size-6 rounded-full border border-white/10" />
-          </div>
-        </header>
-
-        {/* Page Content */}
-        <div className="p-6 space-y-8 overflow-y-auto no-scrollbar">
-          <div>
-            <h2 className="text-xl font-semibold text-white">Bienvenido, Usuario </h2>
-            <p className="text-xs text-gray-500 mt-1">Aquí tienes un resumen de tu actividad.</p>
-          </div>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[
-              { label: 'Publicaciones', value: '48', sub: 'Total creadas', icon: ShoppingBag, color: 'text-blue-400' },
-              { label: 'Optimizaciones', value: '32', sub: 'Generadas con IA', icon: Sparkles, color: 'text-emerald-400' },
-              { label: 'Eficiencia', value: '86%', sub: 'Tasa de éxito', icon: TrendingUp, color: 'text-indigo-400' },
-              { label: 'Plan', value: 'Pro', sub: 'Acceso completo', icon: Crown, color: 'text-amber-400' },
-            ].map((stat, i) => (
-              <div key={i} className="bg-[#0a0a0a] border border-white/5 p-4 rounded-xl shadow-sm">
-                <div className="flex justify-between items-center mb-2">
-                  <span className="text-[10px] font-medium text-gray-500 uppercase tracking-tight">{stat.label}</span>
-                  <stat.icon className={`size-4 ${stat.color} opacity-80`} />
+                  <div>
+                    <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2">Soporte</div>
+                    <div className="px-3 py-2 flex items-start gap-3 bg-white/5 rounded-lg border border-white/5">
+                      <Mail className="size-4 mt-1" />
+                      <div className="min-w-0">
+                        <div className="text-xs font-medium text-white">Contacto</div>
+                        <div className="text-[9px] text-blue-400 truncate">inventramx@gmail.com</div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="text-xl font-bold text-white">{stat.value}</div>
-                <div className="text-[10px] text-gray-500 mt-1">{stat.sub}</div>
+
+                <div className="p-3 border-t border-white/5 flex items-center gap-3">
+                  <div className="size-8 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold text-white">U</div>
+                  <div className="min-w-0">
+                    <div className="text-xs font-medium text-white truncate">Usuario</div>
+                    <div className="text-[10px] text-gray-500 truncate">pro@inventra.mx</div>
+                  </div>
+                </div>
               </div>
-            ))}
-          </div>
 
-          {/* Quick Actions */}
-          <div className="flex gap-2">
-            <div className="px-4 py-1.5 bg-white text-black text-xs font-semibold rounded-lg flex items-center gap-2">
-              <Plus className="size-3" /> Nueva Publicación
-            </div>
-            <div className="px-4 py-1.5 border border-white/10 text-white text-xs font-semibold rounded-lg flex items-center gap-2">
-              <Sparkles className="size-3" /> Ver Analíticas
-            </div>
-          </div>
+              {/* Mock Main Content */}
+              <div className="flex-1 flex flex-col min-w-0 overflow-hidden bg-[#070707]">
+                {/* Header */}
+                <header className="h-14 border-b border-white/5 flex items-center px-6 bg-[#0a0a0a]">
+                  <Menu className="size-4 text-gray-500 mr-4" />
+                  <div className="flex-1" />
+                  <div className="flex items-center gap-4 text-gray-500">
+                    <Bell className="size-4" />
+                    <div className="size-6 rounded-full border border-white/10" />
+                  </div>
+                </header>
 
-          {/* Table */}
-          <div className="bg-[#0a0a0a] border border-white/5 rounded-xl overflow-hidden shadow-sm">
-            <div className="p-4 border-b border-white/5 flex justify-between items-center">
-              <div className="text-xs font-bold text-white">Publicaciones Recientes</div>
-              <div className="text-[10px] text-blue-400 font-medium">Ver todas →</div>
-            </div>
-            <div className="p-0 overflow-x-auto">
-              <table className="w-full text-left text-[11px]">
-                <thead className="bg-white/[0.02] text-gray-500 border-b border-white/5">
-                  <tr>
-                    <th className="px-4 py-3 font-medium uppercase tracking-tighter">Producto</th>
-                    <th className="px-4 py-3 font-medium uppercase tracking-tighter">Plataforma</th>
-                    <th className="px-4 py-3 font-medium uppercase tracking-tighter text-center">Estado</th>
-                    <th className="px-4 py-3 font-medium uppercase tracking-tighter text-right">Fecha</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {[
-                    { name: 'iPhone 15 Pro Max', platform: 'Mercado Libre', date: 'Hoy', status: 'Optimizado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
-                    { name: 'MacBook Air M2', platform: 'Amazon', date: 'Ayer', status: 'Borrador', color: 'bg-blue-400/10 text-blue-400 border-blue-400/20' },
-                    { name: 'Sony WH-1000XM5', platform: 'Etsy', date: '12 Mar', status: 'Optimizado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
-                  ].map((pub, i) => (
-                    <tr key={i}>
-                      <td className="px-4 py-3 text-white font-medium">{pub.name}</td>
-                      <td className="px-4 py-3 text-gray-400">{pub.platform}</td>
-                      <td className="px-4 py-3 text-center">
-                        <span className={`px-2 py-0.5 rounded-full border text-[9px] font-medium ${pub.color}`}>
-                          {pub.status}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right text-gray-500">{pub.date}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                {/* Page Content */}
+                <div className="p-6 space-y-8 overflow-y-auto no-scrollbar">
+                  <div>
+                    <h2 className="text-xl font-semibold text-white">Bienvenido, Usuario </h2>
+                    <p className="text-xs text-gray-500 mt-1">Aquí tienes un resumen de tu actividad.</p>
+                  </div>
+
+                  {/* Stats Cards */}
+                  <div className="grid grid-cols-4 gap-4">
+                    {[
+                      { label: 'Publicaciones', value: '48', sub: 'Total creadas', icon: ShoppingBag, color: 'text-blue-400' },
+                      { label: 'Optimizaciones', value: '32', sub: 'Generadas con IA', icon: Sparkles, color: 'text-emerald-400' },
+                      { label: 'Eficiencia', value: '86%', sub: 'Tasa de éxito', icon: TrendingUp, color: 'text-indigo-400' },
+                      { label: 'Plan', value: 'Pro', sub: 'Acceso completo', icon: Crown, color: 'text-amber-400' },
+                    ].map((stat, i) => (
+                      <div key={i} className="bg-[#0a0a0a] border border-white/5 p-4 rounded-xl shadow-sm">
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-[10px] font-medium text-gray-500 uppercase tracking-tight">{stat.label}</span>
+                          <stat.icon className={`size-4 ${stat.color} opacity-80`} />
+                        </div>
+                        <div className="text-xl font-bold text-white">{stat.value}</div>
+                        <div className="text-[10px] text-gray-500 mt-1">{stat.sub}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Quick Actions */}
+                  <div className="flex gap-2">
+                    <div className="px-4 py-1.5 bg-white text-black text-xs font-semibold rounded-lg flex items-center gap-2">
+                      <Plus className="size-3" /> Nueva Publicación
+                    </div>
+                    <div className="px-4 py-1.5 border border-white/10 text-white text-xs font-semibold rounded-lg flex items-center gap-2">
+                      <Sparkles className="size-3" /> Ver Analíticas
+                    </div>
+                  </div>
+
+                  {/* Table */}
+                  <div className="bg-[#0a0a0a] border border-white/5 rounded-xl overflow-hidden shadow-sm">
+                    <div className="p-4 border-b border-white/5 flex justify-between items-center">
+                      <div className="text-xs font-bold text-white">Publicaciones Recientes</div>
+                      <div className="text-[10px] text-blue-400 font-medium">Ver todas →</div>
+                    </div>
+                    <div className="p-0 overflow-x-auto">
+                      <table className="w-full text-left text-[11px]">
+                        <thead className="bg-white/[0.02] text-gray-500 border-b border-white/5">
+                          <tr>
+                            <th className="px-4 py-3 font-medium uppercase tracking-tighter">Producto</th>
+                            <th className="px-4 py-3 font-medium uppercase tracking-tighter">Plataforma</th>
+                            <th className="px-4 py-3 font-medium uppercase tracking-tighter text-center">Estado</th>
+                            <th className="px-4 py-3 font-medium uppercase tracking-tighter text-right">Fecha</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-white/5">
+                          {[
+                            { name: 'iPhone 15 Pro Max', platform: 'Mercado Libre', date: 'Hoy', status: 'Optimizado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+                            { name: 'MacBook Air M2', platform: 'Amazon', date: 'Ayer', status: 'Borrador', color: 'bg-blue-400/10 text-blue-400 border-blue-400/20' },
+                            { name: 'Sony WH-1000XM5', platform: 'Etsy', date: '12 Mar', status: 'Optimizado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+                          ].map((pub, i) => (
+                            <tr key={i}>
+                              <td className="px-4 py-3 text-white font-medium">{pub.name}</td>
+                              <td className="px-4 py-3 text-gray-400">{pub.platform}</td>
+                              <td className="px-4 py-3 text-center">
+                                <span className={`px-2 py-0.5 rounded-full border text-[9px] font-medium ${pub.color}`}>
+                                  {pub.status}
+                                </span>
+                              </td>
+                              <td className="px-4 py-3 text-right text-gray-500">{pub.date}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -780,7 +813,7 @@ function InlineNavbar() {
             >
               Planes
             </Link>
-           <Link
+            <Link
               href="#features"
               onClick={(e) => {
                 e.preventDefault();
