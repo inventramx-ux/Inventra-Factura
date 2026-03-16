@@ -147,12 +147,6 @@ export default function Home() {
 
           <div className="animate-fade-in-up">
 
-            <p className="bg-white/5 px-4 py-2 rounded-full w-fit flex items-center gap-2 border border-white/10 text-sm text-gray-300 mb-8 mx-auto">
-
-              <HeartHandshakeIcon size={14} />
-
-              SISTEMA DE OPTIMIZACIÓN DE PUBLICACIONES PARA E-COMMERCE IA
-            </p>
 
 
             <h1 className="text-center text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
