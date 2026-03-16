@@ -1,5 +1,6 @@
 'use client';
-
+import React from "react";
+import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { FaTiktok } from "react-icons/fa";
 
 
@@ -130,7 +131,9 @@ export default function Home() {
 
   return (
 
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      <BackgroundRippleEffect />
+      
 
 
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-lg border-b border-white/20">
@@ -141,7 +144,7 @@ export default function Home() {
 
 
 
-      <section className="pt-32 md:pt-40 pb-12 md:pb-20 px-4">
+      <section className="pt-32 md:pt-40 pb-12 md:pb-20 px-4 relative z-10">
 
         <div className="max-w-4xl mx-auto">
 
@@ -578,14 +581,14 @@ function DashboardPreview() {
   return (
     <div ref={containerRef} className="mt-16 md:mt-24 relative w-full flex justify-center">
       {/* Brillo de fondo mejorado - Escala con el contenedor */}
-      <div 
+      <div
         className="absolute -inset-10 bg-gradient-to-r from-blue-600/10 via-transparent to-purple-600/10 blur-[100px] -z-10 opacity-60"
         style={{ transform: `scale(${scale})` }}
       />
 
-      <div 
+      <div
         className="relative origin-top transition-transform duration-200"
-        style={{ 
+        style={{
           width: '1040px',
           height: `${560 * scale}px`, // Altura base + margen chasis
           transform: `scale(${scale})`
