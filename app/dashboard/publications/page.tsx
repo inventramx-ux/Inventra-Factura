@@ -435,7 +435,7 @@ export default function PublicationsPage() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* Edit Section */}
                         <div className="space-y-6">
-                          <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Configuración de la Publicación</h4>
+                          <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider">Configuración de la Publicación </h4>
 
                           <div className="space-y-6">
                             {/* 1. Imagen (OBLIGATORIA) */}
@@ -487,11 +487,11 @@ export default function PublicationsPage() {
                                   />
                                 </div>
                                 <div className="grid gap-2">
-                                  <Label className={`text-xs ${!pub.platform ? 'text-red-400 font-medium' : 'text-gray-400'}`}>Plataforma de Venta</Label>
+                                  <Label className="text-gray-400 text-xs">Plataforma de Venta</Label>
                                   <select
                                     value={pub.platform || ''}
                                     onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })}
-                                    className={`h-10 bg-black/60 rounded-md px-3 text-sm text-white outline-none focus:ring-1 focus:ring-blue-500/50 transition-all ${!pub.platform ? 'border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : 'border border-white/10'}`}
+                                    className="h-10 bg-black/60 rounded-md px-3 text-sm text-white outline-none focus:ring-1 focus:ring-blue-500/50 transition-all border border-white/10"
                                   >
                                     <option value="" className="bg-[#111111]">Selecciona tu plataforma...</option>
                                     {platforms.map(p => (<option key={p.id} value={p.id} className="bg-[#111111]">{p.name}</option>))}
@@ -579,11 +579,11 @@ export default function PublicationsPage() {
                                         <Input value={pub.product_data.price || ''} onChange={(e) => handleUpdate(pub.id, { product_data: { ...pub.product_data, price: e.target.value } }, true)} placeholder="0.00" className="h-8 bg-black/40 border-white/5 text-xs text-white focus:ring-blue-500/50" />
                                       </div>
                                       <div className="grid gap-2">
-                                        <Label className={`text-[10px] ${!pub.platform ? 'text-red-400 font-medium' : 'text-gray-500'}`}>Plataforma de Venta</Label>
+                                        <Label className="text-[10px] text-gray-500">Plataforma de Venta</Label>
                                         <select
                                           value={pub.platform || ''}
                                           onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })}
-                                          className={`h-8 bg-black/40 text-xs rounded-md px-2 text-white outline-none focus:ring-1 focus:ring-blue-500/50 transition-all ${!pub.platform ? 'border border-red-500/50 shadow-[0_0_10px_rgba(239,68,68,0.1)]' : 'border border-white/5'}`}
+                                          className="h-8 bg-black/40 text-xs rounded-md px-2 text-white outline-none focus:ring-1 focus:ring-blue-500/50 transition-all border border-white/5"
                                         >
                                           <option value="" className="bg-[#111111]">Selecciona tu plataforma</option>
                                           {platforms.map(p => (<option key={p.id} value={p.id} className="bg-[#111111]">{p.name}</option>))}
@@ -676,12 +676,12 @@ export default function PublicationsPage() {
                             {isOptimizing === pub.id ? (
                               <><Loader2 className="mr-2 h-5 w-5 animate-spin" /> Optimizando...</>
                             ) : (
-                              <><Sparkles className="mr-2 h-5 w-5" /> Optimizar Publicación</>
+                              <><a className="mr-2 h-5 w-5" />Optimizar Publicación</>
                             )}
                           </Button>
                           <div className="text-center space-y-1">
                             {(!pub.product_data.imageUrl || !pub.name?.trim() || !pub.platform) && (
-                              <p className="text-[10px] text-red-400/60">Debes subir una foto, un título y seleccionar una plataforma para generar.</p>
+                              <p className="text-[10px] text-red-400/60">Debes llenar todos los campos obligatorios para generar tu publicación </p>
                             )}
                             {!isPro && (
                               <p className="text-[11px] font-medium text-gray-400">

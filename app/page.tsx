@@ -780,7 +780,16 @@ function InlineNavbar() {
             >
               Planes
             </Link>
-           
+           <Link
+              href="#features"
+              onClick={(e) => {
+                e.preventDefault();
+                scrollToSection('faq');
+              }}
+              className="text-slate-300 hover:text-white transition-colors"
+            >
+              FAQ
+            </Link>
           </div>
 
           <div className="hidden md:flex items-center gap-4 min-w-[200px] justify-end">
