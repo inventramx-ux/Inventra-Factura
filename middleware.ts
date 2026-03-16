@@ -1,4 +1,11 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import createMiddleware from 'next-intl/middleware';
+
+const intlMiddleware = createMiddleware({
+  locales: ['en', 'es'],
+  defaultLocale: 'es',
+  localePrefix: 'as-needed'
+});
 
 const isPublicRoute = createRouteMatcher([
   "/",
@@ -11,6 +18,8 @@ export default clerkMiddleware(async (auth, request) => {
   if (!isPublicRoute(request)) {
     await auth.protect();
   }
+  
+  return intlMiddleware(request);
 });
 
 export const config = {
