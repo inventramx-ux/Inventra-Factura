@@ -408,23 +408,28 @@ bg-clip-text text-transparent pb-2">
 
 
 
-                <Link
-
-                  href={plan.highlighted ? '/sign-up' : '/checkout'}
-
-                  className={`block text-center py-3 px-6 rounded-xl font-semibold transition-all shadow-lg ${plan.highlighted
-
-                    ? 'bg-white text-black hover:bg-gray-100'
-
-                    : 'bg-white/10 text-white hover:bg-white/20'
-
-                    }`}
-
-                >
-
-                  {plan.cta}
-
-                </Link>
+                <SignedIn>
+                  <Link
+                    href={plan.highlighted ? '/dashboard' : '/checkout'}
+                    className={`block text-center py-3 px-6 rounded-xl font-semibold transition-all shadow-lg ${plan.highlighted
+                      ? 'bg-white text-black hover:bg-gray-100'
+                      : 'bg-white/10 text-white hover:bg-white/20'
+                      }`}
+                  >
+                    {plan.cta}
+                  </Link>
+                </SignedIn>
+                <SignedOut>
+                  <Link
+                    href="/sign-up"
+                    className={`block text-center py-3 px-6 rounded-xl font-semibold transition-all shadow-lg ${plan.highlighted
+                      ? 'bg-white text-black hover:bg-gray-100'
+                      : 'bg-white/10 text-white hover:bg-white/20'
+                      }`}
+                  >
+                    {plan.cta}
+                  </Link>
+                </SignedOut>
 
               </div>
 
@@ -763,16 +768,30 @@ function InlineNavbar() {
   return (
 
     <div>
-      <Link
-        href="/checkout"
-        className='flex items-center justify-center bg-black  text-white border-b border-white/10 w-full h-14  group'
-      >
-        <p className="text-sm font-medium flex items-center gap-2 ">
-          <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
-          <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
-          <ArrowRight className="w-4 h-4 " />
-        </p>
-      </Link>
+      <SignedIn>
+        <Link
+          href="/checkout"
+          className='flex items-center justify-center bg-black  text-white border-b border-white/10 w-full h-14  group'
+        >
+          <p className="text-sm font-medium flex items-center gap-2 ">
+            <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
+            <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
+            <ArrowRight className="w-4 h-4 " />
+          </p>
+        </Link>
+      </SignedIn>
+      <SignedOut>
+        <Link
+          href="/sign-up"
+          className='flex items-center justify-center bg-black  text-white border-b border-white/10 w-full h-14  group'
+        >
+          <p className="text-sm font-medium flex items-center gap-2 ">
+            <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
+            <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
+            <ArrowRight className="w-4 h-4 " />
+          </p>
+        </Link>
+      </SignedOut>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">

@@ -15,9 +15,7 @@ export default function SignInPage() {
             height={48}
             className="h-12 w-auto"
           />
-          <span className="text-white text-2xl font-bold hidden sm:inline">
-            Inventra
-          </span>
+         
         </Link>
       </div>
 
