@@ -56,11 +56,7 @@ const freeItems = [
         icon: ShoppingBag,
     },
    
-    {
-        title: "Clientes",
-        url: "/dashboard/clients",
-        icon: Users,
-    },
+    
  
     {
         title: "Analíticas",

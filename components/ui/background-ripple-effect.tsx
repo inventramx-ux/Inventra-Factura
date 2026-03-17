@@ -11,12 +11,25 @@ export const BackgroundRippleEffect = ({
   cols?: number;
   cellSize?: number;
 }) => {
+  const [columns, setColumns] = useState(cols);
   const [clickedCell, setClickedCell] = useState<{
     row: number;
     col: number;
   } | null>(null);
   const [rippleKey, setRippleKey] = useState(0);
-  const ref = useRef<any>(null);
+  const ref = useRef<HTMLDivElement>(null);
+
+  React.useEffect(() => {
+    const updateCols = () => {
+      const width = window.innerWidth;
+      const newCols = Math.ceil(width / cellSize);
+      setColumns(newCols);
+    };
+
+    updateCols();
+    window.addEventListener("resize", updateCols);
+    return () => window.removeEventListener("resize", updateCols);
+  }, [cellSize]);
 
   return (
     <div
@@ -32,9 +45,13 @@ export const BackgroundRippleEffect = ({
         <DivGrid
           key={`base-${rippleKey}`}
           className="opacity-600"
-          style={{ maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%)', WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%)' }}
+          style={{ 
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%)', 
+            WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%)',
+            width: '100%',
+          }}
           rows={rows}
-          cols={cols}
+          cols={columns}
           cellSize={cellSize}
           borderColor="var(--cell-border-color)"
           fillColor="var(--cell-fill-color)"
@@ -77,7 +94,7 @@ const DivGrid = ({
   borderColor = "#3f3f46",
   fillColor = "rgba(14,165,233,0.3)",
   clickedCell = null,
-  onCellClick = () => {},
+  onCellClick = () => { },
   interactive = true,
 }: DivGridProps) => {
   const cells = useMemo(
@@ -89,9 +106,9 @@ const DivGrid = ({
     display: "grid",
     gridTemplateColumns: `repeat(${cols}, ${cellSize}px)`,
     gridTemplateRows: `repeat(${rows}, ${cellSize}px)`,
-    width: cols * cellSize,
+    width: "100%",
+    justifyContent: "center",
     height: rows * cellSize,
-    marginInline: "auto",
     ...externalStyle,
   };
 
@@ -108,9 +125,9 @@ const DivGrid = ({
 
         const style: CellStyle = clickedCell
           ? {
-              "--delay": `${delay}ms`,
-              "--duration": `${duration}ms`,
-            }
+            "--delay": `${delay}ms`,
+            "--duration": `${duration}ms`,
+          }
           : {};
 
         return (
