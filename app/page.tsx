@@ -154,7 +154,7 @@ export default function Home() {
 
             <h1 className="text-center text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
 bg-gradient-to-b from-white via-white to-gray-400
-bg-clip-text text-transparent pb-2">
+bg-clip-text text-transparent pb-2 mt-10">
               Crea publicaciones en segundos, no horas con IA
             </h1>
 
