@@ -18,7 +18,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Inventra Factura",
+  title: "Inventra  ",
   description: "Sistema de facturación moderno para tu negocio",
 };
 
