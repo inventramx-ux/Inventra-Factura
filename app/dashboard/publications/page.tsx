@@ -30,6 +30,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { motion, AnimatePresence } from 'framer-motion';
 import { publicationOperations, Publication } from '@/lib/publications';
 import { useSubscription } from '@/app/contexts/SubscriptionContext';
+import { useCurrency } from '@/app/contexts/CurrencyContext';
 
 const formatText = (text: string) => {
   if (!text) return null;
@@ -79,6 +80,7 @@ const platforms = [
 export default function PublicationsPage() {
   const { user } = useUser();
   const { isPro } = useSubscription();
+  const { convert, format, currency, location } = useCurrency();
   const [publications, setPublications] = useState<Publication[]>([]);
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -739,7 +741,25 @@ export default function PublicationsPage() {
                                   {formatText(pub.optimized_content.description || '')}
                                 </div>
                               </div>
+                              <div className="space-y-4">
+                                <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                                  <div className="flex items-center justify-between mb-1">
+                                    <Label className="text-[10px] text-emerald-400 uppercase font-bold tracking-wider">Precio Sugerido por IA</Label>
+                                    <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-400 bg-emerald-500/5">Estimado</Badge>
+                                  </div>
+                                  <div className="flex items-baseline gap-2">
+                                    <span className="text-2xl font-bold text-white">
+                                      {format(Number(pub.optimized_content.suggestedPrice || 0))}
+                                    </span>
+                                    <span className="text-[10px] text-gray-500">
+                                      (aprox. {format(convert(Number(pub.optimized_content.suggestedPrice || 0), 'USD', 'USD'), 'USD')} USD)
+                                    </span>
+                                  </div>
+                                  <p className="text-[9px] text-gray-500 mt-1">Este precio es una recomendación basada en el mercado actual para un producto similar.</p>
+                                </div>
 
+                            
+                              </div>
                               <div className="flex gap-4">
                               
                               </div>

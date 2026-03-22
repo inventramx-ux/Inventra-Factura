@@ -70,11 +70,12 @@ export async function optimizePublication(
     3. Título: Maximizar clics y SEO específico para ${platform}.
     4. Descripción: ${lengthInstruction} Evita introducciones largas o texto excesivo de relleno. Usa bullet points de beneficios, destacando MSI o Envío Gratis si están habilitados.
        IMPORTANTE: Usa formato Markdown en la descripción. Usa **negritas** para resaltar palabras clave. Usa guiones (-) para las listas de viñetas. NO uses otro tipo de formato. La descripción DEBE ser muy clara y fácil de leer.
-    5. Responde ÚNICAMENTE con un objeto JSON (sin bloques de código markdown, solo el texto del JSON):
+    5. PRECIO SUGERIDO: Investiga mentalmente o estima el valor de mercado actual de este producto (Marca, Modelo, Condición) en plataformas de venta en línea. Devuelve un valor numérico realista (sin símbolos de moneda) como "suggestedPrice". Si no tienes suficiente información, estima un valor competitivo.
+    6. Responde ÚNICAMENTE con un objeto JSON (sin bloques de código markdown, solo el texto del JSON):
     {
       "title": "título optimizado",
       "description": "descripción optimizada con formato markdown",
-      "suggestedPrice": "precio sugerido",
+      "suggestedPrice": "valor numérico (ej: 1500.00)",
       "hashtags": ["tag1", "tag2", "tag3", "tag4", "tag5"]${isPro ? ',\n      "optimizationState": "Estado de la optimización (ej. Excelente, Analizado)"' : ''}
     }
   `;
