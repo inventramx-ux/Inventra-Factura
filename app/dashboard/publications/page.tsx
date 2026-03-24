@@ -1,5 +1,14 @@
 'use client';
-
+import { Button } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { useState, useEffect, useRef } from 'react';
 import { useUser } from '@clerk/nextjs';
 import {
@@ -19,7 +28,6 @@ import {
   Copy,
   Check
 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -314,7 +322,7 @@ export default function PublicationsPage() {
             <p className="text-gray-400">Crea y optimiza tus publicaciones para diferentes marketplaces.</p>
             {!isPro && (
               <div className="flex items-center gap-2 mt-1">
-                <Badge variant="outline" className={`${publicationsCount >= 3 ? 'border-red-500/30 text-red-400 bg-red-500/10' : 'border-blue-500/30 text-blue-400 bg-blue-500/10'}`}>
+                <Badge variant="outline" className={`${publicationsCount >= 3 ? 'border-red-500/30 text-red-400 bg-red-500/10' : 'border-white/30 text-white bg-white/10'}`}>
                   {publicationsCount}/3 Publicaciones (30 días)
                 </Badge>
                 {publicationsCount >= 3 && daysUntilReset > 0 && (
@@ -497,14 +505,25 @@ export default function PublicationsPage() {
                                 </div>
                                 <div className="grid gap-2">
                                   <Label className="text-gray-400 text-xs">Plataforma de Venta</Label>
-                                  <select
-                                    value={pub.platform || ''}
-                                    onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })}
-                                    className="h-10 bg-black/60 rounded-md px-3 text-sm text-white outline-none focus:ring-1 focus:ring-blue-500/50 transition-all border border-white/10"
-                                  >
-                                    <option value="" className="bg-[#111111]">Selecciona tu plataforma...</option>
-                                    {platforms.map(p => (<option key={p.id} value={p.id} className="bg-[#111111]">{p.name}</option>))}
-                                  </select>
+                                  <DropdownMenu>
+                                    <DropdownMenuTrigger asChild>
+                                      <Button variant="outline" className="h-10 w-full bg-black/60 border-white/10 text-white justify-between px-3 font-normal hover:bg-black/80">
+                                        {pub.platform ? platforms.find(p => p.id === pub.platform)?.name : "Selecciona tu plataforma..."}
+                                        <ChevronDown className="h-4 w-4 opacity-50" />
+                                      </Button>
+                                    </DropdownMenuTrigger>
+                                    <DropdownMenuContent className="w-[300px] bg-[#111111] border-white/10">
+                                      {platforms.map((p) => (
+                                        <DropdownMenuItem
+                                          key={p.id}
+                                          onClick={() => handleUpdate(pub.id, { platform: p.id })}
+                                          className="text-white hover:bg-white/10 cursor-pointer"
+                                        >
+                                          {p.name}
+                                        </DropdownMenuItem>
+                                      ))}
+                                    </DropdownMenuContent>
+                                  </DropdownMenu>
                                 </div>
                               </div>
 
@@ -589,14 +608,25 @@ export default function PublicationsPage() {
                                       </div>
                                       <div className="grid gap-2">
                                         <Label className="text-[10px] text-gray-500">Plataforma de Venta</Label>
-                                        <select
-                                          value={pub.platform || ''}
-                                          onChange={(e) => handleUpdate(pub.id, { platform: e.target.value })}
-                                          className="h-8 bg-black/40 text-xs rounded-md px-2 text-white outline-none focus:ring-1 focus:ring-blue-500/50 transition-all border border-white/5"
-                                        >
-                                          <option value="" className="bg-[#111111]">Selecciona tu plataforma</option>
-                                          {platforms.map(p => (<option key={p.id} value={p.id} className="bg-[#111111]">{p.name}</option>))}
-                                        </select>
+                                        <DropdownMenu>
+                                          <DropdownMenuTrigger asChild>
+                                            <Button variant="outline" className="h-8 w-full bg-black/40 border-white/5 text-white justify-between px-2 text-xs font-normal hover:bg-black/60">
+                                              {pub.platform ? platforms.find(p => p.id === pub.platform)?.name : "Selecciona tu plataforma"}
+                                              <ChevronDown className="h-3 w-3 opacity-50" />
+                                            </Button>
+                                          </DropdownMenuTrigger>
+                                          <DropdownMenuContent className="w-[200px] bg-[#111111] border-white/10">
+                                            {platforms.map((p) => (
+                                              <DropdownMenuItem
+                                                key={p.id}
+                                                onClick={() => handleUpdate(pub.id, { platform: p.id })}
+                                                className="text-white hover:bg-white/10 cursor-pointer text-xs"
+                                              >
+                                                {p.name}
+                                              </DropdownMenuItem>
+                                            ))}
+                                          </DropdownMenuContent>
+                                        </DropdownMenu>
                                       </div>
                                     </div>
 
@@ -761,16 +791,28 @@ export default function PublicationsPage() {
                                       )}
                                     </span>
                                     <div className="relative flex items-center bg-white/5 rounded-md hover:bg-white/10 transition-colors border border-white/10 overflow-hidden">
-                                      <select
-                                        value={selectedCurrencies[pub.id] || 'MXN'}
-                                        onChange={(e) => setSelectedCurrencies(prev => ({ ...prev, [pub.id]: e.target.value }))}
-                                        className="appearance-none bg-transparent text-white font-medium outline-none cursor-pointer pl-2 pr-7 py-1 z-10 relative w-full h-full text-xs"
-                                      >
-                                        {CURRENCIES.map(c => (
-                                          <option key={c} value={c} className="bg-[#111] text-white py-1">{c}</option>
-                                        ))}
-                                      </select>
-                                      <ChevronDown className="h-3 w-3 text-white absolute right-2 pointer-events-none z-0" />
+
+                             
+                                        
+                                        <DropdownMenu>
+                                          <DropdownMenuTrigger asChild>
+                                            <Button variant="ghost" className="h-full bg-transparent text-white font-medium hover:bg-white/10 px-2 py-1 text-xs gap-1">
+                                              {selectedCurrencies[pub.id] || 'MXN'}
+                                              <ChevronDown className="h-3 w-3 opacity-50" />
+                                            </Button>
+                                          </DropdownMenuTrigger>
+                                          <DropdownMenuContent className="max-h-[300px] overflow-y-auto bg-[#111111] border-white/10">
+                                            {CURRENCIES.map((c) => (
+                                              <DropdownMenuItem
+                                                key={c}
+                                                onClick={() => setSelectedCurrencies(prev => ({ ...prev, [pub.id]: c }))}
+                                                className="text-white hover:bg-white/10 cursor-pointer text-xs"
+                                              >
+                                                {c}
+                                              </DropdownMenuItem>
+                                            ))}
+                                          </DropdownMenuContent>
+                                        </DropdownMenu>
                                     </div>
                                   </div>
                                   <p className="text-[9px] text-gray-500 mt-1">Este precio es una recomendación basada en el mercado actual para un producto similar.</p>

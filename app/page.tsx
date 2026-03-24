@@ -768,8 +768,7 @@ function InlineNavbar() {
   return (
 
     <div>
-      <SignedIn>
-        <Link
+      <div className="">   <Link
           href="/checkout"
           className='flex items-center justify-center bg-black  text-white border-b border-white/10 w-full h-14  group'
         >
@@ -778,7 +777,9 @@ function InlineNavbar() {
             <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
             <ArrowRight className="w-4 h-4 " />
           </p>
-        </Link>
+        </Link></div>
+      <SignedIn>
+       
       </SignedIn>
       <SignedOut>
         <Link

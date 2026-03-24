@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 export const BackgroundRippleEffect = ({
   rows = 8,
-  cols = 27,
+  cols = 150, // Increase default to fill up ultra-wide screens on initial load
   cellSize = 56,
 }: {
   rows?: number;
@@ -45,8 +45,8 @@ export const BackgroundRippleEffect = ({
         <DivGrid
           key={`base-${rippleKey}`}
           className="opacity-600"
-          style={{ 
-            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%)', 
+          style={{
+            maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%)',
             WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0.6) 40%, rgba(0,0,0,0) 100%)',
             width: '100%',
           }}
@@ -89,7 +89,7 @@ const DivGrid = ({
   className,
   style: externalStyle,
   rows = 7,
-  cols = 30,
+  cols = 150,
   cellSize = 56,
   borderColor = "#3f3f46",
   fillColor = "rgba(14,165,233,0.3)",

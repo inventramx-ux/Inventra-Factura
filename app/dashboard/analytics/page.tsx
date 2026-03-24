@@ -319,6 +319,16 @@ export default function AnalyticsPage() {
                         <CardDescription className="text-gray-400">Borradores vs Finalizados</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[300px] w-full flex items-center justify-center">
+                            {!isPro && (
+                     <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm p-6 text-center">
+                                <Lock className="h-8 w-8 text-blue-400 mb-3" />
+                                <h3 className="text-blue-400 font-semibold mb-2">Sección Pro</h3>
+                                <p className="text-blue-400 text-sm mb-4">Obtén métricas sobre tus borradores y publicaciones finalizadas.</p>
+                                <Link href="/dashboard/upgrade">
+                                    <Button size="sm" className="bg-blue-400 hover:bg-blue-500 text-black text-xs font-bold">Mejorar ahora</Button>
+                                </Link>
+                            </div>
+                        )}
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
                                 <Pie data={stats.statusDistribution} cx="50%" cy="50%" innerRadius={60} outerRadius={80} paddingAngle={5} dataKey="value">

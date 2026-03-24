@@ -36,14 +36,14 @@ export async function optimizePublication(
   // Filtrar solo los datos habilitados
   const getVal = (field: string, val: any) => enabledFields[field] ? val : "No incluir";
 
-    let lengthInstruction = "";
-    if (length === "short") {
-      lengthInstruction = "IMPORTANTE: La descripción debe ser MUY CORTA y DIRECTA (1 o 2 párrafos breves máximo).";
-    } else if (length === "long") {
-      lengthInstruction = "IMPORTANTE: La descripción debe ser DETALLADA y LARGA (3 o 4 párrafos), enfatizando todas las características y beneficios a profundidad.";
-    } else {
-      lengthInstruction = "IMPORTANTE: La descripción debe tener una longitud MEDIA (2 o 3 párrafos), concisa pero informativa sobre los beneficios clave.";
-    }
+  let lengthInstruction = "";
+  if (length === "short") {
+    lengthInstruction = "IMPORTANTE: La descripción debe ser MUY CORTA y DIRECTA (1 o 2 párrafos breves máximo).";
+  } else if (length === "long") {
+    lengthInstruction = "IMPORTANTE: La descripción debe ser DETALLADA y LARGA (3 o 4 párrafos), enfatizando todas las características y beneficios a profundidad.";
+  } else {
+    lengthInstruction = "IMPORTANTE: La descripción debe tener una longitud MEDIA (2 o 3 párrafos), concisa pero informativa sobre los beneficios clave.";
+  }
 
   const prompt = `
     Actúa como un experto en marketing de e-commerce y optimización de marketplaces.
