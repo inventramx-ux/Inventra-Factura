@@ -77,11 +77,18 @@ const platforms = [
   { id: 'shopify', name: 'Shopify', icon: ShoppingBag },
 ];
 
+const CURRENCIES = [
+  'MXN', 'USD', 'EUR', 'JPY', 'GBP', 'AUD', 'CAD', 'CHF', 'CNY', 'HKD',
+  'NZD', 'KRW', 'SGD', 'NOK', 'INR', 'RUB', 'ZAR', 'TRY', 'BRL', 'TWD',
+  'DKK', 'PLN', 'THB', 'IDR', 'CZK'
+];
+
 export default function PublicationsPage() {
   const { user } = useUser();
   const { isPro } = useSubscription();
   const { convert, format, currency, location } = useCurrency();
   const [publications, setPublications] = useState<Publication[]>([]);
+  const [selectedCurrencies, setSelectedCurrencies] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [newPubName, setNewPubName] = useState('');
@@ -687,7 +694,6 @@ export default function PublicationsPage() {
                             )}
                             {!isPro && (
                               <p className="text-[11px] font-medium text-gray-400">
-                                Optimizaciones ilimitadas para tus publicaciones activas.
                               </p>
                             )}
                           </div>
@@ -742,18 +748,30 @@ export default function PublicationsPage() {
                                 </div>
                               </div>
                               <div className="space-y-4">
-                                <div className="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                                <div className="p-3 rounded-lg bg-blue-500/10 border border-blue-500/20">
                                   <div className="flex items-center justify-between mb-1">
-                                    <Label className="text-[10px] text-emerald-400 uppercase font-bold tracking-wider">Precio Sugerido por IA</Label>
-                                    <Badge variant="outline" className="text-[8px] border-emerald-500/30 text-emerald-400 bg-emerald-500/5">Estimado</Badge>
+                                    <Label className="text-[10px] text-blue-400 uppercase font-bold tracking-wider">Precio Sugerido por IA</Label>
+                                    <Badge variant="outline" className="text-[8px] border-blue-500/30 text-blue-400 bg-blue-500/5">Estimado</Badge>
                                   </div>
                                   <div className="flex items-baseline gap-2">
                                     <span className="text-2xl font-bold text-white">
-                                      {format(Number(pub.optimized_content.suggestedPrice || 0))}
+                                      {format(
+                                        convert(Number(pub.optimized_content.suggestedPrice || 0), currency, selectedCurrencies[pub.id] || 'MXN'),
+                                        selectedCurrencies[pub.id] || 'MXN'
+                                      )}
                                     </span>
-                                    <span className="text-[10px] text-gray-500">
-                                      (aprox. {format(convert(Number(pub.optimized_content.suggestedPrice || 0), 'USD', 'USD'), 'USD')} USD)
-                                    </span>
+                                    <div className="relative flex items-center bg-white/5 rounded-md hover:bg-white/10 transition-colors border border-white/10 overflow-hidden">
+                                      <select
+                                        value={selectedCurrencies[pub.id] || 'MXN'}
+                                        onChange={(e) => setSelectedCurrencies(prev => ({ ...prev, [pub.id]: e.target.value }))}
+                                        className="appearance-none bg-transparent text-white font-medium outline-none cursor-pointer pl-2 pr-7 py-1 z-10 relative w-full h-full text-xs"
+                                      >
+                                        {CURRENCIES.map(c => (
+                                          <option key={c} value={c} className="bg-[#111] text-white py-1">{c}</option>
+                                        ))}
+                                      </select>
+                                      <ChevronDown className="h-3 w-3 text-white absolute right-2 pointer-events-none z-0" />
+                                    </div>
                                   </div>
                                   <p className="text-[9px] text-gray-500 mt-1">Este precio es una recomendación basada en el mercado actual para un producto similar.</p>
                                 </div>
