@@ -1,6 +1,8 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import Groq from "groq-sdk";
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY || "",
+});
 
 export interface OptimizationResult {
   title: string;
@@ -20,17 +22,16 @@ export async function optimizePublication(
   isPro: boolean = false,
   length: string = "medium"
 ): Promise<OptimizationResult> {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey || apiKey.trim() === "" || apiKey === "tu_llave_aqui") {
-    throw new Error("Falta la GEMINI_API_KEY. Ve al walkthrough.md para ver cómo conseguirla.");
+    throw new Error("Falta la GROQ_API_KEY en las variables de entorno.");
   }
 
   const modelsToTry = [
-    "gemini-2.5-flash",
-    "gemini-2.0-flash",
-    "gemini-1.5-flash-latest",
-    "gemini-1.5-flash",
-    "gemini-pro"
+    "llama-3.3-70b-versatile",
+    "llama-3.1-70b-versatile",
+    "llama3-70b-8192",
+    "mixtral-8x7b-32768"
   ];
 
   // Filtrar solo los datos habilitados
@@ -84,35 +85,41 @@ export async function optimizePublication(
 
   for (const modelName of modelsToTry) {
     try {
-      console.log(`Intentando optimización con modelo: ${modelName}`);
-      const model = genAI.getGenerativeModel({ model: modelName });
-      const result = await model.generateContent(prompt);
-      const response = await result.response;
-      const text = response.text();
+      console.log(`Intentando optimización con modelo Groq: ${modelName}`);
+      const chatCompletion = await groq.chat.completions.create({
+        messages: [{ role: "user", content: prompt }],
+        model: modelName,
+        response_format: { type: "json_object" },
+      });
 
-      const jsonMatch = text.match(/\{[\s\S]*\}/);
-      if (!jsonMatch) throw new Error("La IA no devolvió un formato válido.");
+      const text = chatCompletion.choices[0]?.message?.content || "";
+      if (!text) throw new Error("La IA no devolvió contenido.");
 
-      const parsed = JSON.parse(jsonMatch[0]);
+      const parsed = JSON.parse(text);
       return {
         ...parsed,
         modelUsed: modelName
       } as OptimizationResult;
     } catch (error: any) {
-      console.error(`Error con modelo ${modelName}:`, error.message);
+      console.error(`Error con modelo Groq ${modelName}:`, error.message);
       lastError = error;
-      // Si el error es 404 (Not Found), intentamos con el siguiente modelo
-      if (error.message?.includes("404") || error.status === 404) {
-        continue;
+      
+      // Manejar errores de cuota o límites de tokens
+      if (error.status === 429) {
+        continue; // Intentar con el siguiente modelo
       }
-      // Para otros errores (403, 401), lanzamos el error inmediatamente
-      if (error.status === 403 || error.status === 401) {
-        throw new Error("Tu API KEY de Gemini es inválida o no tiene permisos.");
+
+      // Si el error es de autenticación
+      if (error.status === 401) {
+        throw new Error("Tu API KEY de Groq es inválida.");
       }
-      // Si no es 404, lanzamos el error
-      throw new Error(error.message || "Error al comunicarse con la IA.");
+
+      // Si no es un error que queramos ignorar para el fallback
+      if (error.status !== 404 && error.status !== 429) {
+        throw new Error(error.message || "Error al comunicarse con Groq.");
+      }
     }
   }
 
-  throw new Error(lastError?.message || "No se pudo encontrar un modelo de IA disponible.");
+  throw new Error(lastError?.message || "No se pudo encontrar un modelo de Groq disponible.");
 }
