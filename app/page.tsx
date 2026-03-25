@@ -782,16 +782,7 @@ function InlineNavbar() {
        
       </SignedIn>
       <SignedOut>
-        <Link
-          href="/sign-up"
-          className='flex items-center justify-center bg-black  text-white border-b border-white/10 w-full h-14  group'
-        >
-          <p className="text-sm font-medium flex items-center gap-2 ">
-            <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
-            <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
-            <ArrowRight className="w-4 h-4 " />
-          </p>
-        </Link>
+
       </SignedOut>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
