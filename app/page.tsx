@@ -419,17 +419,19 @@ bg-clip-text text-transparent pb-2 mt-10">
                     {plan.cta}
                   </Link>
                 </SignedIn>
-                <SignedOut>
-                  <Link
-                    href="/sign-up"
-                    className={`block text-center py-3 px-6 rounded-xl font-semibold transition-all shadow-lg ${plan.highlighted
-                      ? 'bg-white text-black hover:bg-gray-100'
-                      : 'bg-white/10 text-white hover:bg-white/20'
-                      }`}
-                  >
-                    {plan.cta}
-                  </Link>
-                </SignedOut>
+            <SignedOut>
+  <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
+    <button
+      className={`block w-full text-center py-3 px-6 rounded-xl font-semibold transition-all shadow-lg ${
+        plan.highlighted
+          ? 'bg-white text-black hover:bg-gray-100'
+          : 'bg-white/10 text-white hover:bg-white/20'
+      }`}
+    >
+      {plan.cta}
+    </button>
+  </SignUpButton>
+</SignedOut>
 
               </div>
 
