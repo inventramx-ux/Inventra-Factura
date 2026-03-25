@@ -1,8 +1,6 @@
 "use client"
 
 import React from "react"
-import { useInvoice } from "@/app/contexts/InvoiceContext"
-import { useClient } from "@/app/contexts/ClientContext"
 import { useSubscription } from "@/app/contexts/SubscriptionContext"
 import { useUser } from "@clerk/nextjs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"

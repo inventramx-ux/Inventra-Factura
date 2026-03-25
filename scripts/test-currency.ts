@@ -1,4 +1,4 @@
-import { detectLocation, fetchExchangeRates } from './lib/currency.ts';
+import { detectLocation, fetchExchangeRates } from '../lib/currency';
 
 async function test() {
   console.log("Testing Location Detection...");
