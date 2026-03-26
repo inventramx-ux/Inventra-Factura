@@ -190,7 +190,7 @@ bg-clip-text text-transparent pb-2 mt-10">
 
                 </Link>
         </SignedIn>
-
+ // build
          <SignedOut>
 
                 <SignUpButton>
