@@ -10,8 +10,8 @@ import { useRouter } from 'next/navigation';
 
 import Link from 'next/link';
 
-import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram, Crown, Users, Plus, BriefcaseBusiness, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard, ShoppingBag, Sparkles, TrendingUp } from 'lucide-react';
-
+import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram, Crown, Users, Plus, BriefcaseBusiness, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard, ShoppingBag, Sparkles, TrendingUp, BarChart3, FileText, Layout, ChevronRight } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import { animate } from 'framer-motion';
 
@@ -133,7 +133,7 @@ export default function Home() {
 
     <div className="min-h-screen relative">
       <BackgroundRippleEffect />
-      
+
 
 
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-lg border-b border-white/20">
@@ -183,28 +183,26 @@ bg-clip-text text-transparent pb-2 mt-10">
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
 
-              <SignedIn>
-                <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
+                <SignedIn>
+          <Link
+            href="/dashboard"
+            className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2"
+          >
+            <img src="/img.png" alt="" width={20} height={20} />
+            Probar ahora
+            <ChevronRight size={20} strokeWidth={3} />
+          </Link>
+        </SignedIn>
 
-                  <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
-
-                </Link>
-
-              </SignedIn>
-
-              <SignedOut>
-
-                <SignUpButton>
-
-                  <a className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
-
-                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
-
-                  </a>
-
-                </SignUpButton>
-
-              </SignedOut>
+        <SignedOut>
+          <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
+            <button className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2">
+              <img src="/img.png" alt="" width={20} height={20} />
+              Probar ahora
+              <ChevronRight size={20} strokeWidth={3} />
+            </button>
+          </SignUpButton>
+        </SignedOut>
 
               <Link
                 href="#features"
@@ -288,7 +286,179 @@ bg-clip-text text-transparent pb-2 mt-10">
         </div>
       </section>
 
+      <section id="premium-features" className="py-24 px-4 border-t border-white/10 relative overflow-hidden bg-black/20">
+        <div className="max-w-7xl mx-auto">
+          {/* Header with Title and Button */}
+          <div className="flex flex-col md:flex-row items-start items-start md:items-center justify-between gap-6 mb-16 animate-fade-in px-4">
+            <div className="max-w-2xl text-left">
+              <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6 tracking-tight">
+                Crea publicaciones con IA
+              </h2>
+              <p className="text-gray-400 text-lg">
+                Optimiza y crea publicaciones para e-commerce con IA              </p>
+            </div>
+            <div className="flex items-center">
+                     <SignedIn>
+          <Link
+            href="/dashboard"
+            className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2"
+          >
+            <img src="/img.png" alt="" width={20} height={20} />
+            Probar ahora
+            <ChevronRight size={20} strokeWidth={3} />
+          </Link>
+        </SignedIn>
 
+        <SignedOut>
+          <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
+            <button className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2">
+              <img src="/img.png" alt="" width={20} height={20} />
+              Probar ahora
+              <ChevronRight size={20} strokeWidth={3} />
+            </button>
+          </SignUpButton>
+        </SignedOut>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
+            {/* Card 1: Analíticas Reales */}
+            <div className="group relative rounded-3xl bg-white/[0.03] border border-white/10 p-8 hover:bg-white/[0.05] transition-all duration-500 flex flex-col h-full overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-3xl -z-10" />
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
+                    <BarChart3 size={20} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Analíticas de Venta</h3>
+                </div>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Visualiza el rendimiento de tus publicaciones y tus ingresos reales de forma centralizada.
+                </p>
+              </div>
+
+              {/* Preview Area: Stats/Chart */}
+              <div className="relative flex-1 bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 mb-8 min-h-[220px]">
+                <div className="space-y-4">
+                  <div className="flex justify-between items-end h-24 gap-1.5 px-2">
+                    {[40, 70, 45, 90, 65, 80, 55].map((h, i) => (
+                      <div key={i} className="flex-1 bg-blue-500/20 rounded-t-sm relative group/bar">
+                        <div
+                          className="absolute bottom-0 left-0 right-0 bg-blue-500/60 rounded-t-sm transition-all duration-700 delay-300"
+                          style={{ height: `${h}%` }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-white/5 rounded-xl p-3 border border-white/5">
+                      <div className="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Ingresos hoy</div>
+                      <div className="text-sm font-bold text-emerald-400">+$1,240.00</div>
+                    </div>
+                    <div className="bg-white/5 rounded-xl p-3 border border-white/5">
+                      <div className="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Conversión</div>
+                      <div className="text-sm font-bold text-blue-400">4.8%</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-auto">
+
+              </div>
+            </div>
+
+            {/* Card 2: Generación de Títulos */}
+            <div className="group relative rounded-3xl bg-white/[0.03] border border-white/10 p-8 hover:bg-white/[0.05] transition-all duration-500 flex flex-col h-full overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 blur-3xl -z-10" />
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400">
+                    <Layout size={20} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Generar Títulos</h3>
+                </div>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Nuestra IA genera títulos optimizados para SEO que captan la atención de los compradores de inmediato.
+                </p>
+              </div>
+
+              {/* Preview Area: Winning Title UI */}
+              <div className="relative flex-1 bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 mb-8 min-h-[220px]">
+                <div className="space-y-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+                      <Sparkles size={14} className="text-purple-400" />
+                    </div>
+                    <div className="h-2 w-20 bg-white/10 rounded" />
+                  </div>
+                  <div className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20 relative group">
+                    <Badge className="absolute -top-2.5 right-4 bg-purple-600 text-white border-none text-[8px] px-2 py-0.5 shadow-lg">ESTRATEGIA GANADORA</Badge>
+                    <div className="text-xs font-medium text-white leading-relaxed italic">
+                      "iPhone 15 Pro Max 256GB Titanium Azul - Nuevo, Original + Envío Gratis"
+                    </div>
+                  </div>
+                  <div className="flex gap-2 justify-center">
+                    <div className="h-6 w-14 bg-white/10 rounded-full border border-white/5 flex items-center justify-center text-[8px] text-gray-400">SEO Check</div>
+                    <div className="h-6 w-14 bg-white/10 rounded-full border border-white/5 flex items-center justify-center text-[8px] text-gray-400">CTR High</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-auto">
+
+              </div>
+            </div>
+
+            {/* Card 3: Generación de Descripciones */}
+            <div className="group relative rounded-3xl bg-white/[0.03] border border-white/10 p-8 hover:bg-white/[0.05] transition-all duration-500 flex flex-col h-full overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl -z-10" />
+              <div className="mb-8">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
+                    <FileText size={20} />
+                  </div>
+                  <h3 className="text-xl font-bold text-white">Descripciones IA</h3>
+                </div>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Crea descripciones detalladas y persuasivas adaptadas al estilo de venta de cada marketplace.
+                </p>
+              </div>
+
+              {/* Preview Area: UI of writing description */}
+              <div className="relative flex-1 bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 mb-8 min-h-[220px]">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-center mb-1">
+                    <div className="h-1.5 w-16 bg-white/10 rounded" />
+                    <div className="h-1.5 w-8 bg-emerald-500/20 rounded" />
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-1.5 w-full bg-white/5 rounded" />
+                    <div className="h-1.5 w-full bg-white/5 rounded" />
+                    <div className="h-1.5 w-3/4 bg-white/5 rounded" />
+                  </div>
+                  <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Check size={10} className="text-emerald-400" />
+                      <div className="h-1 w-24 bg-emerald-400/40 rounded" />
+                    </div>
+                    <div className="text-[9px] text-gray-400 leading-relaxed italic">
+                      Presentamos el nuevo estándar en tecnología móvil. Con un cuerpo de titanio aeroespacial y cámara Pro...
+                    </div>
+                  </div>
+                  <div className="pt-2">
+                    <div className="h-7 w-full bg-emerald-600/80 hover:bg-emerald-600 rounded-lg flex items-center justify-center text-[10px] font-bold text-white transition-colors cursor-pointer">Copiar al portapapeles</div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-auto">
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Features Section */}
 
@@ -311,6 +481,7 @@ bg-clip-text text-transparent pb-2 mt-10">
             </p>
 
           </div>
+
 
 
 
@@ -419,19 +590,18 @@ bg-clip-text text-transparent pb-2 mt-10">
                     {plan.cta}
                   </Link>
                 </SignedIn>
-            <SignedOut>
-  <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
-    <button
-      className={`block w-full text-center py-3 px-6 rounded-xl font-semibold transition-all shadow-lg ${
-        plan.highlighted
-          ? 'bg-white text-black hover:bg-gray-100'
-          : 'bg-white/10 text-white hover:bg-white/20'
-      }`}
-    >
-      {plan.cta}
-    </button>
-  </SignUpButton>
-</SignedOut>
+                <SignedOut>
+                  <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
+                    <button
+                      className={`block w-full text-center py-3 px-6 rounded-xl font-semibold transition-all shadow-lg ${plan.highlighted
+                        ? 'bg-white text-black hover:bg-gray-100'
+                        : 'bg-white/10 text-white hover:bg-white/20'
+                        }`}
+                    >
+                      {plan.cta}
+                    </button>
+                  </SignUpButton>
+                </SignedOut>
 
               </div>
 
@@ -771,17 +941,17 @@ function InlineNavbar() {
 
     <div>
       <div className="">   <Link
-          href="/checkout"
-          className='flex items-center justify-center bg-black  text-white border-b border-white/10 w-full h-14  group'
-        >
-          <p className="text-sm font-medium flex items-center gap-2 ">
-            <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
-            <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
-            <ArrowRight className="w-4 h-4 " />
-          </p>
-        </Link></div>
+        href="/checkout"
+        className='flex items-center justify-center bg-black  text-white border-b border-white/10 w-full h-14  group'
+      >
+        <p className="text-sm font-medium flex items-center gap-2 ">
+          <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
+          <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
+          <ArrowRight className="w-4 h-4 " />
+        </p>
+      </Link></div>
       <SignedIn>
-       
+
       </SignedIn>
       <SignedOut>
 
