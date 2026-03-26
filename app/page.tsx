@@ -184,25 +184,26 @@ bg-clip-text text-transparent pb-2 mt-10">
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 md:gap-6">
 
                 <SignedIn>
-          <Link
-            href="/dashboard"
-            className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2"
-          >
-            <img src="/img.png" alt="" width={20} height={20} />
-            Probar ahora
-            <ChevronRight size={20} strokeWidth={3} />
-          </Link>
+        <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
+
+                  <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+
+                </Link>
         </SignedIn>
 
-        <SignedOut>
-          <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
-            <button className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2">
-              <img src="/img.png" alt="" width={20} height={20} />
-              Probar ahora
-              <ChevronRight size={20} strokeWidth={3} />
-            </button>
-          </SignUpButton>
-        </SignedOut>
+         <SignedOut>
+
+                <SignUpButton>
+
+                  <a className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
+
+                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+
+                  </a>
+
+                </SignUpButton>
+
+              </SignedOut>
 
               <Link
                 href="#features"
