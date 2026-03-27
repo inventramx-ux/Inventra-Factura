@@ -26,7 +26,8 @@ import {
   AlertCircle,
   CheckCircle2,
   Copy,
-  Check
+  Check,
+  SquareArrowOutUpRight
 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -743,11 +744,7 @@ export default function PublicationsPage() {
                                         Estado: {pub.optimized_content.optimizationState}
                                       </Badge>
                                     )}
-                                    {pub.optimized_content.modelUsed && (
-                                      <Badge variant="outline" className="text-[8px] py-0 px-1.5 border-blue-500/30 text-blue-400/70 bg-blue-500/5">
-                                        AI: {pub.optimized_content.modelUsed}
-                                      </Badge>
-                                    )}
+                                 
                                     <Button
                                       variant="ghost"
                                       size="icon"
@@ -790,6 +787,7 @@ export default function PublicationsPage() {
                                         selectedCurrencies[pub.id] || 'MXN'
                                       )}
                                     </span>
+                                    
                                     <div className="relative flex items-center bg-white/5 rounded-md hover:bg-white/10 transition-colors border border-white/10 overflow-hidden">
 
                              
@@ -814,12 +812,36 @@ export default function PublicationsPage() {
                                           </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>
+                                    
                                   </div>
                                   <p className="text-[9px] text-gray-500 mt-1">Este precio es una recomendación basada en el mercado actual para un producto similar.</p>
                                 </div>
 
-                            
-                              </div>
+
+<div className="flex items-center gap-2 flex-wrap">
+  <p className="text-[10px] text-blue-400 uppercase font-bold">
+    Modelo de IA utilizado:
+  </p>
+
+  {pub.optimized_content.modelUsed && (
+    <a
+      href="https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_3/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] 
+                 border border-blue-500/30 bg-blue-500/5 text-white 
+                 hover:bg-blue-500/10 transition-all"
+    >
+      {pub.optimized_content.modelUsed}
+      <SquareArrowOutUpRight className="h-3 w-3 opacity-70" />
+    </a>
+  )}
+</div>
+
+
+              </div>
+
+                              
                               <div className="flex gap-4">
                               
                               </div>
