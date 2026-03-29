@@ -128,6 +128,7 @@ const scrollToSection = (id: string) => {
 };
 
 export default function Home() {
+  const { isLoaded } = useAuth();
 
   return (
 
@@ -148,7 +149,7 @@ export default function Home() {
 
         <div className="max-w-4xl mx-auto">
 
-          <div className="animate-fade-in-up">
+          <div className="">
 
 
 
@@ -165,7 +166,7 @@ bg-clip-text text-transparent pb-2 mt-10">
 
             </p>
 
-            <div className="flex justify-center items-center gap-3 mb-10 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <div className="flex justify-center items-center gap-3 mb-10" style={{ animationDelay: '0.2s' }}>
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map((i) => (
                   <img
@@ -183,25 +184,33 @@ bg-clip-text text-transparent pb-2 mt-10">
 
             <div className="flex flex-col  items-center justify-center ">
 
-                <SignedIn>
-        <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
-
+              {!isLoaded ? (
+                <div className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 h-16">
                   <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+                </div>
+              ) : (
+                <>
+                  <SignedIn>
+                    <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 cursor-pointer h-16 ">
 
-                </Link>
-        </SignedIn>
-         <SignedOut>
+                      <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
 
-                <SignUpButton>
-   <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full hover:bg-gray-200 transition-colors inline-flex items-center gap-2 cursor-pointer h-16 ">
+                    </Link>
+                  </SignedIn>
+                  <SignedOut>
 
-                  <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+                    <SignUpButton>
+                      <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 cursor-pointer h-16 ">
 
-                </Link>
+                        <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
 
-                </SignUpButton>
+                      </Link>
 
-              </SignedOut>
+                    </SignUpButton>
+
+                  </SignedOut>
+                </>
+              )}
 
               <Link
                 href="#features"
@@ -297,26 +306,26 @@ bg-clip-text text-transparent pb-2 mt-10">
                 Optimiza y crea publicaciones para e-commerce con IA              </p>
             </div>
             <div className="flex items-center">
-                     <SignedIn>
-          <Link
-            href="/dashboard"
-            className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2"
-          >
-            <img src="/img.png" alt="" width={20} height={20} />
-            Probar ahora
-            <ChevronRight size={20} strokeWidth={3} />
-          </Link>
-        </SignedIn>
+              <SignedIn>
+                <Link
+                  href="/dashboard"
+                  className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2"
+                >
+                  <img src="/img.png" alt="" width={20} height={20} />
+                  Probar ahora
+                  <ChevronRight size={20} strokeWidth={3} />
+                </Link>
+              </SignedIn>
 
-        <SignedOut>
-          <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
-            <button className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2">
-              <img src="/img.png" alt="" width={20} height={20} />
-              Probar ahora
-              <ChevronRight size={20} strokeWidth={3} />
-            </button>
-          </SignUpButton>
-        </SignedOut>
+              <SignedOut>
+                <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
+                  <button className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2">
+                    <img src="/img.png" alt="" width={20} height={20} />
+                    Probar ahora
+                    <ChevronRight size={20} strokeWidth={3} />
+                  </button>
+                </SignUpButton>
+              </SignedOut>
             </div>
           </div>
 
@@ -617,9 +626,10 @@ bg-clip-text text-transparent pb-2 mt-10">
       {/* FAQ Section */}
       <section className="py-24 px-4 border-t border-white/10" id="faq">
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-3xl font-semibold text-white mb-12">
+          <h2 className="text-3xl font-semibold text-white mb-6">
             Preguntas Frecuentes
           </h2>
+          <p className="text-gray-400 mb-12">Preguntas, reclamos, inquietudes gestionadas por nuestros usuarios</p>
 
           <div className="border-t border-white/10">
             {[
@@ -646,6 +656,11 @@ bg-clip-text text-transparent pb-2 mt-10">
               {
                 "q": "¿Qué tipos de planes tiene Inventra?",
                 "a": "Inventra está específicamente diseñado para crear publicaciones de e-commerce. Utiliza formatos optimizados, estructuras de venta probadas y datos actualizados de las plataformas para generar publicaciones listas para publicar."
+              }
+              ,
+              {
+                "q": "¿Están hechos para México?",
+                "a": "Sí, Inventra está disenado especificamente para México lo cual le da mas ventajas al usuario para crear publicaciones optimizadas para las plataformas de México."
               }
             ].map((faq, index) => (
               <FAQItem key={index} question={faq.q} answer={faq.a} />
@@ -685,9 +700,7 @@ bg-clip-text text-transparent pb-2 mt-10">
                 &copy; {new Date().getFullYear()} Inventra.
 
               </p>
-              <a href="https://www.instagram.com/inventramx/"><Instagram size={24} className="text-white" /></a>
-              <a href="https://www.tiktok.com/@inventra50"><FaTiktok size={24} className="text-white" />
-              </a>
+
             </div>
 
           </div>
@@ -755,7 +768,7 @@ function DashboardPreview() {
   }, []);
 
   return (
-    <div ref={containerRef} className="mt-16 md:mt-24 relative w-full flex justify-center">
+    <div ref={containerRef} className="mt-16 md:mt-24 relative w-full max-w-[1040px] mx-auto aspect-[1040/560]">
       {/* Brillo de fondo mejorado - Escala con el contenedor */}
       <div
         className="absolute -inset-10 bg-gradient-to-r from-blue-600/10 via-transparent to-purple-600/10 blur-[100px] -z-10 opacity-60"
@@ -763,10 +776,9 @@ function DashboardPreview() {
       />
 
       <div
-        className="relative origin-top transition-transform duration-200"
+        className="absolute top-0 left-1/2 -translate-x-1/2 origin-top"
         style={{
           width: '1040px',
-          height: `${560 * scale}px`, // Altura base + margen chasis
           transform: `scale(${scale})`
         }}
       >
@@ -1006,7 +1018,10 @@ function InlineNavbar() {
 
           <div className="hidden md:flex items-center gap-4 min-w-[200px] justify-end">
             {!isLoaded ? (
-              <div className="h-9 w-40 bg-white/5 animate-pulse rounded-lg" />
+              <div className="flex items-center gap-4">
+                <a className="text-slate-300 px-2">Iniciar Sesión</a>
+                <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm ml-2">Registrarse</a>
+              </div>
             ) : (
               <>
                 <SignedOut>
