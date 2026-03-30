@@ -1,7 +1,8 @@
 'use client';
 import React from "react";
-import { BackgroundRippleEffect } from "@/components/ui/background-ripple-effect";
 import { FaTiktok } from "react-icons/fa";
+import { cn } from "@/lib/utils";
+
 
 
 import { useEffect, useState, useRef } from 'react';
@@ -133,7 +134,6 @@ export default function Home() {
   return (
 
     <div className="min-h-screen relative">
-      <BackgroundRippleEffect />
 
 
 
@@ -145,91 +145,106 @@ export default function Home() {
 
 
 
-      <section className="pt-32 md:pt-40 pb-12 md:pb-20 px-4 relative z-10">
 
-        <div className="max-w-4xl mx-auto">
+
+      <section className="pt-32 md:pt-40 pb-12 md:pb-20 relative z-10 overflow-x-clip">
+        <div
+          className={cn(
+            "absolute inset-x-0 top-0 h-[800px] -z-10",
+            "[background-size:40px_40px]",
+            "[background-image:linear-gradient(to_right,#202020_1px,transparent_1px),linear-gradient(to_bottom,#202020_1px,transparent_1px)]",
+            "[mask-image:radial-gradient(circle_at_50%_350px,transparent,black_75%),linear-gradient(to_bottom,black_40%,transparent_100%)]",
+            "[mask-composite:intersect]",
+          )}
+        />
+
+        <div className="max-w-4xl mx-auto px-4">
 
           <div className="">
 
 
+            <div className="relative">
 
-            <h1 className="text-center text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
+              <h1 className="text-center text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
 bg-gradient-to-b from-white via-white to-gray-400
 bg-clip-text text-transparent pb-2 mt-10">
-              Crea publicaciones en segundos, no horas con IA
-            </h1>
+                Crea publicaciones en segundos, no horas con IA
+              </h1>
 
 
 
-            <p className="text-center text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-8 md:mb-10">
-              Crea publicaciones optimizadas para e-commerce con IA en segundos.
+              <p className="text-center text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-8 md:mb-10">
+                Crea publicaciones optimizadas para e-commerce con IA en segundos.
 
-            </p>
-
-            <div className="flex justify-center items-center gap-3 mb-10" style={{ animationDelay: '0.2s' }}>
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <img
-                    key={i}
-                    src={`/avatar${i}.png`}
-                    alt={`User ${i}`}
-                    className="h-9 w-9 md:h-10 md:w-10 rounded-full border-2 border-white object-cover shadow-lg"
-                  />
-                ))}
-              </div>
-              <p className="text-white font-semibold text-lg md:text-1xl tracking-tight ml-2">
-                Únete a <span className="text-white">+100 usuarios</span>
               </p>
-            </div>
 
-            <div className="flex flex-col  items-center justify-center ">
-
-              {!isLoaded ? (
-                <div className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 h-16">
-                  <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+              <div className="flex justify-center items-center gap-3 mb-10" style={{ animationDelay: '0.2s' }}>
+                <div className="flex -space-x-3">
+                  {[1, 2, 3, 4].map((i) => (
+                    <img
+                      key={i}
+                      src={`/avatar${i}.png`}
+                      alt={`User ${i}`}
+                      className="h-9 w-9 md:h-10 md:w-10 rounded-full border-2 border-white object-cover shadow-lg"
+                    />
+                  ))}
                 </div>
-              ) : (
-                <>
-                  <SignedIn>
-                    <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 cursor-pointer h-16 ">
+                <p className="text-white font-semibold text-lg md:text-1xl tracking-tight ml-2">
+                  Únete a <span className="text-white">+100 usuarios</span>
+                </p>
+              </div>
 
-                      <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+              <div className="flex flex-col  items-center justify-center ">
 
-                    </Link>
-                  </SignedIn>
-                  <SignedOut>
-
-                    <SignUpButton>
+                {!isLoaded ? (
+                  <div className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 h-16">
+                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+                  </div>
+                ) : (
+                  <>
+                    <SignedIn>
                       <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 cursor-pointer h-16 ">
 
                         <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
 
                       </Link>
+                    </SignedIn>
+                    <SignedOut>
 
-                    </SignUpButton>
+                      <SignUpButton>
+                        <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 cursor-pointer h-16 ">
 
-                  </SignedOut>
-                </>
-              )}
+                          <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
 
-              <Link
-                href="#features"
-                onClick={(e) => {
-                  e.preventDefault();
-                  scrollToSection('features');
-                }}
-                className=""
-              >
+                        </Link>
+
+                      </SignUpButton>
+
+                    </SignedOut>
+                  </>
+                )}
+
+                <Link
+                  href="#features"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollToSection('features');
+                  }}
+                  className=""
+                >
 
 
-              </Link>
+                </Link>
 
+              </div>
+              <div className='relative mt-8'>
+                <div className="absolute inset-0 bg-black/40 blur-3xl -z-10 scale-[2.5] pointer-events-none" />
+                <div className='text-white/30 flex items-center justify-center gap-2 font-semibold tracking-wider'>
+                  <CreditCard size={14} />
+                  <p> NO SE REQUIERE TARJETA DE CRÉDITO </p>
+                </div>
+              </div>
             </div>
-            <div className='text-white/30 flex items-center justify-center gap-2 mt-8 font-semibold tracking-wider'>
-              <CreditCard size={14} />
-              <p> NO SE REQUIERE TARJETA DE CRÉDITO </p>
-            </div>
-
             {/* Dashboard Preview Section */}
             <DashboardPreview />
 
