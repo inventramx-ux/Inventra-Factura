@@ -783,19 +783,16 @@ export default function PublicationsPage() {
                                   <div className="flex items-baseline gap-2">
                                     <span className="text-2xl font-bold text-white">
                                       {format(
-                                        convert(Number(pub.optimized_content.suggestedPrice || 0), currency, selectedCurrencies[pub.id] || 'MXN'),
-                                        selectedCurrencies[pub.id] || 'MXN'
+                                        convert(Number(pub.optimized_content.suggestedPrice || 0), currency, selectedCurrencies[pub.id] || currency),
+                                        selectedCurrencies[pub.id] || currency
                                       )}
                                     </span>
                                     
                                     <div className="relative flex items-center bg-white/5 rounded-md hover:bg-white/10 transition-colors border border-white/10 overflow-hidden">
-
-                             
-                                        
                                         <DropdownMenu>
                                           <DropdownMenuTrigger asChild>
                                             <Button variant="ghost" className="h-full bg-transparent text-white font-medium hover:bg-white/10 px-2 py-1 text-xs gap-1">
-                                              {selectedCurrencies[pub.id] || 'MXN'}
+                                              {selectedCurrencies[pub.id] || currency}
                                               <ChevronDown className="h-3 w-3 opacity-50" />
                                             </Button>
                                           </DropdownMenuTrigger>
@@ -812,38 +809,29 @@ export default function PublicationsPage() {
                                           </DropdownMenuContent>
                                         </DropdownMenu>
                                     </div>
-                                    
                                   </div>
                                   <p className="text-[9px] text-gray-500 mt-1">Este precio es una recomendación basada en el mercado actual para un producto similar.</p>
                                 </div>
 
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  <p className="text-[10px] text-blue-400 uppercase font-bold">
+                                    Modelo de IA utilizado:
+                                  </p>
 
-<div className="flex items-center gap-2 flex-wrap">
-  <p className="text-[10px] text-blue-400 uppercase font-bold">
-    Modelo de IA utilizado:
-  </p>
-
-  {pub.optimized_content.modelUsed && (
-    <a
-      href="https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_3/"
-      target="_blank"
-      rel="noopener noreferrer"
-      className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] 
-                 border border-blue-500/30 bg-blue-500/5 text-white 
-                 hover:bg-blue-500/10 transition-all"
-    >
-      {pub.optimized_content.modelUsed}
-      <SquareArrowOutUpRight className="h-3 w-3 opacity-70" />
-    </a>
-  )}
-</div>
-
-
-              </div>
-
-                              
-                              <div className="flex gap-4">
-                              
+                                  {pub.optimized_content.modelUsed && (
+                                    <a
+                                      href="https://www.llama.com/docs/model-cards-and-prompt-formats/llama3_3/"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center gap-1 px-2 py-1 rounded-md text-[10px] 
+                                                 border border-blue-500/30 bg-blue-500/5 text-white 
+                                                 hover:bg-blue-500/10 transition-all"
+                                    >
+                                      {pub.optimized_content.modelUsed}
+                                      <SquareArrowOutUpRight className="h-3 w-3 opacity-70" />
+                                    </a>
+                                  )}
+                                </div>
                               </div>
                             </div>
                           ) : (

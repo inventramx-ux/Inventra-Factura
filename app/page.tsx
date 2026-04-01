@@ -15,6 +15,7 @@ import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram, Crown
 import { Badge } from "@/components/ui/badge";
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import { animate } from 'framer-motion';
+import { useCurrency } from "@/app/contexts/CurrencyContext";
 
 
 
@@ -130,6 +131,7 @@ const scrollToSection = (id: string) => {
 
 export default function Home() {
   const { isLoaded } = useAuth();
+  const { proPrice, currency } = useCurrency();
 
   return (
 
@@ -376,7 +378,9 @@ bg-clip-text text-transparent pb-2 mt-10">
                   <div className="grid grid-cols-2 gap-2">
                     <div className="bg-white/5 rounded-xl p-3 border border-white/5">
                       <div className="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Ingresos hoy</div>
-                      <div className="text-sm font-bold text-emerald-400">+$1,240.00</div>
+                      <div className="text-sm font-bold text-emerald-400">
+                        {currency === 'MXN' ? '+$1,240.00 MXN' : '+$70.85 USD'}
+                      </div>
                     </div>
                     <div className="bg-white/5 rounded-xl p-3 border border-white/5">
                       <div className="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Conversión</div>
@@ -570,13 +574,11 @@ bg-clip-text text-transparent pb-2 mt-10">
 
                   <h3 className="text-white font-semibold text-xl mb-1">{plan.name}</h3>
 
-                  <div className="flex items-baseline gap-1">
-
-                    <span className="text-4xl font-bold text-white">{plan.price}</span>
+                    <span className="text-4xl font-bold text-white">
+                      {plan.name === 'Pro' ? proPrice : `${plan.price} ${currency}`}
+                    </span>
 
                     <span className="text-gray-500 text-sm">{plan.period}</span>
-
-                  </div>
 
                   <p className="text-gray-400 text-sm mt-3">{plan.description}</p>
 
@@ -675,7 +677,7 @@ bg-clip-text text-transparent pb-2 mt-10">
               ,
               {
                 "q": "¿Están hechos para México?",
-                "a": "Sí, Inventra está disenado especificamente para México lo cual le da mas ventajas al usuario para crear publicaciones optimizadas para las plataformas de México."
+                "a": "Sí, aunque servimos a clientes globales, Inventra está diseñado con especial atención a las plataformas populares en México y Latinoamérica."
               }
             ].map((faq, index) => (
               <FAQItem key={index} question={faq.q} answer={faq.a} />
@@ -959,6 +961,7 @@ function DashboardPreview() {
 
 function InlineNavbar() {
   const { isLoaded } = useAuth();
+  const { proPrice } = useCurrency();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
 
@@ -972,7 +975,7 @@ function InlineNavbar() {
       >
         <p className="text-sm font-medium flex items-center gap-2 ">
           <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
-          <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo $199 MXN</span>
+          <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo {proPrice}</span>
           <ArrowRight className="w-4 h-4 " />
         </p>
       </Link></div>

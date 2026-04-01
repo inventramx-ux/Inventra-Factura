@@ -3,6 +3,7 @@
 import { useSubscription } from "@/app/contexts/SubscriptionContext"
 import { Lock, Sparkles, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import { useCurrency } from "@/app/contexts/CurrencyContext"
 
 interface ProGateProps {
     children: React.ReactNode
@@ -12,6 +13,7 @@ interface ProGateProps {
 
 export function ProGate({ children, featureName, featureDescription }: ProGateProps) {
     const { isPro, isLoading } = useSubscription()
+    const { proPrice } = useCurrency()
 
     if (isLoading) {
         return (
@@ -57,7 +59,7 @@ export function ProGate({ children, featureName, featureDescription }: ProGatePr
                 </Link>
 
                 <p className="text-xs text-gray-500 mt-4">
-                    $199 MXN/mes · Cancela cuando quieras
+                    {proPrice}/mes · Cancela cuando quieras
                 </p>
             </div>
         </div>

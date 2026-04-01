@@ -1,4 +1,4 @@
-"use client"
+    "use client"
 
 import { useSubscription } from "@/app/contexts/SubscriptionContext"
 import { Button } from "@/components/ui/button"
@@ -16,6 +16,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
+import { useCurrency } from "@/app/contexts/CurrencyContext"
 
 const proFeatures = [
     { icon: FileText, text: "Publicaciones ilimitadas" },
@@ -26,6 +27,7 @@ const proFeatures = [
 
 export default function UpgradePage() {
     const { isPro } = useSubscription()
+    const { proPrice, currency } = useCurrency()
     const router = useRouter()
 
     if (isPro) {
@@ -64,8 +66,8 @@ export default function UpgradePage() {
 
                 <div className="text-center space-y-4">
                     <div className="flex items-baseline justify-center gap-1 mb-6">
-                        <span className="text-4xl font-bold text-white">$199</span>
-                        <span className="text-gray-400">MXN/mes</span>
+                        <span className="text-4xl font-bold text-white">{proPrice}</span>
+                        <span className="text-gray-400">/mes</span>
                     </div>
 
                     <Link href="/checkout" className="block">

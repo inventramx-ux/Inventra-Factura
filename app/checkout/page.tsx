@@ -3,11 +3,13 @@
 import React, { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import { useCurrency } from "@/app/contexts/CurrencyContext";
 
 function CheckoutContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { user } = useUser();
+  const { proPrice } = useCurrency();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState<{
     text: string;
@@ -65,7 +67,7 @@ function CheckoutContent() {
             </div>
             <div className="flex justify-between items-center">
               <span className="text-[#666] text-sm">Precio</span>
-              <span className="text-white text-sm font-medium">$199 MXN/mes</span>
+              <span className="text-white text-sm font-medium">{proPrice}/mes</span>
             </div>
           </div>
 

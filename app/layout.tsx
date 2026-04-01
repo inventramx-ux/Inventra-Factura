@@ -6,6 +6,7 @@ import { Inter, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
 import { ClientProvider } from "./contexts/ClientContext"
+import { CurrencyProvider } from "./contexts/CurrencyContext"
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -32,8 +33,10 @@ export default function RootLayout({
       <body className={`${inter.variable} ${geistMono.variable} antialiased font-sans`}>
         <ClerkProvider>
           <ClientProvider>
+            <CurrencyProvider>
               {children}
               <Analytics />
+            </CurrencyProvider>
           </ClientProvider>
         </ClerkProvider>
       </body>

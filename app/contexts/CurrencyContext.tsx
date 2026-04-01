@@ -1,79 +1,108 @@
-'use client';
+"use client"
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { detectLocation, fetchExchangeRates, LocationData, ExchangeRates, formatCurrency } from '@/lib/currency';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { detectLocation, fetchExchangeRates, LocationData } from "@/lib/currency";
 
 interface CurrencyContextType {
-  location: LocationData | null;
-  rates: ExchangeRates | null;
   currency: string;
-  currencySymbol: string;
+  countryCode: string;
+  isMX: boolean;
   isLoading: boolean;
-  convert: (amount: number, from?: string, to?: string) => number;
-  format: (amount: number, currencyCode?: string) => string;
+  proPrice: string;
+  location: LocationData | null;
+  rates: Record<string, number>;
+  formatPrice: (mxnAmount: number, usdAmountOverride?: number) => string;
+  convert: (amount: number, from: string, to: string) => number;
+  format: (amount: number, currencyCode: string) => string;
 }
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
   const [location, setLocation] = useState<LocationData | null>(null);
-  const [rates, setRates] = useState<ExchangeRates | null>(null);
+  const [rates, setRates] = useState<Record<string, number>>({ "USD": 1, "MXN": 17.5 });
   const [isLoading, setIsLoading] = useState(true);
 
-  const init = async () => {
+  useEffect(() => {
+    async function initCurrency() {
+      try {
+        const [locData, rateData] = await Promise.all([
+          detectLocation(),
+          fetchExchangeRates()
+        ]);
+        setLocation(locData);
+        if (rateData && rateData.rates) {
+          setRates(rateData.rates);
+        }
+      } catch (error) {
+        console.error("Error initializing currency data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    initCurrency();
+  }, []);
+
+  // Default to MX logic unless detected otherwise
+  const countryCode = location?.country_code || "MX";
+  const isMX = countryCode === "MX";
+  const currency = isMX ? "MXN" : "USD";
+
+  // Fixed prices with currency suffix as requested
+  const proPrice = isMX ? "$199 MXN" : "$9.99 USD";
+
+  /**
+   * Helper to format a number to its currency string.
+   */
+  const format = (amount: number, currencyCode: string) => {
     try {
-      setIsLoading(true);
-      const [loc, exchange] = await Promise.all([
-        detectLocation(),
-        fetchExchangeRates()
-      ]);
-      setLocation(loc);
-      setRates(exchange);
-    } catch (error) {
-      console.error("Error initializing currency context:", error);
-    } finally {
-      setIsLoading(false);
+      return new Intl.NumberFormat("en-US", {
+        style: "currency",
+        currency: currencyCode,
+      }).format(amount);
+    } catch (e) {
+      return `${currencyCode} ${amount.toFixed(2)}`;
     }
   };
 
-  useEffect(() => {
-    init();
-  }, []);
+  /**
+   * Converts an amount from one currency to another using USD as base.
+   */
+  const convert = (amount: number, from: string, to: string) => {
+    if (!rates[from] || !rates[to]) return amount;
+    // (amount / fromRate) -> converts to USD base
+    // then * toRate -> converts to target currency
+    return (amount / rates[from]) * rates[to];
+  };
 
-  const currency = location?.currency || 'USD';
+  /**
+   * Special helper for hardcoded prices (Landing/Upgrade).
+   * If usdAmountOverride is provided and user is not in MX, it uses that.
+   */
+  const formatPrice = (mxnAmount: number, usdAmountOverride?: number) => {
+    if (isMX) {
+      return format(mxnAmount, "MXN").replace(",00", ""); // Clean decimals as requested previously
+    } else {
+      const amount = usdAmountOverride !== undefined ? usdAmountOverride : convert(mxnAmount, "MXN", "USD");
+      return format(amount, "USD");
+    }
+  };
 
-  const convert = useCallback((amount: number, from: string = 'USD', to: string = currency) => {
-    if (!rates || !rates.rates) return amount;
-    
-    // Convert from 'from' to USD first
-    const inUSD = from === 'USD' ? amount : amount / (rates.rates[from] || 1);
-    
-    // Convert from USD to 'to'
-    const result = to === 'USD' ? inUSD : inUSD * (rates.rates[to] || 1);
-    
-    return result;
-  }, [rates, currency]);
-
-  const format = useCallback((amount: number, currencyCode: string = currency) => {
-    return formatCurrency(amount, currencyCode);
-  }, [currency]);
-
-  // Derived symbol (basic implementation)
-  const currencySymbol = new Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: currency,
-  }).format(0).replace(/\d| |\.|,/g, '');
+  const value = {
+    currency,
+    countryCode,
+    isMX,
+    isLoading,
+    proPrice,
+    location,
+    rates,
+    formatPrice,
+    convert,
+    format,
+  };
 
   return (
-    <CurrencyContext.Provider value={{
-      location,
-      rates,
-      currency,
-      currencySymbol,
-      isLoading,
-      convert,
-      format
-    }}>
+    <CurrencyContext.Provider value={value}>
       {children}
     </CurrencyContext.Provider>
   );
@@ -82,7 +111,7 @@ export function CurrencyProvider({ children }: { children: React.ReactNode }) {
 export function useCurrency() {
   const context = useContext(CurrencyContext);
   if (context === undefined) {
-    throw new Error('useCurrency must be used within a CurrencyProvider');
+    throw new Error("useCurrency must be used within a CurrencyProvider");
   }
   return context;
 }
