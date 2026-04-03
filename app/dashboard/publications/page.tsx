@@ -1241,7 +1241,6 @@ export default function PublicationsPage() {
                                 <div className="space-y-3 pt-2 border-t border-white/5">
                                   <div className="flex items-center justify-between">
                                     <Label className="text-[10px] text-white uppercase font-bold tracking-wider">Imagenes Adicionales</Label>
-                                    <span className="text-[8px] text-gray-500 uppercase">Procesadas e Originales</span>
                                   </div>
 
                                   <div className="grid grid-cols-4 gap-2">
