@@ -370,7 +370,7 @@ bg-clip-text text-transparent pb-2 mt-10">
                   <div className="space-y-2">
                     <h5 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">TÍTULO OPTIMIZADO</h5>
                     <h3 className="text-sm font-bold text-white leading-snug">
-                      Bugatti Salvage — Oportunidad única de adquirir un automóvil icónico.
+                      Bugatti Salvage — Oportunidad única de adquirir un automóvil icónico
                     </h3>
                   </div>
 
