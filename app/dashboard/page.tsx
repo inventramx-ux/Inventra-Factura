@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { ShoppingBag, Sparkles, LayoutDashboard, Crown, Plus, ArrowRight } from "lucide-react"
+import { Plus, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { publicationOperations, Publication } from "@/lib/publications"
 
@@ -70,7 +70,6 @@ export default function DashboardPage() {
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-gray-400">Publicaciones</CardTitle>
-                        <ShoppingBag className="h-4 w-4 text-blue-400" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">{publications.length}</div>
@@ -81,7 +80,6 @@ export default function DashboardPage() {
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-gray-400">Optimizaciones</CardTitle>
-                        <Sparkles className="h-4 w-4 text-emerald-400" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">
@@ -94,7 +92,6 @@ export default function DashboardPage() {
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-gray-400">Eficiencia</CardTitle>
-                        <LayoutDashboard className="h-4 w-4 text-indigo-400" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">
@@ -107,7 +104,6 @@ export default function DashboardPage() {
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
                         <CardTitle className="text-sm font-medium text-gray-400">Plan</CardTitle>
-                        <Crown className={`h-4 w-4 ${isPro ? "text-blue-400" : "text-gray-500"}`} />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">
@@ -135,7 +131,6 @@ export default function DashboardPage() {
                 </Link>
                 <Link href="/dashboard/analytics">
                     <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 font-medium gap-2">
-                        <Sparkles className="h-4 w-4" />
                         Ver Analíticas
                     </Button>
                 </Link>
@@ -161,7 +156,6 @@ export default function DashboardPage() {
                 <CardContent>
                     {publications.length === 0 ? (
                         <div className="text-center py-12">
-                            <ShoppingBag className="h-12 w-12 text-gray-600 mx-auto mb-4" />
                             <p className="text-gray-400 mb-2">No tienes publicaciones aún</p>
                             <p className="text-gray-500 text-sm mb-4">Crea tu primera publicación para empezar</p>
                             <Link href="/dashboard/publications">

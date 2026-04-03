@@ -8,6 +8,20 @@ export interface Publication {
     description?: string
     price?: string
     imageUrl?: string
+    additionalImages?: string[]
+    imageOptimization?: {
+      removeBackgroundIndices?: number[]
+      bgColor?: 'transparent' | 'white' | 'black'
+      targetFormat?: 'webp' | 'jpeg' | 'png'
+      preset?: 'mercadolibre' | 'amazon' | 'pinterest' | 'standard' | 'custom'
+      upscaleIndices?: number[]
+      autoEnhanceIndices?: number[]
+      enhanceIntensity?: 'natural' | 'vivid' | 'crisp'
+      sharpenIndices?: number[]
+      sharpenAmount?: 'subtle' | 'standard' | 'extra'
+      targetWidth?: number
+      targetHeight?: number
+    }
     msi?: boolean
     shipping?: 'free' | 'buyer'
     warranty?: string
@@ -27,6 +41,8 @@ export interface Publication {
     suggestedPrice?: string
     modelUsed?: string
     optimizationState?: string
+    imageUrl?: string
+    additionalOptimizedImages?: string[]
   }
   created_at: string
 }

@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 
 import Link from 'next/link';
 
-import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram, Crown, Users, Plus, BriefcaseBusiness, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard, ShoppingBag, Sparkles, TrendingUp, BarChart3, FileText, Layout, ChevronRight } from 'lucide-react';
+import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram, Crown, Users, Plus, BriefcaseBusiness, Image, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard, ShoppingBag, Sparkles, TrendingUp, BarChart3, FileText, Layout, ChevronRight } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import { animate } from 'framer-motion';
@@ -314,7 +314,7 @@ bg-clip-text text-transparent pb-2 mt-10">
       <section id="premium-features" className="py-24 px-4 border-t border-white/10 relative overflow-hidden bg-black/20">
         <div className="max-w-7xl mx-auto">
           {/* Header with Title and Button */}
-          <div className="flex flex-col md:flex-row items-start items-start md:items-center justify-between gap-6 mb-16 animate-fade-in px-4">
+          <div className="flex flex-col md:flex-row items-start items-start md:items-center justify-between gap-6 mb-16 px-4">
             <div className="max-w-2xl text-left">
               <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6 tracking-tight">
                 Crea publicaciones con IA
@@ -326,7 +326,7 @@ bg-clip-text text-transparent pb-2 mt-10">
               <SignedIn>
                 <Link
                   href="/dashboard"
-                  className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2"
+                  className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all flex items-center gap-2"
                 >
                   <img src="/img.png" alt="" width={20} height={20} />
                   Probar ahora
@@ -347,140 +347,222 @@ bg-clip-text text-transparent pb-2 mt-10">
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 ">
-            {/* Card 1: Analíticas Reales */}
-            <div className="group relative rounded-3xl bg-white/[0.03] border border-white/10 p-8 hover:bg-white/[0.05] transition-all duration-500 flex flex-col h-full overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 blur-3xl -z-10" />
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-blue-500/10 text-blue-400">
-                    <BarChart3 size={20} />
+            {/* Card 1: Optimización de publicaciones */}
+            <div className="relative rounded-3xl bg-white/[0.03] border border-white/10 p-8 flex flex-col h-full overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl -z-10" />
+
+              {/* Preview Area: Clean listing preview */}
+              <div className="relative bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 aspect-square font-sans flex flex-col">
+                <div className="flex flex-col flex-1 gap-4">
+                  {/* Header */}
+                  <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">VISTA PREVIA OPTIMIZADA</h4>
+
+                  {/* Image Container */}
+                  <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden border border-white/10 bg-zinc-900">
+                    <img
+                      src="/larp.jpg"
+                      alt="Larp"
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Analíticas de Venta</h3>
+
+                  {/* Title Block */}
+                  <div className="space-y-2">
+                    <h5 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">TÍTULO OPTIMIZADO</h5>
+                    <h3 className="text-sm font-bold text-white leading-snug">
+                      Bugatti Salvage — Oportunidad única de adquirir un automóvil icónico
+                    </h3>
+                  </div>
+
+                  {/* Price Block */}
+                  <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-2 mt-auto">
+                    <h5 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">PRECIO SUGERIDO POR IA</h5>
+                    <div className="flex items-center justify-between gap-4">
+                      <span className="text-2xl font-bold text-white tracking-tight">MX$85,000.00</span>
+                      <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-white/10 rounded-lg text-xs font-medium text-zinc-400">
+                        MXN <ChevronDown size={14} className="opacity-50" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-full w-10 h-10 flex shrink-0 justify-center items-center text-center bg-white/10 text-white">
+                    <p className="font-bold">1</p>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">Optimización de publicaciones</h3>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Visualiza el rendimiento de tus publicaciones y tus ingresos reales de forma centralizada.
+                  Optimiza el título y descripción de tus publicaciones con IA y mejora el posicionamiento de tus productos.
                 </p>
               </div>
+            </div>
+
+            {/* Card 2: Optimización de Imágenes */}
+            <div className="relative rounded-3xl bg-white/[0.03] border border-white/10 p-8 flex flex-col h-full overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl -z-10" />
+
+              {/* Replica UI Mockup */}
+              <div className="relative bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 aspect-square font-sans flex flex-col">
+                <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-4">OPTIMIZACIÓN DE IMÁGENES</h4>
+
+                {/* Toolbar Tabs */}
+                <div className="flex bg-black p-1 rounded-xl border border-white/5 shadow-inner w-full mb-5 gap-0.5">
+                  {[
+                    { label: 'FONDO', active: true },
+                    { label: 'RESOLUCIÓN' },
+                    { label: 'COLOR' },
+                    { label: 'NITIDEZ' },
+                  ].map((tab, i) => (
+                    <div key={i} className={`flex-1 text-center px-2 py-2 rounded-lg ${tab.active ? 'bg-white text-black' : 'text-zinc-500'}`}>
+                      <span className="text-[9px] font-black uppercase tracking-wider">{tab.label}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Content Area */}
+                <div className="p-4 rounded-2xl border border-white/10 bg-white/[0.03] space-y-4 flex-1 flex flex-col">
+                  <div className="flex justify-between items-start">
+                    <div className="space-y-1">
+                      <h5 className="text-sm font-bold text-white">Fondo</h5>
+                      <p className="text-[10px] text-zinc-500 font-medium">Elimina el fondo y elige un color sólido.</p>
+                    </div>
+                    <div className="px-3 py-1.5 bg-white/10 border border-white/10 rounded-md text-[10px] text-zinc-300 font-bold shrink-0">
+                      Seleccionar
+                    </div>
+                  </div>
+
+                  {/* Mock Image Grid */}
+                  <div className="flex gap-3">
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-white shadow-lg">
+                      <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=200&h=200" className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-white/10 flex items-center justify-center">
+                        <div className="bg-white rounded-full p-1 shadow-lg">
+                          <Check className="h-3 w-3 text-black stroke-[3]" />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-white/5 opacity-40">
+                      <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=200&h=200" className="h-full w-full object-cover" />
+                    </div>
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-white/5 opacity-20">
+                      <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=200&h=200" className="h-full w-full object-cover" />
+                    </div>
+                  </div>
+
+                  {/* Color options */}
+                  <div className="space-y-2 mt-auto">
+                    <h6 className="text-[9px] text-zinc-600 uppercase font-black tracking-widest">FONDO RESULTANTE</h6>
+                    <div className="flex gap-2">
+                      <div className="h-7 w-7 rounded-lg bg-white border-2 border-white shadow-sm" />
+                      <div className="h-7 w-7 rounded-lg bg-black border border-white/10" />
+                      <div className="h-7 w-7 rounded-lg bg-zinc-500 border border-white/5" />
+                      <div className="h-7 w-7 rounded-lg border border-dashed border-white/20 flex items-center justify-center">
+                        <Plus size={10} className="text-zinc-500" />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+              <div className="pt-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-full w-10 h-10 flex shrink-0 justify-center items-center text-center bg-white/10 text-white">
+                    <p className="font-bold">2</p>
+                  </div>
+                  <h3 className="text-xl font-bold text-white tracking-tight">Optimización de Imágenes</h3>
+                </div>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  Transforma tus fotos en imágenes de estudio. Elimina fondos, aumenta resolución y mejora colores con IA quirúrgica.
+                </p>
+              </div>
+            </div>
+
+            {/* Card 3: Analíticas avanzadas */}
+            <div className="relative rounded-3xl bg-white/[0.03] border border-white/10 p-8 flex flex-col h-full overflow-hidden">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl -z-10" />
 
               {/* Preview Area: Stats/Chart */}
-              <div className="relative flex-1 bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 mb-8 min-h-[220px]">
-                <div className="space-y-4">
-                  <div className="flex justify-between items-end h-24 gap-1.5 px-2">
-                    {[40, 70, 45, 90, 65, 80, 55].map((h, i) => (
-                      <div key={i} className="flex-1 bg-blue-500/20 rounded-t-sm relative group/bar">
-                        <div
-                          className="absolute bottom-0 left-0 right-0 bg-blue-500/60 rounded-t-sm transition-all duration-700 delay-300"
-                          style={{ height: `${h}%` }}
+              <div className="relative bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 aspect-square font-sans flex flex-col">
+                {/* Stats Row */}
+                <div className="grid grid-cols-3 gap-2 mb-4">
+                  <div className="bg-white/[0.03] border border-white/5 rounded-xl p-3">
+                    <p className="text-[8px] text-zinc-500 font-bold mb-1 uppercase tracking-wider">Publicaciones</p>
+                    <p className="text-xl font-bold text-white">24</p>
+                  </div>
+                  <div className="bg-white/[0.03] border border-white/5 rounded-xl p-3">
+                    <p className="text-[8px] text-zinc-500 font-bold mb-1 uppercase tracking-wider">Con IA</p>
+                    <p className="text-xl font-bold text-white">18</p>
+                  </div>
+                  <div className="bg-white/[0.03] border border-white/5 rounded-xl p-3">
+                    <p className="text-[8px] text-zinc-500 font-bold mb-1 uppercase tracking-wider">Éxito</p>
+                    <p className="text-xl font-bold text-white">94%</p>
+                  </div>
+                </div>
+
+                {/* Activity Chart Area */}
+                <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5 relative flex-1 flex flex-col">
+                  <h4 className="text-[12px] font-bold text-white mb-6">Actividad de Publicación</h4>
+
+                  <div className="relative flex-1 w-full flex items-end pr-2">
+                    {/* Y-Axis Labels */}
+                    <div className="flex flex-col justify-between text-[9px] text-zinc-600 h-full pr-3 pb-1">
+                      <span>30</span>
+                      <span>20</span>
+                      <span>10</span>
+                      <span>0</span>
+                    </div>
+
+                    {/* Chart Area */}
+                    <div className="flex-1 h-full relative border-l border-b border-white/5">
+                      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                        <defs>
+                          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3" />
+                            <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
+                          </linearGradient>
+                        </defs>
+                        {/* Area Fill */}
+                        <path
+                          d="M 0 95 C 10 92, 20 88, 30 85 C 40 80, 50 70, 60 55 C 70 40, 80 25, 90 15 C 95 8, 98 5, 100 2 L 100 100 L 0 100 Z"
+                          fill="url(#chartGradient)"
                         />
-                      </div>
-                    ))}
+                        {/* The Line */}
+                        <path
+                          d="M 0 95 C 10 92, 20 88, 30 85 C 40 80, 50 70, 60 55 C 70 40, 80 25, 90 15 C 95 8, 98 5, 100 2"
+                          fill="none"
+                          stroke="#3b82f6"
+                          strokeWidth="2"
+                          vectorEffect="non-scaling-stroke"
+                        />
+                        {/* Dot at end */}
+                        <circle cx="100" cy="2" r="3" fill="#3b82f6" />
+                      </svg>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-                      <div className="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Ingresos hoy</div>
-                      <div className="text-sm font-bold text-emerald-400">
-                        {currency === 'MXN' ? '+$1,240.00 MXN' : '+$70.85 USD'}
-                      </div>
-                    </div>
-                    <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-                      <div className="text-[8px] text-gray-500 uppercase tracking-widest mb-1">Conversión</div>
-                      <div className="text-sm font-bold text-blue-400">4.8%</div>
-                    </div>
+
+                  {/* X-Axis Labels */}
+                  <div className="flex justify-between ml-[28px] mt-3 text-[9px] text-zinc-600 uppercase tracking-wider">
+                    <span>Ene</span>
+                    <span>Feb</span>
+                    <span>Mar</span>
+                    <span>Abr</span>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-auto">
-
-              </div>
-            </div>
-
-            {/* Card 2: Generación de Títulos */}
-            <div className="group relative rounded-3xl bg-white/[0.03] border border-white/10 p-8 hover:bg-white/[0.05] transition-all duration-500 flex flex-col h-full overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 blur-3xl -z-10" />
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-purple-500/10 text-purple-400">
-                    <Layout size={20} />
+              <div className="pt-6">
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="p-2 rounded-full w-10 h-10 flex shrink-0 justify-center items-center text-center bg-white/10 text-white">
+                    <p className="font-bold">3</p>
                   </div>
-                  <h3 className="text-xl font-bold text-white">Generar Títulos</h3>
+                  <h3 className="text-xl font-bold text-white tracking-tight">Analíticas avanzadas</h3>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Nuestra IA genera títulos optimizados para SEO que captan la atención de los compradores de inmediato.
+                  Obtén analíticas sobre tus publicaciones y mejora el posicionamiento de tus productos.
                 </p>
-              </div>
-
-              {/* Preview Area: Winning Title UI */}
-              <div className="relative flex-1 bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 mb-8 min-h-[220px]">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2 mb-2">
-                    <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
-                      <Sparkles size={14} className="text-purple-400" />
-                    </div>
-                    <div className="h-2 w-20 bg-white/10 rounded" />
-                  </div>
-                  <div className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20 relative group">
-                    <Badge className="absolute -top-2.5 right-4 bg-purple-600 text-white border-none text-[8px] px-2 py-0.5 shadow-lg">ESTRATEGIA GANADORA</Badge>
-                    <div className="text-xs font-medium text-white leading-relaxed italic">
-                      "iPhone 15 Pro Max 256GB Titanium Azul - Nuevo, Original + Envío Gratis"
-                    </div>
-                  </div>
-                  <div className="flex gap-2 justify-center">
-                    <div className="h-6 w-14 bg-white/10 rounded-full border border-white/5 flex items-center justify-center text-[8px] text-gray-400">SEO Check</div>
-                    <div className="h-6 w-14 bg-white/10 rounded-full border border-white/5 flex items-center justify-center text-[8px] text-gray-400">CTR High</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-auto">
-
-              </div>
-            </div>
-
-            {/* Card 3: Generación de Descripciones */}
-            <div className="group relative rounded-3xl bg-white/[0.03] border border-white/10 p-8 hover:bg-white/[0.05] transition-all duration-500 flex flex-col h-full overflow-hidden">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 blur-3xl -z-10" />
-              <div className="mb-8">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400">
-                    <FileText size={20} />
-                  </div>
-                  <h3 className="text-xl font-bold text-white">Descripciones IA</h3>
-                </div>
-                <p className="text-gray-400 text-sm leading-relaxed">
-                  Crea descripciones detalladas y persuasivas adaptadas al estilo de venta de cada marketplace.
-                </p>
-              </div>
-
-              {/* Preview Area: UI of writing description */}
-              <div className="relative flex-1 bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 mb-8 min-h-[220px]">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-center mb-1">
-                    <div className="h-1.5 w-16 bg-white/10 rounded" />
-                    <div className="h-1.5 w-8 bg-emerald-500/20 rounded" />
-                  </div>
-                  <div className="space-y-2">
-                    <div className="h-1.5 w-full bg-white/5 rounded" />
-                    <div className="h-1.5 w-full bg-white/5 rounded" />
-                    <div className="h-1.5 w-3/4 bg-white/5 rounded" />
-                  </div>
-                  <div className="p-4 rounded-xl bg-emerald-500/5 border border-emerald-500/20">
-                    <div className="flex items-center gap-2 mb-2">
-                      <Check size={10} className="text-emerald-400" />
-                      <div className="h-1 w-24 bg-emerald-400/40 rounded" />
-                    </div>
-                    <div className="text-[9px] text-gray-400 leading-relaxed italic">
-                      Presentamos el nuevo estándar en tecnología móvil. Con un cuerpo de titanio aeroespacial y cámara Pro...
-                    </div>
-                  </div>
-                  <div className="pt-2">
-                    <div className="h-7 w-full bg-emerald-600/80 hover:bg-emerald-600 rounded-lg flex items-center justify-center text-[10px] font-bold text-white transition-colors cursor-pointer">Copiar al portapapeles</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="mt-auto">
-
               </div>
             </div>
           </div>
@@ -574,11 +656,11 @@ bg-clip-text text-transparent pb-2 mt-10">
 
                   <h3 className="text-white font-semibold text-xl mb-1">{plan.name}</h3>
 
-                    <span className="text-4xl font-bold text-white">
-                      {plan.name === 'Pro' ? proPrice : `${plan.price} ${currency}`}
-                    </span>
+                  <span className="text-4xl font-bold text-white">
+                    {plan.name === 'Pro' ? proPrice : `${plan.price} ${currency}`}
+                  </span>
 
-                    <span className="text-gray-500 text-sm">{plan.period}</span>
+                  <span className="text-gray-500 text-sm">{plan.period}</span>
 
                   <p className="text-gray-400 text-sm mt-3">{plan.description}</p>
 
