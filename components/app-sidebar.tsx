@@ -1,5 +1,6 @@
 "use client"
 import { useState } from "react"
+import { useTranslations } from 'next-intl'
 
 import {
     LayoutDashboard,
@@ -44,27 +45,24 @@ import {
     TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-const freeItems = [
+const freeItemKeys = [
     {
-        title: "Dashboard",
+        titleKey: "dashboard" as const,
         url: "/dashboard",
         icon: LayoutDashboard,
     },
-       {
-        title: "Publicaciones",
+    {
+        titleKey: "publications" as const,
         url: "/dashboard/publications",
         icon: ShoppingBag,
     },
-   
-    
- 
     {
-        title: "Analíticas",
+        titleKey: "analytics" as const,
         url: "/dashboard/analytics",
         icon: BarChart3,
     },
     {
-        title: "Configuración",
+        titleKey: "settings" as const,
         url: "/dashboard/settings",
         icon: Settings,
     },
@@ -75,6 +73,8 @@ export function AppSidebar() {
     const { user } = useUser()
     const { isPro } = useSubscription()
     const [copied, setCopied] = useState(false)
+    const t = useTranslations('sidebar')
+    const tc = useTranslations('common')
 
     const copyEmail = () => {
         navigator.clipboard.writeText("inventramx@gmail.com")
@@ -109,26 +109,29 @@ export function AppSidebar() {
                     <SidebarGroupLabel className="text-gray-400">
                         <div className="flex items-center gap-2">
                             {isPro && <Crown className="size-3 text-amber-400" />}
-                            <span>{isPro ? "Pro" : "General"}</span>
+                            <span>{isPro ? "Pro" : t('general')}</span>
                         </div>
                     </SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {freeItems.map((item) => (
-                                <SidebarMenuItem key={item.title}>
+                            {freeItemKeys.map((item) => {
+                                const title = t(item.titleKey);
+                                return (
+                                <SidebarMenuItem key={item.titleKey}>
                                     <SidebarMenuButton
                                         asChild
-                                        tooltip={item.title}
+                                        tooltip={title}
                                         isActive={isActive(item.url)}
                                         className="text-gray-300 hover:text-white hover:bg-white/10"
                                     >
                                         <Link href={item.url}>
                                             <item.icon />
-                                            <span>{item.title}</span>
+                                            <span>{title}</span>
                                         </Link>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
-                            ))}
+                                );
+                            })}
                         </SidebarMenu>
                     </SidebarGroupContent>
                 </SidebarGroup>
@@ -137,13 +140,13 @@ export function AppSidebar() {
 
                 {/* Support Section */}
                 <SidebarGroup>
-                    <SidebarGroupLabel className="text-gray-400">Soporte</SidebarGroupLabel>
+                    <SidebarGroupLabel className="text-gray-400">{t('support')}</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
                             <SidebarMenuItem>
                                 <SidebarMenuButton
                                     asChild
-                                    tooltip="Soporte"
+                                    tooltip={t('support')}
                                     className="text-gray-300 hover:text-white hover:bg-white/10 h-auto py-2"
                                 >
                                     <a href="mailto:inventramx@gmail.com" className="flex items-start gap-3">
@@ -151,12 +154,12 @@ export function AppSidebar() {
                                             <Mail className="size-4" />
                                         </div>
                                         <div className="flex flex-col gap-0.5 min-w-0">
-                                            <span className="text-sm font-medium truncate">Contacto</span>
+                                            <span className="text-sm font-medium truncate">{t('contact')}</span>
                                             <span className="text-[10px] text-blue-400 truncate font-mono">
                                                 inventramx@gmail.com
                                             </span>
                                             <span className="text-[9px] text-gray-500 leading-tight">
-                                                Respuesta en menos de 12 horas
+                                                {t('responseLess12h')}
                                             </span>
                                         </div>
                                     </a>
@@ -174,7 +177,7 @@ export function AppSidebar() {
                                             )}
                                         </SidebarMenuAction>
                                     </TooltipTrigger>
-                                    <TooltipContent side="right">Copiar correo</TooltipContent>
+                                    <TooltipContent side="right">{t('copyEmail')}</TooltipContent>
                                 </Tooltip>
                             </SidebarMenuItem>
                         </SidebarMenu>
@@ -198,7 +201,7 @@ export function AppSidebar() {
                             />
                             <div className="grid flex-1 text-left text-sm leading-tight ml-2">
                                 <span className="truncate font-semibold text-white">
-                                    {user?.firstName || user?.username || "Usuario"}
+                                    {user?.firstName || user?.username || tc('user')}
                                 </span>
                                 <span className="truncate text-xs text-gray-400">
                                     {user?.primaryEmailAddress?.emailAddress || ""}

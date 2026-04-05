@@ -10,12 +10,16 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { publicationOperations, Publication } from "@/lib/publications"
+import { useTranslations, useLocale } from 'next-intl'
 
 export default function DashboardPage() {
     const { user } = useUser()
     const [publications, setPublications] = React.useState<Publication[]>([])
     const [loading, setLoading] = React.useState(true)
     const { isPro, refreshSubscription } = useSubscription()
+    const t = useTranslations('dashboard')
+    const tc = useTranslations('common')
+    const locale = useLocale()
 
     const loadData = React.useCallback(async () => {
         if (!user?.id) return
@@ -58,10 +62,10 @@ export default function DashboardPage() {
             {/* Welcome Section */}
             <div>
                 <h1 className="text-2xl font-semibold text-white">
-                    Bienvenido, {user?.firstName || "Usuario"}
+                    {t('welcome', { name: user?.firstName || tc('user') })}
                 </h1>
                 <p className="text-gray-400 mt-1">
-                    Aquí tienes un resumen de tu actividad de optimización.
+                    {t('activitySummary')}
                 </p>
             </div>
 
@@ -69,53 +73,53 @@ export default function DashboardPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-400">Publicaciones</CardTitle>
+                        <CardTitle className="text-sm font-medium text-gray-400">{t('publications')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">{publications.length}</div>
-                        <p className="text-xs text-gray-500 mt-1">Total creadas</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('totalCreated')}</p>
                     </CardContent>
                 </Card>
 
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-400">Optimizaciones</CardTitle>
+                        <CardTitle className="text-sm font-medium text-gray-400">{t('optimizations')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">
                             {totalOptimized}
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Contenido generado con IA</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('aiGenerated')}</p>
                     </CardContent>
                 </Card>
 
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-400">Eficiencia</CardTitle>
+                        <CardTitle className="text-sm font-medium text-gray-400">{t('efficiency')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">
                             {publications.length > 0 ? Math.round((totalOptimized / publications.length) * 100) : 0}%
                         </div>
-                        <p className="text-xs text-gray-500 mt-1">Tasa de optimización</p>
+                        <p className="text-xs text-gray-500 mt-1">{t('optimizationRate')}</p>
                     </CardContent>
                 </Card>
 
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-gray-400">Plan</CardTitle>
+                        <CardTitle className="text-sm font-medium text-gray-400">{t('plan')}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold text-white">
-                            {isPro ? "Pro" : "Gratuito"}
+                            {isPro ? tc('pro') : tc('free')}
                         </div>
                         {!isPro && (
                             <Link href="/dashboard/upgrade" className="text-xs text-blue-400 hover:text-blue-300 mt-1 inline-flex items-center gap-1">
-                                Actualizar <ArrowRight className="h-3 w-3" />
+                                {tc('upgrade')} <ArrowRight className="h-3 w-3" />
                             </Link>
                         )}
                         {isPro && (
-                            <p className="text-xs text-gray-500 mt-1">Acceso completo</p>
+                            <p className="text-xs text-gray-500 mt-1">{tc('fullAccess')}</p>
                         )}
                     </CardContent>
                 </Card>
@@ -126,12 +130,12 @@ export default function DashboardPage() {
                 <Link href="/dashboard/publications">
                     <Button className="bg-white text-black hover:bg-gray-200 font-medium gap-2">
                         <Plus className="h-4 w-4" />
-                        Nueva Publicación
+                        {t('newPublication')}
                     </Button>
                 </Link>
                 <Link href="/dashboard/analytics">
                     <Button variant="outline" className="border-white/20 text-white hover:bg-white/10 font-medium gap-2">
-                        Ver Analíticas
+                        {t('viewAnalytics')}
                     </Button>
                 </Link>
             </div>
@@ -141,14 +145,14 @@ export default function DashboardPage() {
                 <CardHeader>
                     <div className="flex items-center justify-between">
                         <div>
-                            <CardTitle className="text-white">Publicaciones Recientes</CardTitle>
+                            <CardTitle className="text-white">{t('recentPublications')}</CardTitle>
                             <CardDescription className="text-gray-400">
-                                Tus últimas publicaciones creadas
+                                {t('latestCreated')}
                             </CardDescription>
                         </div>
                         <Link href="/dashboard/publications">
                             <Button variant="ghost" className="text-gray-400 hover:text-white hover:bg-white/10 gap-1 text-sm">
-                                Ver todas <ArrowRight className="h-3 w-3" />
+                                {tc('viewAll')} <ArrowRight className="h-3 w-3" />
                             </Button>
                         </Link>
                     </div>
@@ -156,12 +160,12 @@ export default function DashboardPage() {
                 <CardContent>
                     {publications.length === 0 ? (
                         <div className="text-center py-12">
-                            <p className="text-gray-400 mb-2">No tienes publicaciones aún</p>
-                            <p className="text-gray-500 text-sm mb-4">Crea tu primera publicación para empezar</p>
+                            <p className="text-gray-400 mb-2">{t('noPublications')}</p>
+                            <p className="text-gray-500 text-sm mb-4">{t('createFirst')}</p>
                             <Link href="/dashboard/publications">
                                 <Button className="bg-white text-black hover:bg-gray-200 font-medium gap-2">
                                     <Plus className="h-4 w-4" />
-                                    Crear Publicación
+                                    {t('createPublication')}
                                 </Button>
                             </Link>
                         </div>
@@ -169,10 +173,10 @@ export default function DashboardPage() {
                         <Table>
                             <TableHeader>
                                 <TableRow className="border-white/10 hover:bg-transparent">
-                                    <TableHead className="text-gray-400">Nombre</TableHead>
-                                    <TableHead className="text-gray-400">Plataforma</TableHead>
-                                    <TableHead className="text-gray-400">Estado</TableHead>
-                                    <TableHead className="text-gray-400">Fecha</TableHead>
+                                    <TableHead className="text-gray-400">{t('name')}</TableHead>
+                                    <TableHead className="text-gray-400">{t('platformCol')}</TableHead>
+                                    <TableHead className="text-gray-400">{t('statusCol')}</TableHead>
+                                    <TableHead className="text-gray-400">{t('dateCol')}</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -181,17 +185,17 @@ export default function DashboardPage() {
                                         <TableCell className="text-white font-medium">
                                             {pub.name}
                                         </TableCell>
-                                        <TableCell className="text-gray-300 capitalize">{pub.platform || "No especificada"}</TableCell>
+                                        <TableCell className="text-gray-300 capitalize">{pub.platform || tc('notSpecified')}</TableCell>
                                         <TableCell>
                                             <Badge
                                                 variant="outline"
                                                 className={pub.optimized_content?.title ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/30" : "bg-gray-500/20 text-gray-400 border-gray-500/30"}
                                             >
-                                                {pub.optimized_content?.title ? "Optimizado" : "Borrador"}
+                                                {pub.optimized_content?.title ? tc('optimized') : tc('draft')}
                                             </Badge>
                                         </TableCell>
                                         <TableCell className="text-gray-400">
-                                            {new Date(pub.created_at).toLocaleDateString("es-MX")}
+                                            {new Date(pub.created_at).toLocaleDateString(locale === 'es' ? 'es-MX' : 'en-US')}
                                         </TableCell>
                                     </TableRow>
                                 ))}

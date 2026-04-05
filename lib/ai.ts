@@ -20,7 +20,8 @@ export async function optimizePublication(
   enabledFields: Record<string, boolean> = {},
   style: string = "Profesional",
   isPro: boolean = false,
-  length: string = "medium"
+  length: string = "medium",
+  locale: string = "es"
 ): Promise<OptimizationResult> {
   const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey || apiKey.trim() === "" || apiKey === "tu_llave_aqui") {
@@ -66,13 +67,14 @@ export async function optimizePublication(
     - Stock: "${getVal('stock', data.stock)}"
 
     INSTRUCCIONES CRÍTICAS:
+    0. IDIOMA DE SALIDA: Toda la respuesta (título, descripción, precio sugerido, etc.) DEBE estar estrictamente en el idioma: ${locale === 'es' ? 'Español' : 'Inglés'}.
     1. Si un campo dice "No incluir", NO menciones ese dato en la optimización.
     2. Usa los "Tags SEO" para incorporar esas palabras clave de forma natural en la descripción y el título.
     3. Título: Maximizar clics y SEO específico para ${platform}.
     4. Descripción: ${lengthInstruction} Evita introducciones largas o texto excesivo de relleno. Usa bullet points de beneficios, destacando MSI o Envío Gratis si están habilitados.
        IMPORTANTE: Usa formato Markdown en la descripción. Usa **negritas** para resaltar palabras clave. Usa guiones (-) para las listas de viñetas. NO uses otro tipo de formato. La descripción DEBE ser muy clara y fácil de leer.
     5. PRECIO SUGERIDO: Investiga mentalmente o estima el valor de mercado actual de este producto (Marca, Modelo, Condición) en plataformas de venta en línea. Devuelve un valor numérico realista (sin símbolos de moneda) como "suggestedPrice". Si no tienes suficiente información, estima un valor competitivo.
-    6. Responde ÚNICAMENTE con un objeto JSON (sin bloques de código markdown, solo el texto del JSON):
+    6. Responde ÚNICAMENTE con un objeto JSON (sin bloques de código markdown, solo el texto del JSON). Todos los valores de texto deben estar en ${locale === 'es' ? 'Español' : 'Inglés'}:
     {
       "title": "título optimizado",
       "description": "descripción optimizada con formato markdown",
@@ -103,7 +105,7 @@ export async function optimizePublication(
     } catch (error: any) {
       console.error(`Error con modelo Groq ${modelName}:`, error.message);
       lastError = error;
-      
+
       // Manejar errores de cuota o límites de tokens
       if (error.status === 429) {
         continue; // Intentar con el siguiente modelo

@@ -11,7 +11,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
 
-    const { name, platform, product_data, enabled_fields, style, length } = await request.json();
+    const { name, platform, product_data, enabled_fields, style, length, locale } = await request.json();
 
     if (!name || !platform) {
       return NextResponse.json(
@@ -45,7 +45,7 @@ export async function POST(request: Request) {
       }
     }
 
-    const optimized = await optimizePublication(name, platform, product_data, enabled_fields, style, isPro, length);
+    const optimized = await optimizePublication(name, platform, product_data, enabled_fields, style, isPro, length, locale || 'es');
 
     return NextResponse.json(optimized);
   } catch (error: any) {

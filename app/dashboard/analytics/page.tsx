@@ -12,6 +12,7 @@ import { TrendingUp, ShoppingBag, Sparkles, Lock } from "lucide-react"
 import Link from "next/link"
 import { publicationOperations, Publication } from "@/lib/publications"
 import { useUser } from "@clerk/nextjs"
+import { useTranslations, useLocale } from 'next-intl'
 
 const STATUS_COLORS = {
     optimized: "#10b981", // emerald-500
@@ -24,6 +25,10 @@ export default function AnalyticsPage() {
     const [loading, setLoading] = useState(true)
     const { isPro, isLoading: subLoading } = useSubscription()
     const [timeRange, setTimeRange] = useState<'day' | 'week' | 'month' | 'year'>('month')
+    const t = useTranslations('analytics')
+    const tc = useTranslations('common')
+    const locale = useLocale()
+    const dateLocale = locale === 'es' ? 'es-MX' : 'en-US'
 
     const loadData = React.useCallback(async () => {
         if (!user?.id) return
@@ -71,7 +76,7 @@ export default function AnalyticsPage() {
             activityOverTime = Array.from({ length: 7 }, (_, i) => {
                 const date = new Date(now)
                 date.setDate(date.getDate() - i)
-                return { label: date.toLocaleDateString('es-MX', { weekday: 'short', day: 'numeric' }), timestamp: date.getTime(), count: 0 }
+                return { label: date.toLocaleDateString(dateLocale, { weekday: 'short', day: 'numeric' }), timestamp: date.getTime(), count: 0 }
             }).reverse()
 
             publications.forEach(p => {
@@ -86,7 +91,7 @@ export default function AnalyticsPage() {
             activityOverTime = Array.from({ length: 6 }, (_, i) => {
                 const date = new Date(now)
                 date.setMonth(date.getMonth() - i)
-                return { label: date.toLocaleString('es-MX', { month: 'short' }), month: date.getMonth(), year: date.getFullYear(), count: 0 }
+                return { label: date.toLocaleString(dateLocale, { month: 'short' }), month: date.getMonth(), year: date.getFullYear(), count: 0 }
             }).reverse()
 
             publications.forEach(p => {
@@ -110,14 +115,14 @@ export default function AnalyticsPage() {
 
         // 2. Status Distribution
         const statusDistribution = [
-            { name: "Optimizado", value: publications.filter(p => p.optimized_content?.title).length, color: STATUS_COLORS.optimized },
-            { name: "Borrador", value: publications.filter(p => !p.optimized_content?.title).length, color: STATUS_COLORS.draft },
+            { name: tc('optimized'), value: publications.filter(p => p.optimized_content?.title).length, color: STATUS_COLORS.optimized },
+            { name: tc('draft'), value: publications.filter(p => !p.optimized_content?.title).length, color: STATUS_COLORS.draft },
         ].filter(d => d.value > 0)
 
         // 3. Platform Distribution
         const platformCounts: Record<string, number> = {}
         publications.forEach(p => {
-            const platform = p.platform || 'Sin especificar'
+            const platform = p.platform || t('unspecified')
             platformCounts[platform] = (platformCounts[platform] || 0) + 1
         })
         const platformDistribution = Object.entries(platformCounts)
@@ -139,7 +144,7 @@ export default function AnalyticsPage() {
                 optimizationRate
             }
         }
-    }, [publications, timeRange])
+    }, [publications, timeRange, tc, t, dateLocale])
 
     if (loading || subLoading) {
         return (
@@ -159,13 +164,13 @@ export default function AnalyticsPage() {
         return (
             <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
                 <ShoppingBag className="h-12 w-12 text-gray-600 mb-4" />
-                <h2 className="text-xl font-semibold text-white">Sin datos suficientes</h2>
+                <h2 className="text-xl font-semibold text-white">{t('noData')}</h2>
                 <p className="text-gray-400 mt-2 max-w-sm">
-                    Crea y optimiza publicaciones para ver tus analíticas de rendimiento.
+                    {t('noDataDescription')}
                 </p>
                 <Link href="/dashboard/publications" className="mt-6">
                     <Button variant="outline" className="border-white/10 text-white hover:bg-white/5">
-                        Crear publicación
+                        {t('createPublication')}
                     </Button>
                 </Link>
             </div>
@@ -177,15 +182,15 @@ export default function AnalyticsPage() {
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                 <div>
                     <div className="flex items-center gap-2">
-                        <h1 className="text-2xl font-semibold text-white">Analíticas</h1>
+                        <h1 className="text-2xl font-semibold text-white">{t('title')}</h1>
                         {isPro ? (
                             <Badge className="bg-blue-500/10 text-blue-400 border-blue-500/20">Pro</Badge>
                         ) : (
-                            <Badge variant="outline" className="text-gray-400 border-white/10">Gratis</Badge>
+                            <Badge variant="outline" className="text-gray-400 border-white/10">{tc('free')}</Badge>
                         )}
                     </div>
                     <p className="text-gray-400 mt-1">
-                        Monitorea tu actividad de creación y optimización.
+                        {t('subtitle')}
                     </p>
                 </div>
 
@@ -199,7 +204,7 @@ export default function AnalyticsPage() {
                                 : "text-gray-400 hover:text-white"
                                 }`}
                         >
-                            {range === 'day' ? 'Día' : range === 'week' ? 'Semana' : range === 'month' ? 'Mes' : 'Año'}
+                            {t(range)}
                         </button>
                     ))}
                 </div>
@@ -209,7 +214,7 @@ export default function AnalyticsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="pb-2">
-                        <CardDescription className="text-gray-400">Publicaciones Totales</CardDescription>
+                        <CardDescription className="text-gray-400">{t('totalPublications')}</CardDescription>
                         <CardTitle className="text-2xl text-white font-bold">
                             {stats.metrics.totalPublications}
                         </CardTitle>
@@ -217,13 +222,13 @@ export default function AnalyticsPage() {
                     <CardContent>
                         <div className="flex items-center text-xs text-gray-400 gap-1">
                             <ShoppingBag className="h-3 w-3" />
-                            <span>Contenido creado</span>
+                            <span>{t('contentCreated')}</span>
                         </div>
                     </CardContent>
                 </Card>
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="pb-2">
-                        <CardDescription className="text-gray-400">Optimizaciones IA</CardDescription>
+                        <CardDescription className="text-gray-400">{t('aiOptimizations')}</CardDescription>
                         <CardTitle className="text-2xl text-white font-bold">
                             {stats.metrics.totalOptimized}
                         </CardTitle>
@@ -231,13 +236,13 @@ export default function AnalyticsPage() {
                     <CardContent>
                         <div className="flex items-center text-xs text-gray-400 gap-1">
                             <Sparkles className="h-3 w-3 text-emerald-400" />
-                            <span>Asistido por IA</span>
+                            <span>{t('aiAssisted')}</span>
                         </div>
                     </CardContent>
                 </Card>
                 <Card className="bg-white/5 border-white/10">
                     <CardHeader className="pb-2">
-                        <CardDescription className="text-gray-400">Tasa de Éxito</CardDescription>
+                        <CardDescription className="text-gray-400">{t('successRate')}</CardDescription>
                         <CardTitle className="text-2xl text-white font-bold">
                             {Math.round(stats.metrics.optimizationRate)}%
                         </CardTitle>
@@ -245,7 +250,7 @@ export default function AnalyticsPage() {
                     <CardContent>
                         <div className="flex items-center text-xs text-blue-400 gap-1">
                             <TrendingUp className="h-3 w-3" />
-                            <span>Eficiencia de flujo</span>
+                            <span>{t('flowEfficiency')}</span>
                         </div>
                     </CardContent>
                 </Card>
@@ -256,7 +261,7 @@ export default function AnalyticsPage() {
                 {/* Activity Chart */}
                 <Card className="bg-white/5 border-white/10 lg:col-span-2 min-w-0 overflow-hidden">
                     <CardHeader>
-                        <CardTitle className="text-white text-lg font-medium">Actividad de Publicación</CardTitle>
+                        <CardTitle className="text-white text-lg font-medium">{t('publicationActivity')}</CardTitle>
                     </CardHeader>
                     <CardContent className="h-[300px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
@@ -275,7 +280,7 @@ export default function AnalyticsPage() {
                                     itemStyle={{ color: '#fff' }}
                                     labelStyle={{ color: '#fff' }}
                                 />
-                                <Area type="monotone" dataKey="count" name="Publicaciones" stroke="#60a5fa" fillOpacity={1} fill="url(#colorActivity)" strokeWidth={3} />
+                                <Area type="monotone" dataKey="count" name={t('publications')} stroke="#60a5fa" fillOpacity={1} fill="url(#colorActivity)" strokeWidth={3} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </CardContent>
@@ -284,17 +289,17 @@ export default function AnalyticsPage() {
                 {/* Platform Distribution */}
                 <Card className="bg-white/5 border-white/10 relative overflow-hidden min-w-0">
                     <CardHeader>
-                        <CardTitle className="text-white">Canales de Venta</CardTitle>
-                        <CardDescription className="text-gray-400">Distribución por Marketplace</CardDescription>
+                        <CardTitle className="text-white">{t('salesChannels')}</CardTitle>
+                        <CardDescription className="text-gray-400">{t('marketplaceDistribution')}</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[300px] w-full mt-4">
                         {!isPro && (
                             <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm p-6 text-center">
                                 <Lock className="h-8 w-8 text-blue-400 mb-3" />
-                                <h3 className="text-blue-400 font-semibold mb-2">Sección Pro</h3>
-                                <p className="text-blue-400 text-sm mb-4">Identifica tus canales más populares con el plan Pro.</p>
+                                <h3 className="text-blue-400 font-semibold mb-2">{t('proSection')}</h3>
+                                <p className="text-blue-400 text-sm mb-4">{t('proChannelsDesc')}</p>
                                 <Link href="/dashboard/upgrade">
-                                    <Button size="sm" className="bg-blue-400 hover:bg-blue-500 text-black text-xs font-bold">Mejorar ahora</Button>
+                                    <Button size="sm" className="bg-blue-400 hover:bg-blue-500 text-black text-xs font-bold">{t('upgradeNow')}</Button>
                                 </Link>
                             </div>
                         )}
@@ -305,7 +310,7 @@ export default function AnalyticsPage() {
                                     <XAxis type="number" hide />
                                     <YAxis dataKey="name" type="category" stroke="#94a3b8" fontSize={12} tickLine={false} axisLine={false} width={100} />
                                     <Tooltip cursor={{ fill: '#ffffff05' }} contentStyle={{ backgroundColor: '#0f172a', border: '1px solid #ffffff10', borderRadius: '8px' }} itemStyle={{ color: '#fff' }} labelStyle={{ color: '#fff' }} />
-                                    <Bar dataKey="count" name="Publicaciones" fill="#60a5fa" radius={[0, 4, 4, 0]} barSize={20} />
+                                    <Bar dataKey="count" name={t('publications')} fill="#60a5fa" radius={[0, 4, 4, 0]} barSize={20} />
                                 </BarChart>
                             </ResponsiveContainer>
                         </div>
@@ -315,17 +320,17 @@ export default function AnalyticsPage() {
                 {/* Status Distribution */}
                 <Card className="bg-white/5 border-white/10 relative overflow-hidden min-w-0">
                     <CardHeader>
-                        <CardTitle className="text-white">Estado de Optimización</CardTitle>
-                        <CardDescription className="text-gray-400">Borradores vs Finalizados</CardDescription>
+                        <CardTitle className="text-white">{t('optimizationStatus')}</CardTitle>
+                        <CardDescription className="text-gray-400">{t('draftsVsFinal')}</CardDescription>
                     </CardHeader>
                     <CardContent className="h-[300px] w-full flex items-center justify-center">
                             {!isPro && (
                      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/60 backdrop-blur-sm p-6 text-center">
                                 <Lock className="h-8 w-8 text-blue-400 mb-3" />
-                                <h3 className="text-blue-400 font-semibold mb-2">Sección Pro</h3>
-                                <p className="text-blue-400 text-sm mb-4">Obtén métricas sobre tus borradores y publicaciones finalizadas.</p>
+                                <h3 className="text-blue-400 font-semibold mb-2">{t('proSection')}</h3>
+                                <p className="text-blue-400 text-sm mb-4">{t('proDraftsDesc')}</p>
                                 <Link href="/dashboard/upgrade">
-                                    <Button size="sm" className="bg-blue-400 hover:bg-blue-500 text-black text-xs font-bold">Mejorar ahora</Button>
+                                    <Button size="sm" className="bg-blue-400 hover:bg-blue-500 text-black text-xs font-bold">{t('upgradeNow')}</Button>
                                 </Link>
                             </div>
                         )}

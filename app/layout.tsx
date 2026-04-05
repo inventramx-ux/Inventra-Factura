@@ -7,6 +7,9 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
 import { ClientProvider } from "./contexts/ClientContext"
 import { CurrencyProvider } from "./contexts/CurrencyContext"
+import { NextIntlClientProvider } from 'next-intl';
+import { getLocale, getMessages } from 'next-intl/server';
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -22,22 +25,27 @@ export const metadata: Metadata = {
   description: "Sistema de facturación moderno para tu negocio",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="es">
+    <html lang={locale}>
 
       <body className={`${inter.variable} ${geistMono.variable} antialiased font-sans`}>
         <ClerkProvider>
-          <ClientProvider>
-            <CurrencyProvider>
-              {children}
-              <Analytics />
-            </CurrencyProvider>
-          </ClientProvider>
+          <NextIntlClientProvider messages={messages} locale={locale}>
+            <ClientProvider>
+              <CurrencyProvider>
+                {children}
+                <Analytics />
+              </CurrencyProvider>
+            </ClientProvider>
+          </NextIntlClientProvider>
         </ClerkProvider>
       </body>
     </html>

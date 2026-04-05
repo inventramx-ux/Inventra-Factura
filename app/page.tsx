@@ -12,85 +12,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 import { ArrowRight, Check, Brain, HeartHandshakeIcon, Menu, X, Instagram, Crown, Users, Plus, BriefcaseBusiness, Image, LayoutDashboard, Settings, Mail, Bell, MessageSquare, ChevronDown, CreditCard, ShoppingBag, Sparkles, TrendingUp, BarChart3, FileText, Layout, ChevronRight } from 'lucide-react';
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { Badge } from "@/components/ui/badge";
 import { SignedIn, SignedOut, UserButton, SignInButton, SignUpButton, useAuth } from '@clerk/nextjs';
 import { animate } from 'framer-motion';
 import { useCurrency } from "@/app/contexts/CurrencyContext";
-
-
-
-
-const features = [
-
-  {
-
-    title: 'Optimizador de publicaciones IA',
-
-    description: 'Optimiza tus publicaciones con IA. Tomando en cuenta palabras clave, descripciones, títulos, etc.',
-
-  },
-
-
-
-  {
-
-    title: 'Analíticas de publicaciones',
-
-    description: 'Obtén analíticas valiosos de tus publicaciones y mejora tus ventas.',
-
-  },
-
-
-
-
-];
-
-
-
-const plans = [
-
-  {
-
-    name: 'Gratuito',
-
-    price: '$0',
-
-    period: '/mes',
-
-    description: 'Perfecto para empezar',
-
-    features: [
-
-      'Hasta 3 publicaciones por mes',
-
-
-
-
-      'Analíticas limitadas',
-      'Soporte por email',
-
-
-    ],
-
-    cta: 'Comenzar gratis',
-
-    highlighted: true,
-
-  },
-
-  {
-
-    name: 'Pro',
-
-    price: '$199',
-
-    period: '/mes',
-
-    description: 'Para negocios serios',
-
-    features: [
-
-      'Publicaciones ilimitadas',
+import { useTranslations } from 'next-intl';
 
 
 
@@ -98,17 +25,8 @@ const plans = [
 
 
 
-      'Analíticas de publicaciones ilimitadas',
-      'Soporte prioritario',
-    ],
 
-    cta: 'Comenzar ahora',
 
-    highlighted: false,
-
-  },
-
-];
 
 
 
@@ -132,6 +50,34 @@ const scrollToSection = (id: string) => {
 export default function Home() {
   const { isLoaded } = useAuth();
   const { proPrice, currency } = useCurrency();
+  const t = useTranslations('landing');
+  const tc = useTranslations('common');
+
+  const features = [
+    { title: t('features.feature1Title'), description: t('features.feature1Description') },
+    { title: t('features.feature2Title'), description: t('features.feature2Description') },
+  ];
+
+  const plans = [
+    {
+      name: t('pricing.freeName'),
+      price: t('pricing.freePrice'),
+      period: '/mes',
+      description: t('pricing.freeDescription'),
+      features: [t('pricing.freeFeature1'), t('pricing.freeFeature2'), t('pricing.freeFeature3')],
+      cta: t('pricing.freeCta'),
+      highlighted: true,
+    },
+    {
+      name: t('pricing.proName'),
+      price: '$199',
+      period: '/mes',
+      description: t('pricing.proDescription'),
+      features: [t('pricing.proFeature1'), t('pricing.proFeature2'), t('pricing.proFeature3')],
+      cta: t('pricing.proCta'),
+      highlighted: false,
+    },
+  ];
 
   return (
 
@@ -142,7 +88,6 @@ export default function Home() {
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-lg border-b border-white/20">
         <InlineNavbar />
       </nav>
-
 
 
 
@@ -170,13 +115,13 @@ export default function Home() {
               <h1 className="text-center text-5xl md:text-6xl lg:text-7xl font-semibold mb-6 leading-[1.15] tracking-tight 
 bg-gradient-to-b from-white via-white to-gray-400
 bg-clip-text text-transparent pb-2 mt-10">
-                Crea publicaciones en segundos, no horas con IA
+                {t('hero.title')}
               </h1>
 
 
 
               <p className="text-center text-base md:text-lg text-gray-400 max-w-2xl mx-auto mb-8 md:mb-10">
-                Crea publicaciones optimizadas para e-commerce con IA en segundos.
+                {t('hero.subtitle')}
 
               </p>
 
@@ -192,7 +137,7 @@ bg-clip-text text-transparent pb-2 mt-10">
                   ))}
                 </div>
                 <p className="text-white font-semibold text-lg md:text-1xl tracking-tight ml-2">
-                  Únete a <span className="text-white">+100 usuarios</span>
+                  {t('hero.joinUsers')} <span className="text-white">{t('hero.usersCount')}</span>
                 </p>
               </div>
 
@@ -200,14 +145,14 @@ bg-clip-text text-transparent pb-2 mt-10">
 
                 {!isLoaded ? (
                   <div className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 h-16">
-                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  {tc('startNow')}
                   </div>
                 ) : (
                   <>
                     <SignedIn>
                       <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 cursor-pointer h-16 ">
 
-                        <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+                        <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  {tc('startNow')}
 
                       </Link>
                     </SignedIn>
@@ -216,7 +161,7 @@ bg-clip-text text-transparent pb-2 mt-10">
                       <SignUpButton>
                         <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 cursor-pointer h-16 ">
 
-                          <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  Comienza ahora - Es gratis
+                          <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" />  {tc('startNow')}
 
                         </Link>
 
@@ -243,7 +188,7 @@ bg-clip-text text-transparent pb-2 mt-10">
                 <div className="absolute inset-0 bg-black/40 blur-3xl -z-10 scale-[2.5] pointer-events-none" />
                 <div className='text-white/30 flex items-center justify-center gap-2 font-semibold tracking-wider'>
                   <CreditCard size={14} />
-                  <p> NO SE REQUIERE TARJETA DE CRÉDITO </p>
+                  <p> {tc('noCreditCard')} </p>
                 </div>
               </div>
             </div>
@@ -260,7 +205,7 @@ bg-clip-text text-transparent pb-2 mt-10">
       <section className="py-12 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <p className="text-center text-sm font-medium text-gray-500 mb-8 uppercase tracking-widest">
-            Usado por vendedores en empresas como
+            {t('hero.usedBy')}
           </p>
           <div className="flex flex-wrap justify-center items-center gap-x-12 gap-y-8 md:gap-x-20 lg:gap-x-24">
             {/* Mercado Libre - Local SVG */}
@@ -317,10 +262,10 @@ bg-clip-text text-transparent pb-2 mt-10">
           <div className="flex flex-col md:flex-row items-start items-start md:items-center justify-between gap-6 mb-16 px-4">
             <div className="max-w-2xl text-left">
               <h2 className="text-4xl md:text-5xl font-semibold text-white mb-6 tracking-tight">
-                Crea publicaciones con IA
+                {t('premiumFeatures.title')}
               </h2>
               <p className="text-gray-400 text-lg">
-                Optimiza y crea publicaciones para e-commerce con IA              </p>
+                {t('premiumFeatures.subtitle')}              </p>
             </div>
             <div className="flex items-center">
               <SignedIn>
@@ -329,7 +274,7 @@ bg-clip-text text-transparent pb-2 mt-10">
                   className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all flex items-center gap-2"
                 >
                   <img src="/img.png" alt="" width={20} height={20} />
-                  Probar ahora
+                  {tc('tryNow')}
                   <ChevronRight size={20} strokeWidth={3} />
                 </Link>
               </SignedIn>
@@ -338,7 +283,7 @@ bg-clip-text text-transparent pb-2 mt-10">
                 <SignUpButton mode="redirect" forceRedirectUrl="/dashboard">
                   <button className="bg-white text-black font-bold py-3.5 px-8 rounded-lg hover:bg-gray-200 transition-all shadow-[0_0_20px_rgba(255,255,255,0.2)] flex items-center gap-2">
                     <img src="/img.png" alt="" width={20} height={20} />
-                    Probar ahora
+                    {tc('tryNow')}
                     <ChevronRight size={20} strokeWidth={3} />
                   </button>
                 </SignUpButton>
@@ -355,7 +300,7 @@ bg-clip-text text-transparent pb-2 mt-10">
               <div className="relative bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 aspect-square font-sans flex flex-col">
                 <div className="flex flex-col flex-1 gap-4">
                   {/* Header */}
-                  <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">VISTA PREVIA OPTIMIZADA</h4>
+                  <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">{t('premiumFeatures.card1PreviewLabel')}</h4>
 
                   {/* Image Container */}
                   <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden border border-white/10 bg-zinc-900">
@@ -368,7 +313,7 @@ bg-clip-text text-transparent pb-2 mt-10">
 
                   {/* Title Block */}
                   <div className="space-y-2">
-                    <h5 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">TÍTULO OPTIMIZADO</h5>
+                    <h5 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">{t('premiumFeatures.card1OptimizedTitle')}</h5>
                     <h3 className="text-sm font-bold text-white leading-snug">
                       Bugatti Salvage — Oportunidad única de adquirir un automóvil icónico
                     </h3>
@@ -376,7 +321,7 @@ bg-clip-text text-transparent pb-2 mt-10">
 
                   {/* Price Block */}
                   <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-2 mt-auto">
-                    <h5 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">PRECIO SUGERIDO POR IA</h5>
+                    <h5 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">{t('premiumFeatures.card1SuggestedPrice')}</h5>
                     <div className="flex items-center justify-between gap-4">
                       <span className="text-2xl font-bold text-white tracking-tight">MX$85,000.00</span>
                       <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-white/10 rounded-lg text-xs font-medium text-zinc-400">
@@ -392,10 +337,10 @@ bg-clip-text text-transparent pb-2 mt-10">
                   <div className="p-2 rounded-full w-10 h-10 flex shrink-0 justify-center items-center text-center bg-white/10 text-white">
                     <p className="font-bold">1</p>
                   </div>
-                  <h3 className="text-xl font-bold text-white tracking-tight">Optimización de publicaciones</h3>
+                  <h3 className="text-xl font-bold text-white tracking-tight">{t('premiumFeatures.card1Title')}</h3>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Optimiza el título y descripción de tus publicaciones con IA y mejora el posicionamiento de tus productos.
+                  {t('premiumFeatures.card1Description')}
                 </p>
               </div>
             </div>
@@ -406,15 +351,15 @@ bg-clip-text text-transparent pb-2 mt-10">
 
               {/* Replica UI Mockup */}
               <div className="relative bg-[#0a0a0a] rounded-2xl border border-white/5 overflow-hidden p-5 aspect-square font-sans flex flex-col">
-                <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-4">OPTIMIZACIÓN DE IMÁGENES</h4>
+                <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em] mb-4">{t('premiumFeatures.card2PreviewLabel')}</h4>
 
                 {/* Toolbar Tabs */}
                 <div className="flex bg-black p-1 rounded-xl border border-white/5 shadow-inner w-full mb-5 gap-0.5">
                   {[
-                    { label: 'FONDO', active: true },
-                    { label: 'RESOLUCIÓN' },
-                    { label: 'COLOR' },
-                    { label: 'NITIDEZ' },
+                    { label: t('premiumFeatures.card2Background'), active: true },
+                    { label: t('premiumFeatures.card2Resolution') },
+                    { label: t('premiumFeatures.card2Color') },
+                    { label: t('premiumFeatures.card2Sharpness') },
                   ].map((tab, i) => (
                     <div key={i} className={`flex-1 text-center px-2 py-2 rounded-lg ${tab.active ? 'bg-white text-black' : 'text-zinc-500'}`}>
                       <span className="text-[9px] font-black uppercase tracking-wider">{tab.label}</span>
@@ -426,11 +371,11 @@ bg-clip-text text-transparent pb-2 mt-10">
                 <div className="p-4 rounded-2xl border border-white/10 bg-white/[0.03] space-y-4 flex-1 flex flex-col">
                   <div className="flex justify-between items-start">
                     <div className="space-y-1">
-                      <h5 className="text-sm font-bold text-white">Fondo</h5>
-                      <p className="text-[10px] text-zinc-500 font-medium">Elimina el fondo y elige un color sólido.</p>
+                      <h5 className="text-sm font-bold text-white">{t('premiumFeatures.card2BgLabel')}</h5>
+                      <p className="text-[10px] text-zinc-500 font-medium">{t('premiumFeatures.card2BgDesc')}</p>
                     </div>
                     <div className="px-3 py-1.5 bg-white/10 border border-white/10 rounded-md text-[10px] text-zinc-300 font-bold shrink-0">
-                      Seleccionar
+                      {t('premiumFeatures.card2Select')}
                     </div>
                   </div>
 
@@ -440,7 +385,6 @@ bg-clip-text text-transparent pb-2 mt-10">
                       <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=200&h=200" className="h-full w-full object-cover" />
                       <div className="absolute inset-0 bg-white/10 flex items-center justify-center">
                         <div className="bg-white rounded-full p-1 shadow-lg">
-                          <Check className="h-3 w-3 text-black stroke-[3]" />
                         </div>
                       </div>
                     </div>
@@ -454,7 +398,7 @@ bg-clip-text text-transparent pb-2 mt-10">
 
                   {/* Color options */}
                   <div className="space-y-2 mt-auto">
-                    <h6 className="text-[9px] text-zinc-600 uppercase font-black tracking-widest">FONDO RESULTANTE</h6>
+                    <h6 className="text-[9px] text-zinc-600 uppercase font-black tracking-widest">{t('premiumFeatures.card2ResultBg')}</h6>
                     <div className="flex gap-2">
                       <div className="h-7 w-7 rounded-lg bg-white border-2 border-white shadow-sm" />
                       <div className="h-7 w-7 rounded-lg bg-black border border-white/10" />
@@ -472,10 +416,10 @@ bg-clip-text text-transparent pb-2 mt-10">
                   <div className="p-2 rounded-full w-10 h-10 flex shrink-0 justify-center items-center text-center bg-white/10 text-white">
                     <p className="font-bold">2</p>
                   </div>
-                  <h3 className="text-xl font-bold text-white tracking-tight">Optimización de Imágenes</h3>
+                  <h3 className="text-xl font-bold text-white tracking-tight">{t('premiumFeatures.card2Title')}</h3>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Transforma tus fotos en imágenes de estudio. Elimina fondos, aumenta resolución y mejora colores con IA quirúrgica.
+                  {t('premiumFeatures.card2Description')}
                 </p>
               </div>
             </div>
@@ -489,22 +433,22 @@ bg-clip-text text-transparent pb-2 mt-10">
                 {/* Stats Row */}
                 <div className="grid grid-cols-3 gap-2 mb-4">
                   <div className="bg-white/[0.03] border border-white/5 rounded-xl p-3">
-                    <p className="text-[8px] text-zinc-500 font-bold mb-1 uppercase tracking-wider">Publicaciones</p>
+                    <p className="text-[8px] text-zinc-500 font-bold mb-1 uppercase tracking-wider">{t('premiumFeatures.card3Publications')}</p>
                     <p className="text-xl font-bold text-white">24</p>
                   </div>
                   <div className="bg-white/[0.03] border border-white/5 rounded-xl p-3">
-                    <p className="text-[8px] text-zinc-500 font-bold mb-1 uppercase tracking-wider">Con IA</p>
+                    <p className="text-[8px] text-zinc-500 font-bold mb-1 uppercase tracking-wider">{t('premiumFeatures.card3WithAI')}</p>
                     <p className="text-xl font-bold text-white">18</p>
                   </div>
                   <div className="bg-white/[0.03] border border-white/5 rounded-xl p-3">
-                    <p className="text-[8px] text-zinc-500 font-bold mb-1 uppercase tracking-wider">Éxito</p>
+                    <p className="text-[8px] text-zinc-500 font-bold mb-1 uppercase tracking-wider">{t('premiumFeatures.card3Success')}</p>
                     <p className="text-xl font-bold text-white">94%</p>
                   </div>
                 </div>
 
                 {/* Activity Chart Area */}
                 <div className="bg-white/[0.02] border border-white/5 rounded-xl p-5 relative flex-1 flex flex-col">
-                  <h4 className="text-[12px] font-bold text-white mb-6">Actividad de Publicación</h4>
+                  <h4 className="text-[12px] font-bold text-white mb-6">{t('premiumFeatures.card3Activity')}</h4>
 
                   <div className="relative flex-1 w-full flex items-end pr-2">
                     {/* Y-Axis Labels */}
@@ -558,10 +502,10 @@ bg-clip-text text-transparent pb-2 mt-10">
                   <div className="p-2 rounded-full w-10 h-10 flex shrink-0 justify-center items-center text-center bg-white/10 text-white">
                     <p className="font-bold">3</p>
                   </div>
-                  <h3 className="text-xl font-bold text-white tracking-tight">Analíticas avanzadas</h3>
+                  <h3 className="text-xl font-bold text-white tracking-tight">{t('premiumFeatures.card3Title')}</h3>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed">
-                  Obtén analíticas sobre tus publicaciones y mejora el posicionamiento de tus productos.
+                  {t('premiumFeatures.card3Description')}
                 </p>
               </div>
             </div>
@@ -579,13 +523,13 @@ bg-clip-text text-transparent pb-2 mt-10">
 
             <h2 className="text-3xl font-medium text-white mb-4">
 
-              Todo lo que necesitas para optimizar tus publicaciones
+              {t('features.sectionTitle')}
 
             </h2>
 
             <p className="text-gray-400">
 
-              Herramientas potentes para optimizar tus publicaciones de forma eficiente.
+              {t('features.sectionSubtitle')}
 
             </p>
 
@@ -626,13 +570,13 @@ bg-clip-text text-transparent pb-2 mt-10">
 
             <h2 className="text-3xl font-medium text-white mb-4">
 
-              Planes simples y transparentes
+              {t('pricing.sectionTitle')}
 
             </h2>
 
             <p className="text-gray-400">
 
-              Comienza gratis y actualiza cuando tu negocio crezca.
+              {t('pricing.sectionSubtitle')}
 
             </p>
 
@@ -726,43 +670,13 @@ bg-clip-text text-transparent pb-2 mt-10">
       <section className="py-24 px-4 border-t border-white/10" id="faq">
         <div className="max-w-4xl mx-auto">
           <h2 className="text-3xl font-semibold text-white mb-6">
-            Preguntas Frecuentes
+            {t('faq.title')}
           </h2>
-          <p className="text-gray-400 mb-12">Preguntas, reclamos, inquietudes gestionadas por nuestros usuarios</p>
+          <p className="text-gray-400 mb-12">{t('faq.subtitle')}</p>
 
           <div className="border-t border-white/10">
-            {[
-              {
-                "q": "¿Qué es Inventra?",
-                "a": "Inventra es una herramienta impulsada por inteligencia artificial que te ayuda a crear publicaciones optimizadas para e-commerce en segundos, ahorrándote horas de trabajo."
-              },
-              {
-                "q": "¿Para quién es Inventra?",
-                "a": "Inventra está diseñado para vendedores de e-commerce que necesitan crear publicaciones rápidas, claras y optimizadas para plataformas como Mercado Libre, Facebook Marketplace y más."
-              },
-              {
-                "q": "¿Cómo funciona?",
-                "a": "Solo ingresas la información básica de tu producto y nuestra IA genera automáticamente una publicación optimizada según la plataforma donde quieras vender."
-              },
-              {
-                "q": "¿Puedo usarlo aunque no tenga e-commerce?",
-                "a": "Sí. No necesitas tener un e-commerce propio. Inventra funciona para cualquier persona que necesite crear publicaciones para vender productos en plataformas online."
-              },
-              {
-                "q": "¿Qué nos diferencia de la competencia?",
-                "a": "Inventra está específicamente diseñado para crear publicaciones de e-commerce. Utiliza formatos optimizados, estructuras de venta probadas y datos actualizados de las plataformas para generar publicaciones listas para publicar."
-              },
-              {
-                "q": "¿Qué tipos de planes tiene Inventra?",
-                "a": "Inventra está específicamente diseñado para crear publicaciones de e-commerce. Utiliza formatos optimizados, estructuras de venta probadas y datos actualizados de las plataformas para generar publicaciones listas para publicar."
-              }
-              ,
-              {
-                "q": "¿Están hechos para México?",
-                "a": "Sí, aunque servimos a clientes globales, Inventra está diseñado con especial atención a las plataformas populares en México y Latinoamérica."
-              }
-            ].map((faq, index) => (
-              <FAQItem key={index} question={faq.q} answer={faq.a} />
+            {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+              <FAQItem key={i} question={t(`faq.q${i}` as any)} answer={t(`faq.a${i}` as any)} />
             ))}
           </div>
         </div>
@@ -796,7 +710,7 @@ bg-clip-text text-transparent pb-2 mt-10">
 
               <p className="text-gray-500 text-sm">
 
-                &copy; {new Date().getFullYear()} Inventra.
+                &copy; {new Date().getFullYear()} {t('footer.copyright')}
 
               </p>
 
@@ -846,8 +760,11 @@ function FAQItem({ question, answer }: { question: string, answer: string }) {
 
 
 function DashboardPreview() {
+  const scale_ref_width = 1040;
   const [scale, setScale] = useState(1);
   const containerRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations('landing.dashboardPreview');
+  const tc = useTranslations('common');
 
   useEffect(() => {
     const updateScale = () => {
@@ -905,13 +822,13 @@ function DashboardPreview() {
                 <div className="flex-1 py-4 px-3 space-y-6">
                   <div>
                     <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2 flex items-center gap-2">
-                      General
+                      {t('general')}
                     </div>
                     <div className="space-y-1">
                       {[
-                        { icon: LayoutDashboard, label: 'Dashboard', active: true },
-                        { icon: ShoppingBag, label: 'Publicaciones', active: false },
-                        { icon: Settings, label: 'Configuración', active: false },
+                        { icon: LayoutDashboard, label: t('dashboard'), active: true },
+                        { icon: ShoppingBag, label: t('publications'), active: false },
+                        { icon: Settings, label: t('settings'), active: false },
                       ].map((item, i) => (
                         <div key={i} className={`flex items-center gap-3 px-3 py-2 rounded-lg text-sm ${item.active ? 'text-white bg-white/10 font-medium' : 'text-gray-400'}`}>
                           <item.icon className="size-4" />
@@ -922,11 +839,11 @@ function DashboardPreview() {
                   </div>
 
                   <div>
-                    <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2">Soporte</div>
+                    <div className="text-[10px] font-bold text-gray-500 uppercase tracking-widest px-3 mb-2">{t('support')}</div>
                     <div className="px-3 py-2 flex items-start gap-3 bg-white/5 rounded-lg border border-white/5">
                       <Mail className="size-4 mt-1" />
                       <div className="min-w-0">
-                        <div className="text-xs font-medium text-white">Contacto</div>
+                        <div className="text-xs font-medium text-white">{t('contact')}</div>
                         <div className="text-[9px] text-blue-400 truncate">inventramx@gmail.com</div>
                       </div>
                     </div>
@@ -936,7 +853,7 @@ function DashboardPreview() {
                 <div className="p-3 border-t border-white/5 flex items-center gap-3">
                   <div className="size-8 rounded-full bg-gradient-to-tr from-blue-400 to-blue-600 flex items-center justify-center text-xs font-bold text-white">U</div>
                   <div className="min-w-0">
-                    <div className="text-xs font-medium text-white truncate">Usuario</div>
+                    <div className="text-xs font-medium text-white truncate">{tc('user')}</div>
                     <div className="text-[10px] text-gray-500 truncate">pro@inventra.mx</div>
                   </div>
                 </div>
@@ -957,17 +874,17 @@ function DashboardPreview() {
                 {/* Page Content */}
                 <div className="p-6 space-y-8 overflow-y-auto no-scrollbar">
                   <div>
-                    <h2 className="text-xl font-semibold text-white">Bienvenido, Usuario </h2>
-                    <p className="text-xs text-gray-500 mt-1">Aquí tienes un resumen de tu actividad.</p>
+                    <h2 className="text-xl font-semibold text-white">{t('welcome')}</h2>
+                    <p className="text-xs text-gray-500 mt-1">{t('activitySummary')}</p>
                   </div>
 
                   {/* Stats Cards */}
                   <div className="grid grid-cols-4 gap-4">
                     {[
-                      { label: 'Publicaciones', value: '48', sub: 'Total creadas', icon: ShoppingBag, color: 'text-blue-400' },
-                      { label: 'Optimizaciones', value: '32', sub: 'Generadas con IA', icon: Sparkles, color: 'text-emerald-400' },
-                      { label: 'Eficiencia', value: '86%', sub: 'Tasa de éxito', icon: TrendingUp, color: 'text-indigo-400' },
-                      { label: 'Plan', value: 'Pro', sub: 'Acceso completo', icon: Crown, color: 'text-amber-400' },
+                      { label: t('publications'), value: '48', sub: t('totalCreated'), icon: ShoppingBag, color: 'text-blue-400' },
+                      { label: t('optimizations'), value: '32', sub: t('generatedWithAI'), icon: Sparkles, color: 'text-emerald-400' },
+                      { label: t('efficiency'), value: '86%', sub: t('successRate'), icon: TrendingUp, color: 'text-indigo-400' },
+                      { label: t('plan'), value: tc('pro'), sub: tc('fullAccess'), icon: Crown, color: 'text-amber-400' },
                     ].map((stat, i) => (
                       <div key={i} className="bg-[#0a0a0a] border border-white/5 p-4 rounded-xl shadow-sm">
                         <div className="flex justify-between items-center mb-2">
@@ -983,34 +900,34 @@ function DashboardPreview() {
                   {/* Quick Actions */}
                   <div className="flex gap-2">
                     <div className="px-4 py-1.5 bg-white text-black text-xs font-semibold rounded-lg flex items-center gap-2">
-                      <Plus className="size-3" /> Nueva Publicación
+                      <Plus className="size-3" /> {t('newPublication')}
                     </div>
                     <div className="px-4 py-1.5 border border-white/10 text-white text-xs font-semibold rounded-lg flex items-center gap-2">
-                      <Sparkles className="size-3" /> Ver Analíticas
+                      <Sparkles className="size-3" /> {t('viewAnalytics')}
                     </div>
                   </div>
 
                   {/* Table */}
                   <div className="bg-[#0a0a0a] border border-white/5 rounded-xl overflow-hidden shadow-sm">
                     <div className="p-4 border-b border-white/5 flex justify-between items-center">
-                      <div className="text-xs font-bold text-white">Publicaciones Recientes</div>
-                      <div className="text-[10px] text-blue-400 font-medium">Ver todas →</div>
+                      <div className="text-xs font-bold text-white">{t('recentPublications')}</div>
+                      <div className="text-[10px] text-blue-400 font-medium">{t('viewAllArrow')}</div>
                     </div>
                     <div className="p-0 overflow-x-auto">
                       <table className="w-full text-left text-[11px]">
                         <thead className="bg-white/[0.02] text-gray-500 border-b border-white/5">
                           <tr>
-                            <th className="px-4 py-3 font-medium uppercase tracking-tighter">Producto</th>
-                            <th className="px-4 py-3 font-medium uppercase tracking-tighter">Plataforma</th>
-                            <th className="px-4 py-3 font-medium uppercase tracking-tighter text-center">Estado</th>
-                            <th className="px-4 py-3 font-medium uppercase tracking-tighter text-right">Fecha</th>
+                            <th className="px-4 py-3 font-medium uppercase tracking-tighter">{t('product')}</th>
+                            <th className="px-4 py-3 font-medium uppercase tracking-tighter">{t('platform')}</th>
+                            <th className="px-4 py-3 font-medium uppercase tracking-tighter text-center">{t('status')}</th>
+                            <th className="px-4 py-3 font-medium uppercase tracking-tighter text-right">{t('date')}</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-white/5">
                           {[
-                            { name: 'iPhone 15 Pro Max', platform: 'Mercado Libre', date: 'Hoy', status: 'Optimizado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
-                            { name: 'MacBook Air M2', platform: 'Amazon', date: 'Ayer', status: 'Borrador', color: 'bg-blue-400/10 text-blue-400 border-blue-400/20' },
-                            { name: 'Sony WH-1000XM5', platform: 'Etsy', date: '12 Mar', status: 'Optimizado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+                            { name: 'iPhone 15 Pro Max', platform: 'Mercado Libre', date: t('today'), status: tc('optimized'), color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+                            { name: 'MacBook Air M2', platform: 'Amazon', date: t('yesterday'), status: tc('draft'), color: 'bg-blue-400/10 text-blue-400 border-blue-400/20' },
+                            { name: 'Sony WH-1000XM5', platform: 'Etsy', date: '12 Mar', status: tc('optimized'), color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
                           ].map((pub, i) => (
                             <tr key={i}>
                               <td className="px-4 py-3 text-white font-medium">{pub.name}</td>
@@ -1045,6 +962,8 @@ function InlineNavbar() {
   const { isLoaded } = useAuth();
   const { proPrice } = useCurrency();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const t = useTranslations('landing.nav');
+  const tc = useTranslations('common');
 
 
 
@@ -1057,7 +976,7 @@ function InlineNavbar() {
       >
         <p className="text-sm font-medium flex items-center gap-2 ">
           <img src="/lpmini.png" alt="Logo" className="w-6 h-auto" />
-          <span>Aprovecha Inventra al máximo y adquiere <span className="text-white font-bold">Inventra Pro</span> por solo {proPrice}</span>
+          <span>{t('proBanner')} <span className="text-white font-bold">{t('proBannerBold')}</span> {t('proBannerSuffix')} {proPrice}</span>
           <ArrowRight className="w-4 h-4 " />
         </p>
       </Link></div>
@@ -1114,27 +1033,29 @@ function InlineNavbar() {
             >
               FAQ
             </Link>
+
           </div>
 
           <div className="hidden md:flex items-center gap-4 min-w-[200px] justify-end">
+            <LanguageSwitcher />
             {!isLoaded ? (
               <div className="flex items-center gap-4">
-                <a className="text-slate-300 px-2">Iniciar Sesión</a>
-                <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm ml-2">Registrarse</a>
+                <a className="text-slate-300 px-2">{t('signIn')}</a>
+                <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm ml-2">{t('signUp')}</a>
               </div>
             ) : (
               <>
                 <SignedOut>
                   <SignInButton>
-                    <a className="text-slate-300 hover:text-white cursor-pointer px-2">Iniciar Sesión</a>
+                    <a className="text-slate-300 hover:text-white cursor-pointer px-2">{t('signIn')}</a>
                   </SignInButton>
                   <SignUpButton>
-                    <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm cursor-pointer ml-2">Registrarse</a>
+                    <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm cursor-pointer ml-2">{t('signUp')}</a>
                   </SignUpButton>
                 </SignedOut>
                 <SignedIn>
                   <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm">
-                    Dashboard
+                    {t('dashboard')}
                   </Link>
                   <UserButton afterSignOutUrl="/" appearance={{ elements: { avatarBox: 'w-9 h-9' } }} />
                 </SignedIn>
@@ -1159,7 +1080,7 @@ function InlineNavbar() {
                 }}
                 className="text-slate-300 hover:text-white transition-colors"
               >
-                Características
+                {t('features')}
               </Link>
               <Link
                 href="#pricing"
@@ -1170,7 +1091,7 @@ function InlineNavbar() {
                 }}
                 className="text-slate-300 hover:text-white transition-colors"
               >
-                Planes
+                {t('pricing')}
               </Link>
               {!isLoaded ? (
                 <div className="h-10 w-full bg-white/5 animate-pulse rounded-lg" />
@@ -1178,19 +1099,19 @@ function InlineNavbar() {
                 <>
                   <SignedOut>
                     <SignInButton>
-                      <a className="text-slate-300 hover:text-white cursor-pointer py-2">Iniciar Sesión</a>
+                      <a className="text-slate-300 hover:text-white cursor-pointer py-2">{t('signIn')}</a>
                     </SignInButton>
                     <SignUpButton>
-                      <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm text-center cursor-pointer">Registrarse</a>
+                      <a className="bg-white text-black font-medium py-2 px-6 rounded-lg text-sm text-center cursor-pointer">{t('signUp')}</a>
                     </SignUpButton>
                   </SignedOut>
                   <SignedIn>
                     <Link href="/dashboard" className="bg-white text-black font-medium py-2 px-6 rounded-lg hover:bg-gray-200 transition-colors text-sm text-center">
-                      Dashboard
+                      {t('dashboard')}
                     </Link>
                     <div className="flex items-center gap-2">
                       <UserButton afterSignOutUrl="/" />
-                      <span className="text-slate-400 text-sm">Cuenta</span>
+                      <span className="text-slate-400 text-sm">{tc('account')}</span>
                     </div>
                   </SignedIn>
                 </>
