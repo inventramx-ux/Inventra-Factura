@@ -303,19 +303,15 @@ bg-clip-text text-transparent pb-2 mt-10">
                   <h4 className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">{t('premiumFeatures.card1PreviewLabel')}</h4>
 
                   {/* Image Container */}
-                  <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden border border-white/10 bg-zinc-900">
-                    <img
-                      src="/larp.jpg"
-                      alt="Larp"
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="relative aspect-[16/10] w-full rounded-xl overflow-hidden border border-white/10 bg-zinc-900 flex items-center justify-center">
+                    <Image size={48} className="text-white/10" />
                   </div>
 
                   {/* Title Block */}
                   <div className="space-y-2">
                     <h5 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">{t('premiumFeatures.card1OptimizedTitle')}</h5>
                     <h3 className="text-sm font-bold text-white leading-snug">
-                      Bugatti Salvage — Oportunidad única de adquirir un automóvil icónico
+                      Producto Premium — Cámara de Alta Resolución y Procesador de Próxima Generación
                     </h3>
                   </div>
 
@@ -323,7 +319,7 @@ bg-clip-text text-transparent pb-2 mt-10">
                   <div className="p-4 rounded-xl bg-white/[0.03] border border-white/10 space-y-2 mt-auto">
                     <h5 className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider">{t('premiumFeatures.card1SuggestedPrice')}</h5>
                     <div className="flex items-center justify-between gap-4">
-                      <span className="text-2xl font-bold text-white tracking-tight">MX$85,000.00</span>
+                      <span className="text-2xl font-bold text-white tracking-tight">MX$12,999.00</span>
                       <div className="flex items-center gap-2 px-3 py-1.5 bg-zinc-900 border border-white/10 rounded-lg text-xs font-medium text-zinc-400">
                         MXN <ChevronDown size={14} className="opacity-50" />
                       </div>
@@ -381,18 +377,14 @@ bg-clip-text text-transparent pb-2 mt-10">
 
                   {/* Mock Image Grid */}
                   <div className="flex gap-3">
-                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-white shadow-lg">
-                      <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=200&h=200" className="h-full w-full object-cover" />
-                      <div className="absolute inset-0 bg-white/10 flex items-center justify-center">
-                        <div className="bg-white rounded-full p-1 shadow-lg">
-                        </div>
-                      </div>
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border-2 border-white/20 bg-white/5 flex items-center justify-center">
+                      <Image size={24} className="text-white/20" />
                     </div>
-                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-white/5 opacity-40">
-                      <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=200&h=200" className="h-full w-full object-cover" />
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-white/5 bg-white/[0.02] flex items-center justify-center opacity-40">
+                      <Image size={24} className="text-white/20" />
                     </div>
-                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-white/5 opacity-20">
-                      <img src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?auto=format&fit=crop&q=80&w=200&h=200" className="h-full w-full object-cover" />
+                    <div className="relative w-20 h-20 rounded-xl overflow-hidden border border-white/5 bg-white/[0.02] flex items-center justify-center opacity-20">
+                      <Image size={24} className="text-white/20" />
                     </div>
                   </div>
 
