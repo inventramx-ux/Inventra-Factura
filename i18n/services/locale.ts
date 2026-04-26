@@ -31,7 +31,7 @@ export async function getUserLocale(): Promise<string> {
     try {
       // Use ip-api to simulate the x-vercel-ip-country header locally
       const geoRes = await fetch('http://ip-api.com/json/', { next: { revalidate: 3600 } });
-      if (geoRes.ok) {
+      if (geoRes.ok) {     
         const geoData = await geoRes.json();
         if (geoData && geoData.countryCode) {
           country = geoData.countryCode;

@@ -201,7 +201,22 @@
     "month": "Month",
     "year": "Year",
     "publications": "Listings",
-    "unspecified": "Unspecified"
+    "unspecified": "Unspecified",
+    "pubAnalytics": "Publication Analytics",
+    "pubAnalyticsSubtitle": "Individual performance scores and recommendations for each listing.",
+    "scoreLabel": "Score",
+    "bestPlatforms": "Best Platforms",
+    "suggestions": "Suggested Improvements",
+    "proSectionPubs": "Pro Section",
+    "proSectionPubsDesc": "Get individual analytics on each listing with the Pro plan.",
+    "suggNoImage": "Add a main product image",
+    "suggNoAdditionalImages": "Add at least 2 additional images",
+    "suggNoOptimized": "Run AI optimization to generate title and description",
+    "suggNoPrice": "Add a price to enable platform scoring",
+    "suggNoPlatform": "Select a sales platform",
+    "suggNoBrand": "Fill in the brand for better marketplace visibility",
+    "suggNoCategory": "Specify a category to improve platform matching",
+    "noPubs": "No publications to analyze yet."
   },
   "settings": {
     "title": "Settings",

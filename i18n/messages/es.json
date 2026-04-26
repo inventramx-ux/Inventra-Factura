@@ -201,7 +201,22 @@
     "month": "Mes",
     "year": "Año",
     "publications": "Publicaciones",
-    "unspecified": "Sin especificar"
+    "unspecified": "Sin especificar",
+    "pubAnalytics": "Analíticas de Publicaciones",
+    "pubAnalyticsSubtitle": "Puntuaciones individuales y recomendaciones para cada publicación.",
+    "scoreLabel": "Puntuación",
+    "bestPlatforms": "Mejores Plataformas",
+    "suggestions": "Mejoras Sugeridas",
+    "proSectionPubs": "Sección Pro",
+    "proSectionPubsDesc": "Obtén analíticas individuales de cada publicación con el plan Pro.",
+    "suggNoImage": "Agrega una imagen principal del producto",
+    "suggNoAdditionalImages": "Agrega al menos 2 imágenes adicionales",
+    "suggNoOptimized": "Ejecuta la optimización IA para generar título y descripción",
+    "suggNoPrice": "Agrega un precio para habilitar la puntuación por plataforma",
+    "suggNoPlatform": "Selecciona una plataforma de venta",
+    "suggNoBrand": "Llena la marca para mayor visibilidad en marketplaces",
+    "suggNoCategory": "Especifica una categoría para mejorar el match de plataforma",
+    "noPubs": "Aún no hay publicaciones para analizar."
   },
   "settings": {
     "title": "Configuración",

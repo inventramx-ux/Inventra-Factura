@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button"
 import { TrendingUp, ShoppingBag, Sparkles, Lock } from "lucide-react"
 import Link from "next/link"
 import { publicationOperations, Publication } from "@/lib/publications"
+import { PublicationAnalyticsSection } from "@/components/publication-analytics-card"
 import { useUser } from "@clerk/nextjs"
 import { useTranslations, useLocale } from 'next-intl'
 
@@ -286,6 +287,11 @@ export default function AnalyticsPage() {
                     </CardContent>
                 </Card>
 
+                {/* Analíticas de Publicaciones */}
+                <div className="lg:col-span-2">
+                    <PublicationAnalyticsSection publications={publications} isPro={true} />
+                </div>
+
                 {/* Platform Distribution */}
                 <Card className="bg-white/5 border-white/10 relative overflow-hidden min-w-0">
                     <CardHeader>
@@ -348,6 +354,7 @@ export default function AnalyticsPage() {
                     </CardContent>
                 </Card>
             </div>
+
         </div>
     )
 }
