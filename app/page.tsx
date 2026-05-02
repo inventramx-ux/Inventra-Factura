@@ -144,14 +144,14 @@ bg-clip-text text-transparent pb-2 mt-10">
 
                 {!isLoaded ? (
                   <div className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 h-16">
-                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" /> Empieza ahora
+                    <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" /> Empieza ahora - Es gratis
                   </div>
                 ) : (
                   <>
                     <SignedIn>
                       <Link href="/dashboard" className="w-full sm:w-auto justify-center bg-gradient-to-b from-white via-white to-gray-400 text-black font-medium py-2.5 px-6 rounded-full inline-flex items-center gap-2 cursor-pointer h-16 ">
 
-                        <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" /> Empieza ahora
+                        <img src="lpmini.png" alt="" className="w-8 h-8 brightness-0" /> Empieza ahora - Es gratis
 
                       </Link>
                     </SignedIn>
@@ -187,7 +187,7 @@ bg-clip-text text-transparent pb-2 mt-10">
                 <div className="absolute inset-0 bg-black/40 blur-3xl -z-10 scale-[2.5] pointer-events-none" />
                 <div className='text-white/30 flex items-center justify-center gap-2 font-semibold tracking-wider'>
                   <CreditCard size={14} />
-                  <p> Sin tarjeta de crédito necesaria para comenzar </p>
+                  <p> EMPIEZA SIN TARJETA DE CRÉDITO </p>
                 </div>
               </div>
             </div>
