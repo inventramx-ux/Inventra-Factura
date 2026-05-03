@@ -74,8 +74,15 @@ export default function Home() {
 
     <div className="min-h-screen relative">
 
+<h1>
+Progect 1
+
+</h1>
+<a href="text-white font-bold ">
 
 
+  THis is my first progect
+</a>
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/5 backdrop-blur-lg border-b border-white/20">
         <InlineNavbar />
       </nav>
@@ -124,22 +131,23 @@ bg-clip-text text-transparent pb-2 mt-10">
                 Convierte tus publicaciones en imanes de atención con títulos, descripciones y precios diseñados para generar ventas.
               </p>
 
-              <div className="flex justify-center items-center gap-3 mb-10" style={{ animationDelay: '0.2s' }}>
-                <div className="flex -space-x-3">
-                  {[1, 2, 3, 4].map((i) => (
-                    <img
-                      key={i}
-                      src={`/avatar${i}.png`}
-                      alt={`Usuario ${i}`}
-                      className="h-9 w-9 md:h-10 md:w-10 rounded-full border-2 border-white object-cover shadow-lg"
-                    />
-                  ))}
-                </div>
-                <p className="text-white font-semibold text-lg md:text-1xl tracking-tight ml-2">
-                  Únete a cientos de vendedores exitosos <span className="text-white">y haz crecer tus ingresos</span>
-                </p>
-              </div>
+      <div className="flex justify-center items-center gap-3 mb-10 flex-wrap">
+  <div className="flex -space-x-3 shrink-0">
+    {[1, 2, 3, 4].map((i) => (
+      <img
+        key={i}
+        src={`/avatar${i}.png`}
+        alt={`Usuario ${i}`}
+        className="h-9 w-9 md:h-10 md:w-10 rounded-full border-2 border-white object-cover shadow-lg"
+      />
+    ))}
+  </div>
 
+  <p className="text-white font-semibold text-lg md:text-1xl tracking-tight ml-2 leading-tight">
+    Únete a cientos de vendedores exitosos{" "}
+    <span className="text-white">y haz crecer tus ingresos</span>
+  </p>
+</div>
               <div className="flex flex-col  items-center justify-center ">
 
                 {!isLoaded ? (
