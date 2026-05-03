@@ -676,7 +676,103 @@ bg-clip-text text-transparent pb-2 mt-10">
 
       </section>
 
+   <section className="py-16 px-6 b text-white">
+    <h1 className="text-white text-center font-bold text-30">Resenas reales de nuestros clientes</h1>
+    <p className="text-center text-gray-400">Descubre lo que nuestros clientes piensan de nosotros</p>
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto mt-10">
 
+    {/* Card 1 */}
+    <div className="border border-gray-200 rounded-2xl p-6 flex flex-col gap-6  ">
+      <div className="flex items-center gap-3">
+        <img
+          src="https://i.pravatar.cc/150?img=11"
+          alt="Miguel"
+          className="w-12 h-12 rounded-full object-cover"
+        />
+        <span className="font-semibold text-base">Miguel</span>
+      </div>
+      <p className="text-gray-700 text-white leading-relaxed">
+        Excelente servicio. Me ha ayudado a aumentar mis ventas significativamente desde el primer mes.
+      </p>
+    </div>
+
+    {/* Card 2 */}
+    <div className="border border-gray-200 rounded-2xl p-6 flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <img
+          src="https://i.pravatar.cc/150?img=32"
+          alt="Laura"
+          className="w-12 h-12 rounded-full object-cover"
+        />
+        <span className="font-semibold text-base">Laura</span>
+      </div>
+      <p className="text-white white leading-relaxed">
+        El equipo es muy profesional y los resultados superaron todas mis expectativas. 10/10.
+      </p>
+    </div>
+
+    {/* Card 3 */}
+    <div className="border border-gray-200 rounded-2xl p-6 flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <img
+          src="https://i.pravatar.cc/150?img=53"
+          alt="Carlos"
+          className="w-12 h-12 rounded-full object-cover"
+        />
+        <span className="font-semibold text-base">Carlos</span>
+      </div>
+      <p className="text-gray-700 text-white leading-relaxed">
+        Una experiencia increíble. Lo recomiendo a cualquier negocio que quiera crecer rápido.
+      </p>
+    </div>
+
+    {/* Card 4 */}
+    <div className="border border-gray-200 rounded-2xl p-6 flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <img
+          src="https://i.pravatar.cc/150?img=17"
+          alt="Ana"
+          className="w-12 h-12 rounded-full object-cover"
+        />
+        <span className="font-semibold text-base">Ana</span>
+      </div>
+      <p className="text-gray-700 text-white leading-relaxed">
+        Hace que gestionar y organizar el contenido sea mucho más fácil, ahora puedo enfocarme en lo importante.
+      </p>
+    </div>
+
+    {/* Card 5 */}
+    <div className="border border-gray-200 rounded-2xl p-6 flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <img
+          src="https://i.pravatar.cc/150?img=44"
+          alt="Roberto"
+          className="w-12 h-12 rounded-full object-cover"
+        />
+        <span className="font-semibold text-base">Roberto</span>
+      </div>
+      <p className="text-gray-700 text-white leading-relaxed">
+        Su generador de imágenes es increíble. Me ahorra tener múltiples suscripciones a diferentes herramientas.
+      </p>
+    </div>
+
+    {/* Card 6 */}
+    <div className="border border-gray-200 rounded-2xl p-6 flex flex-col gap-6">
+      <div className="flex items-center gap-3">
+        <img
+          src="https://i.pravatar.cc/150?img=60"
+          alt="Sandra"
+          className="w-12 h-12 rounded-full object-cover"
+        />
+        <span className="font-semibold text-base">Sandra</span>
+      </div>
+      <p className="text-gray-700 text-white leading-relaxed">
+        Ojalá lo hubiera encontrado antes. Vale completamente la suscripción, es la mejor inversión que he hecho.
+      </p>
+    </div>
+
+  </div>
+</section>
 
       {/* FAQ Section */}
       <section className="py-24 px-4 border-t border-white/10" id="faq">
